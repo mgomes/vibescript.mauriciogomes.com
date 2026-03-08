@@ -3,62 +3,61 @@
 # category: Rosetta Code Popular
 # difficulty: Intermediate
 # summary: Determine whether a word can be formed from a fixed set of two-letter blocks without reusing a block.
-# tags: popular, search, strings, greedy
+# tags: popular, search, strings, recursion
 # vibe: 0.2
 
-def default_blocks
+def blocks
   [
-    { id: "bo", letters: "BO" },
-    { id: "xk", letters: "XK" },
-    { id: "dq", letters: "DQ" },
-    { id: "cp", letters: "CP" },
-    { id: "na", letters: "NA" },
-    { id: "gt", letters: "GT" },
-    { id: "re", letters: "RE" },
-    { id: "tg", letters: "TG" },
-    { id: "qd", letters: "QD" },
-    { id: "fs_one", letters: "FS" },
-    { id: "jw", letters: "JW" },
-    { id: "hu", letters: "HU" },
-    { id: "vi", letters: "VI" },
-    { id: "an", letters: "AN" },
-    { id: "ob", letters: "OB" },
-    { id: "er", letters: "ER" },
-    { id: "fs_two", letters: "FS" },
-    { id: "ly", letters: "LY" },
-    { id: "pc", letters: "PC" },
-    { id: "zm", letters: "ZM" }
+    "BO", "XK", "DQ", "CP", "NA",
+    "GT", "RE", "TG", "QD", "FS",
+    "JW", "HU", "VI", "AN", "OB",
+    "ER", "FS", "LY", "PC", "ZM"
   ]
 end
 
-def can_make?(word)
-  blocks = default_blocks
-  used = {}
-  letter_index = 0
+def remove_at(values, skip_index)
+  out = []
+  index = 0
 
-  while letter_index < word.length
-    letter = word.slice(letter_index).upcase
-    block_index = 0
-    matched = false
-
-    while block_index < 20
-      block = blocks[block_index]
-      if block[:letters].include?(letter) && used[block[:id]] != true
-        used[block[:id]] = true
-        matched = true
-        break
-      end
-      block_index = block_index + 1
+  while index < values.size
+    if index != skip_index
+      out = out + [values[index]]
     end
-
-    if matched == false
-      return false
-    end
-
-    letter_index = letter_index + 1
+    index = index + 1
   end
 
-  true
+  out
+end
+
+def block_matches?(block, letter)
+  block.slice(0) == letter || block.slice(1) == letter
+end
+
+def can_make_from?(word, word_index, available_blocks)
+  letters = word.upcase.split("")
+
+  if word_index >= letters.size
+    return true
+  end
+
+  letter = letters[word_index]
+  block_index = 0
+
+  while block_index < available_blocks.size
+    block = available_blocks[block_index]
+    if block_matches?(block, letter)
+      if can_make_from?(word, word_index + 1, remove_at(available_blocks, block_index))
+        return true
+      end
+    end
+    block_index = block_index + 1
+  end
+
+  false
+end
+
+def can_make?(word)
+  can_make_from?(word, 0, blocks)
 end
 
 def run
