@@ -1,0 +1,35 @@
+{{define "examples"}}
+<section class="section-panel fade-in">
+  <div class="section-header">
+    <div class="catalog-copy">
+      <span class="eyebrow">Examples Catalog</span>
+      <h2>Build your Vibescript mental model one focused example at a time.</h2>
+      <p>
+        The examples page is intentionally flat and scalable. As the catalog grows into the hundreds, it can absorb
+        search, filters, runnable sandboxes, and richer metadata without changing the page structure.
+      </p>
+    </div>
+    <p>{{.TotalExamples}} launch examples currently seeded.</p>
+  </div>
+
+  <div class="card-grid">
+    {{range .Examples}}
+    <a href="/examples/{{.Slug}}" class="example-card">
+      <div class="pill-row">
+        <span class="meta-pill">{{.Category}}</span>
+        <span class="meta-pill">{{.Difficulty}}</span>
+        <span class="meta-pill">{{.Stage}}</span>
+      </div>
+      <h3>{{.Title}}</h3>
+      <p>{{.Summary}}</p>
+      <div class="tag-row">
+        {{range .Tags}}
+        <span class="tag">{{.}}</span>
+        {{end}}
+      </div>
+    </a>
+    {{end}}
+  </div>
+</section>
+{{end}}
+

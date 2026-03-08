@@ -1,0 +1,70 @@
+{{define "home"}}
+<section class="hero">
+  <div class="hero-copy fade-in delay-1">
+    <span class="eyebrow">Vibescript Site Scaffold</span>
+    <h1>The home for practical Vibescript examples.</h1>
+    <p>
+      This site is structured around a large examples catalog today so it can evolve into a runnable playground
+      without a route or content model rewrite later.
+    </p>
+    <div class="hero-actions">
+      <a class="button" href="/examples">Browse launch examples</a>
+      <a class="button-secondary" href="/examples/hello-vibescript">Open the first example</a>
+    </div>
+  </div>
+
+  <aside class="hero-panel fade-in delay-2">
+    <div class="stat-grid">
+      <div class="stat-card">
+        <strong>{{.TotalExamples}}</strong>
+        <span>seed examples</span>
+      </div>
+      <div class="stat-card">
+        <strong>chi</strong>
+        <span>router and middleware</span>
+      </div>
+      <div class="stat-card">
+        <strong>Go 1.26.1</strong>
+        <span>toolchain target</span>
+      </div>
+      <div class="stat-card">
+        <strong>Ready</strong>
+        <span>for runnable examples soon</span>
+      </div>
+    </div>
+    <div class="launch-note">
+      Runnable sandboxes are the next layer. The current shape keeps example discovery, detail pages, and future run
+      surfaces aligned from the start.
+    </div>
+  </aside>
+</section>
+
+<section class="section-panel fade-in delay-2">
+  <div class="section-header">
+    <div>
+      <span class="eyebrow">Featured</span>
+      <h2>Start with the examples that explain the system fastest.</h2>
+    </div>
+    <p>These first cards are curated to communicate syntax, data flow, and automation range.</p>
+  </div>
+  <div class="card-grid">
+    {{range .Featured}}
+    <a href="/examples/{{.Slug}}" class="example-card">
+      <div class="pill-row">
+        <span class="meta-pill">{{.Category}}</span>
+        <span class="meta-pill">{{.Difficulty}}</span>
+        <span class="meta-pill">{{.Stage}}</span>
+      </div>
+      <h3>{{.Title}}</h3>
+      <p>{{.Summary}}</p>
+      <div class="tag-row">
+        {{range .Tags}}
+        <span class="tag">{{.}}</span>
+        {{end}}
+      </div>
+    </a>
+    {{end}}
+  </div>
+</section>
+{{end}}
+

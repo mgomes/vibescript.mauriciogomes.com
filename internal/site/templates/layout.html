@@ -1,0 +1,37 @@
+{{define "layout"}}
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{{.Page.Title}} | vibescript.mauriciogomes.com</title>
+    <meta name="description" content="{{.Page.Description}}">
+    <link rel="stylesheet" href="/static/site.css">
+  </head>
+  <body>
+    <div class="site-shell">
+      <header class="site-header fade-in">
+        <a href="/" class="brand" aria-label="Vibescript home">
+          <span class="brand-mark">V</span>
+          <span class="brand-copy">
+            <strong>Vibescript</strong>
+            <span>Examples first. Runnables next.</span>
+          </span>
+        </a>
+        <nav class="site-nav" aria-label="Primary">
+          <a href="/" {{if eq .Page.Section "home"}}class="is-active"{{end}}>Home</a>
+          <a href="/examples" {{if eq .Page.Section "examples"}}class="is-active"{{end}}>Examples</a>
+          <a href="/healthz">Health</a>
+        </nav>
+      </header>
+
+      {{.Content}}
+
+      <footer class="site-footer">
+        <span>{{.Year}} Vibescript. Built for a deep examples library.</span>
+        <span>{{.TotalExamples}} examples seeded for launch planning.</span>
+      </footer>
+    </div>
+  </body>
+</html>
+{{end}}

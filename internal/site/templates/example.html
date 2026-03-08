@@ -1,0 +1,39 @@
+{{define "example"}}
+<article class="detail-shell fade-in">
+  <section class="detail-hero">
+    <span class="eyebrow">{{.Example.Category}}</span>
+    <h1>{{.Example.Title}}</h1>
+    <p>{{.Example.Summary}}</p>
+    <div class="detail-meta">
+      <span class="meta-pill">{{.Example.Difficulty}}</span>
+      <span class="meta-pill">{{.Example.Stage}}</span>
+      {{if .Example.Runnable}}
+      <span class="meta-pill">Runnable now</span>
+      {{else}}
+      <span class="meta-pill">Runnable soon</span>
+      {{end}}
+    </div>
+  </section>
+
+  <div class="detail-grid">
+    <section class="detail-body">
+      <p>{{.Example.Description}}</p>
+      <div class="tag-row">
+        {{range .Example.Tags}}
+        <span class="tag">{{.}}</span>
+        {{end}}
+      </div>
+    </section>
+
+    <aside class="note-card">
+      <h3>Runnable sandbox landing soon</h3>
+      <p>
+        This page already has the right URL and metadata shape for a future run surface. When runnable examples land,
+        this card can expand into the execution panel instead of forcing a new content model.
+      </p>
+      <a class="button" href="/examples">Back to the catalog</a>
+    </aside>
+  </div>
+</article>
+{{end}}
+
