@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"html/template"
 	"io/fs"
 	"net/http"
@@ -41,7 +42,10 @@ type viewData struct {
 	UpstreamVersion  string
 	UpstreamRepoURL  string
 	Year             int
+	CacheBust        string
 }
+
+var cacheBust = fmt.Sprintf("%d", time.Now().UnixMilli())
 
 func New(store *catalog.Store, runService *runner.Service) (http.Handler, error) {
 	templates, err := template.ParseFS(assets, "templates/*.html")
@@ -194,6 +198,7 @@ func (a *App) writeJSON(w http.ResponseWriter, status int, payload any) {
 }
 
 func (a *App) render(w http.ResponseWriter, status int, data viewData) {
+	data.CacheBust = cacheBust
 	var body bytes.Buffer
 	if err := a.templates.ExecuteTemplate(&body, data.ContentTemplate, data); err != nil {
 		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
