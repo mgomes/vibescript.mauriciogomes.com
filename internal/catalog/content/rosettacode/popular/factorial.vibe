@@ -1,0 +1,32 @@
+# title: Factorial
+# source: https://rosettacode.org/wiki/Factorial
+# category: Rosetta Code
+# difficulty: Intro
+# summary: Compute factorial values both recursively and iteratively.
+# tags: popular, math, recursion, loops
+
+def recursive_factorial(n)
+  if n <= 1
+    1
+  else
+    n * recursive_factorial(n - 1)
+  end
+end
+
+def iterative_factorial(n)
+  result = 1
+  value = 2
+  while value <= n
+    result = result * value
+    value = value + 1
+  end
+  result
+end
+
+def run
+  {
+    recursive: recursive_factorial(10),
+    iterative: iterative_factorial(10)
+  }
+end
+
