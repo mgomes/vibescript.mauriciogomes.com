@@ -46,13 +46,13 @@ def truth_rows
     while right_index < values.size
       left = values[left_index]
       right = values[right_index]
-      rows = rows.push({
-        left: left,
-        right: right,
-        and: logic_and(left, right),
-        or: logic_or(left, right),
-        not_left: logic_not(left)
-      })
+      rows = rows.push([
+        left,
+        right,
+        logic_and(left, right),
+        logic_or(left, right),
+        logic_not(left)
+      ])
       right_index = right_index + 1
     end
     left_index = left_index + 1
@@ -62,5 +62,5 @@ def truth_rows
 end
 
 def run
-  truth_rows
+  [["left", "right", "and", "or", "not_left"]] + truth_rows
 end

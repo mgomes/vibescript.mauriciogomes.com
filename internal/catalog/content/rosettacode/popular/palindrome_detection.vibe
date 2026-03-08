@@ -38,10 +38,10 @@ def palindrome?(text)
 end
 
 def run
-  {
-    racecar: palindrome?("racecar"),
-    phrase: palindrome?("Able was I ere I saw Elba"),
-    number: palindrome?("12321"),
-    negative: palindrome?("Vibescript")
-  }
+  [
+    ["racecar", palindrome?("racecar")],
+    ["Able was I ere I saw Elba", palindrome?("Able was I ere I saw Elba")],
+    ["12321", palindrome?("12321")],
+    ["Vibescript", palindrome?("Vibescript")]
+  ]
 end
