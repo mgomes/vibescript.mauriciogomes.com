@@ -128,3 +128,39 @@ def group_by_stable_status(players)
     player[:status]
   end
 end
+
+def run
+  values = [2, 4, 4, 7, 12, 15]
+  words = ["pear", "kiwi", "banana", "fig"]
+  players = [
+    { name: "Ada", status: "active" },
+    { name: "Lin", status: "inactive" },
+    { name: "Sol", status: "active" }
+  ]
+
+  {
+    first_two: first_two(values),
+    last_three: last_three(values),
+    numeric_sum: numeric_sum(values),
+    double_sum: double_sum(values),
+    push_and_pop: push_and_pop(values, 20),
+    uniq_values: uniq_values(values),
+    concat_values: concat_values([1, 2], [3, 4]),
+    subtract_values: subtract_values(values, [4, 15]),
+    include_value: include_value(values, 12),
+    first_match: first_match(values, 10),
+    first_match_index: first_match_index(values, 10),
+    count_value: count_value(values, 4),
+    count_large: count_large(values, 5),
+    predicate_snapshot: predicate_snapshot(values),
+    sort_values: sort_values([5, 2, 9, 1]),
+    sort_desc: sort_desc([5, 2, 9, 1]),
+    sort_words_by_length: sort_words_by_length(words),
+    partition_even: partition_even(values),
+    group_by_status: group_by_status(players),
+    tally_statuses: tally_statuses(["active", "active", "inactive"]),
+    chunk_values: chunk_values(values, 2),
+    window_values: window_values(values, 3),
+    group_by_stable_status: group_by_stable_status(players)
+  }
+end

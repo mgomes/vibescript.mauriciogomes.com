@@ -42,6 +42,40 @@ func TestRunRunnableExample(t *testing.T) {
 	}
 }
 
+func TestRunArraysExtrasExample(t *testing.T) {
+	store, err := catalog.Load()
+	if err != nil {
+		t.Fatalf("load catalog: %v", err)
+	}
+
+	service, err := New(store)
+	if err != nil {
+		t.Fatalf("new service: %v", err)
+	}
+
+	result, err := service.Run(context.Background(), "arrays-extras")
+	if err != nil {
+		t.Fatalf("run example: %v", err)
+	}
+
+	if result.Kind != "hash" {
+		t.Fatalf("expected hash result, got %q", result.Kind)
+	}
+
+	value, ok := result.Value.(map[string]any)
+	if !ok {
+		t.Fatalf("expected hash export, got %T", result.Value)
+	}
+
+	if !numericValueEquals(value["numeric_sum"], 44) {
+		t.Fatalf("expected numeric_sum 44, got %#v (%T)", value["numeric_sum"], value["numeric_sum"])
+	}
+
+	if !numericValueEquals(value["first_match"], 12) {
+		t.Fatalf("expected first_match 12, got %#v (%T)", value["first_match"], value["first_match"])
+	}
+}
+
 func TestRunNonRunnableExample(t *testing.T) {
 	store, err := catalog.Load()
 	if err != nil {
@@ -81,5 +115,18 @@ func TestRunAllRunnableExamples(t *testing.T) {
 				t.Fatalf("run %s: %v", example.Slug, err)
 			}
 		})
+	}
+}
+
+func numericValueEquals(value any, expected int) bool {
+	switch typed := value.(type) {
+	case int:
+		return typed == expected
+	case int64:
+		return typed == int64(expected)
+	case float64:
+		return typed == float64(expected)
+	default:
+		return false
 	}
 }
