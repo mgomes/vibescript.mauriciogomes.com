@@ -1,0 +1,34 @@
+# title: Matrix transposition
+# source: https://rosettacode.org/wiki/Matrix_transposition
+# category: Rosetta Code
+# difficulty: Easy
+# summary: Transpose a matrix by swapping its rows and columns.
+# tags: popular, math, arrays, nested-loops
+# vibe: 0.2
+
+def transpose(matrix)
+  rows = matrix.size
+  cols = matrix[0].size
+  result = []
+  c = 0
+
+  while c < cols
+    row = []
+    r = 0
+    while r < rows
+      row = row.push(matrix[r][c])
+      r = r + 1
+    end
+    result = result.push(row)
+    c = c + 1
+  end
+
+  result
+end
+
+def run
+  {
+    square: transpose([[1, 2, 3], [4, 5, 6], [7, 8, 9]]),
+    rectangular: transpose([[1, 2], [3, 4], [5, 6]])
+  }
+end
