@@ -1,5 +1,28 @@
 package catalog
 
+import (
+	"fmt"
+	"io/fs"
+	"path"
+	"regexp"
+	"sort"
+	"strings"
+)
+
+const (
+	UpstreamRepoURL = "https://github.com/mgomes/vibescript"
+	UpstreamVersion = "v0.21.0"
+)
+
+var featuredExamples = map[string]int{
+	"control_flow/case_when.vibe": 0,
+	"strings/operations.vibe":     1,
+	"stdlib/core_utilities.vibe":  2,
+	"enums/operations.vibe":       3,
+}
+
+var runEntryPointPattern = regexp.MustCompile(`(?m)^def run\b`)
+
 type Example struct {
 	Slug        string
 	Title       string
@@ -11,26 +34,127 @@ type Example struct {
 	Featured    bool
 	Runnable    bool
 	Tags        []string
+	Source      string
+	SourcePath  string
+	SourceURL   string
+	RunFunction string
 }
 
 type Store struct {
-	examples []Example
-	bySlug   map[string]Example
+	examples      []Example
+	featured      []Example
+	bySlug        map[string]Example
+	runnableCount int
 }
 
-func NewStore(examples []Example) *Store {
-	ordered := make([]Example, len(examples))
-	copy(ordered, examples)
+func Load() (*Store, error) {
+	examples := make([]Example, 0, 34)
 
-	bySlug := make(map[string]Example, len(ordered))
-	for _, example := range ordered {
-		bySlug[example.Slug] = example
+	err := fs.WalkDir(content, "content/upstream", func(filePath string, entry fs.DirEntry, err error) error {
+		if err != nil {
+			return err
+		}
+		if entry.IsDir() || path.Ext(filePath) != ".vibe" {
+			return nil
+		}
+
+		source, err := fs.ReadFile(content, filePath)
+		if err != nil {
+			return fmt.Errorf("read %s: %w", filePath, err)
+		}
+
+		relativePath := strings.TrimPrefix(filePath, "content/upstream/")
+		categoryKey := path.Dir(relativePath)
+		titleKey := strings.TrimSuffix(path.Base(relativePath), ".vibe")
+		runnable := runEntryPointPattern.Match(source)
+
+		stage := "Imported"
+		summary := fmt.Sprintf(
+			"Imported from the upstream Vibescript examples at %s and ready for browser discovery.",
+			relativePath,
+		)
+		description := fmt.Sprintf(
+			"This example is synced from the upstream Vibescript repository and serves as part of the site's growing examples corpus.",
+		)
+		runFunction := ""
+		if runnable {
+			stage = "Runnable"
+			summary = fmt.Sprintf(
+				"Imported from the upstream Vibescript examples at %s and runnable in the browser today.",
+				relativePath,
+			)
+			description = "This example defines a top-level run function, so the site can compile and execute it directly through the browser runner."
+			runFunction = "run"
+		}
+
+		tags := []string{"upstream", slugPart(categoryKey)}
+		if runnable {
+			tags = append(tags, "browser-runner")
+		}
+
+		examples = append(examples, Example{
+			Slug:        slugPart(strings.TrimSuffix(relativePath, ".vibe")),
+			Title:       titleize(titleKey),
+			Summary:     summary,
+			Description: description,
+			Category:    titleize(categoryKey),
+			Difficulty:  "Reference",
+			Stage:       stage,
+			Featured:    isFeatured(relativePath),
+			Runnable:    runnable,
+			Tags:        tags,
+			Source:      string(source),
+			SourcePath:  relativePath,
+			SourceURL:   fmt.Sprintf("%s/blob/%s/examples/%s", UpstreamRepoURL, UpstreamVersion, relativePath),
+			RunFunction: runFunction,
+		})
+
+		return nil
+	})
+	if err != nil {
+		return nil, err
 	}
 
-	return &Store{
-		examples: ordered,
-		bySlug:   bySlug,
+	titleCounts := make(map[string]int, len(examples))
+	for _, example := range examples {
+		titleCounts[example.Title]++
 	}
+	for i := range examples {
+		if titleCounts[examples[i].Title] > 1 {
+			examples[i].Title = examples[i].Category + " " + examples[i].Title
+		}
+	}
+
+	sort.Slice(examples, func(i, j int) bool {
+		left := examples[i]
+		right := examples[j]
+		if left.Category != right.Category {
+			return left.Category < right.Category
+		}
+		return left.Title < right.Title
+	})
+
+	store := &Store{
+		examples: make([]Example, len(examples)),
+		bySlug:   make(map[string]Example, len(examples)),
+	}
+	copy(store.examples, examples)
+
+	for _, example := range store.examples {
+		store.bySlug[example.Slug] = example
+		if example.Runnable {
+			store.runnableCount++
+		}
+		if example.Featured {
+			store.featured = append(store.featured, example)
+		}
+	}
+
+	sort.Slice(store.featured, func(i, j int) bool {
+		return featuredExamples[store.featured[i].SourcePath] < featuredExamples[store.featured[j].SourcePath]
+	})
+
+	return store, nil
 }
 
 func (s *Store) All() []Example {
@@ -40,17 +164,11 @@ func (s *Store) All() []Example {
 }
 
 func (s *Store) Featured(limit int) []Example {
-	featured := make([]Example, 0, limit)
-	for _, example := range s.examples {
-		if !example.Featured {
-			continue
-		}
-		featured = append(featured, example)
-		if len(featured) == limit {
-			break
-		}
+	if limit > len(s.featured) {
+		limit = len(s.featured)
 	}
-
+	featured := make([]Example, limit)
+	copy(featured, s.featured[:limit])
 	return featured
 }
 
@@ -63,70 +181,26 @@ func (s *Store) Count() int {
 	return len(s.examples)
 }
 
-func SeedExamples() []Example {
-	return []Example{
-		{
-			Slug:        "hello-vibescript",
-			Title:       "Hello, Vibescript",
-			Summary:     "The smallest possible Vibescript example, focused on syntax, shape, and the first successful output.",
-			Description: "Start with the smallest complete example so the site can introduce Vibescript without forcing readers through a long setup story.",
-			Category:    "Foundations",
-			Difficulty:  "Intro",
-			Stage:       "Planned",
-			Featured:    true,
-			Tags:        []string{"syntax", "quickstart", "basics"},
-		},
-		{
-			Slug:        "data-reshape-pipeline",
-			Title:       "Data Reshape Pipeline",
-			Summary:     "Walk through transforming messy structured data into a cleaner schema with predictable output.",
-			Description: "This example is a strong fit for an early runnable sandbox because the input, transformation, and output are all easy to inspect.",
-			Category:    "Data",
-			Difficulty:  "Intermediate",
-			Stage:       "Planned",
-			Featured:    true,
-			Tags:        []string{"json", "mapping", "transforms"},
-		},
-		{
-			Slug:        "agentic-file-loop",
-			Title:       "Agentic File Loop",
-			Summary:     "Show how a Vibescript flow can iterate through files, classify them, and produce a useful report.",
-			Description: "A file-processing example makes the language feel practical quickly, and it sets up later examples around tools and automation.",
-			Category:    "Automation",
-			Difficulty:  "Intermediate",
-			Stage:       "Drafting",
-			Featured:    true,
-			Tags:        []string{"files", "loops", "reports"},
-		},
-		{
-			Slug:        "api-client-workflow",
-			Title:       "API Client Workflow",
-			Summary:     "Chain a request, validation step, and formatted response into one compact script.",
-			Description: "This will eventually become a good benchmark example because it covers I/O, control flow, and response shaping in one place.",
-			Category:    "Integrations",
-			Difficulty:  "Intermediate",
-			Stage:       "Planned",
-			Tags:        []string{"http", "validation", "responses"},
-		},
-		{
-			Slug:        "component-state-machine",
-			Title:       "Component State Machine",
-			Summary:     "Model a UI flow with explicit states so readers can understand how Vibescript handles branching logic.",
-			Description: "State-driven examples tend to surface language ergonomics quickly, which makes them useful both for docs and future playground demos.",
-			Category:    "UI",
-			Difficulty:  "Advanced",
-			Stage:       "Drafting",
-			Tags:        []string{"ui", "states", "branching"},
-		},
-		{
-			Slug:        "prompt-to-structured-output",
-			Title:       "Prompt To Structured Output",
-			Summary:     "Take a loose prompt, constrain it with a schema, and return something downstream systems can trust.",
-			Description: "This example connects Vibescript to a common production concern: turning flexible language tasks into stable machine-readable output.",
-			Category:    "LLM",
-			Difficulty:  "Intro",
-			Stage:       "Planned",
-			Tags:        []string{"schemas", "prompts", "validation"},
-		},
+func (s *Store) RunnableCount() int {
+	return s.runnableCount
+}
+
+func isFeatured(relativePath string) bool {
+	_, ok := featuredExamples[relativePath]
+	return ok
+}
+
+func slugPart(value string) string {
+	replacer := strings.NewReplacer("/", "-", "_", "-", ".", "-")
+	return replacer.Replace(strings.ToLower(value))
+}
+
+func titleize(value string) string {
+	value = strings.ReplaceAll(value, "/", " ")
+	value = strings.ReplaceAll(value, "_", " ")
+	parts := strings.Fields(value)
+	for i, part := range parts {
+		parts[i] = strings.ToUpper(part[:1]) + part[1:]
 	}
+	return strings.Join(parts, " ")
 }

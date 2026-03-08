@@ -1,15 +1,16 @@
 {{define "home"}}
 <section class="hero">
   <div class="hero-copy fade-in delay-1">
-    <span class="eyebrow">Vibescript Site Scaffold</span>
-    <h1>The home for practical Vibescript examples.</h1>
+    <span class="eyebrow">Upstream Example Import</span>
+    <h1>Imported Vibescript examples, ready for browser execution.</h1>
     <p>
-      This site is structured around a large examples catalog today so it can evolve into a runnable playground
-      without a route or content model rewrite later.
+      The site now loads the upstream Vibescript examples corpus directly into a browser-focused catalog. The
+      runnable subset already executes through this web app, and the rest have a stable content model for future
+      browser runners.
     </p>
     <div class="hero-actions">
-      <a class="button" href="/examples">Browse launch examples</a>
-      <a class="button-secondary" href="/examples/hello-vibescript">Open the first example</a>
+      <a class="button" href="/examples">Browse imported examples</a>
+      <a class="button-secondary" href="/examples/strings-operations">Open a runnable example</a>
     </div>
   </div>
 
@@ -17,24 +18,24 @@
     <div class="stat-grid">
       <div class="stat-card">
         <strong>{{.TotalExamples}}</strong>
-        <span>seed examples</span>
+        <span>imported examples</span>
+      </div>
+      <div class="stat-card">
+        <strong>{{.RunnableExamples}}</strong>
+        <span>browser-runnable now</span>
+      </div>
+      <div class="stat-card">
+        <strong>{{.UpstreamVersion}}</strong>
+        <span>upstream import pin</span>
       </div>
       <div class="stat-card">
         <strong>chi</strong>
-        <span>router and middleware</span>
-      </div>
-      <div class="stat-card">
-        <strong>Go 1.26.1</strong>
-        <span>toolchain target</span>
-      </div>
-      <div class="stat-card">
-        <strong>Ready</strong>
-        <span>for runnable examples soon</span>
+        <span>router and API surface</span>
       </div>
     </div>
     <div class="launch-note">
-      Runnable sandboxes are the next layer. The current shape keeps example discovery, detail pages, and future run
-      surfaces aligned from the start.
+      The import path is stable now: sync upstream examples into the site, compile them against the real interpreter,
+      and expose the runnable subset through the browser without inventing a parallel content format.
     </div>
   </aside>
 </section>
@@ -43,9 +44,9 @@
   <div class="section-header">
     <div>
       <span class="eyebrow">Featured</span>
-      <h2>Start with the examples that explain the system fastest.</h2>
+      <h2>Start with the imported examples that already exercise the browser runner.</h2>
     </div>
-    <p>These first cards are curated to communicate syntax, data flow, and automation range.</p>
+    <p>These cards come straight from the upstream repo and are selected because they already expose a top-level <code>run</code>.</p>
   </div>
   <div class="card-grid">
     {{range .Featured}}
@@ -67,4 +68,3 @@
   </div>
 </section>
 {{end}}
-

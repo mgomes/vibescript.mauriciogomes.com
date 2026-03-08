@@ -3,6 +3,7 @@ package site
 import (
 	"bytes"
 	"encoding/json"
+	"errors"
 	"html/template"
 	"io/fs"
 	"net/http"
@@ -11,10 +12,12 @@ import (
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/mgomes/vibescript.mauriciogomes.com/internal/catalog"
+	"github.com/mgomes/vibescript.mauriciogomes.com/internal/runner"
 )
 
 type App struct {
 	store     *catalog.Store
+	runner    *runner.Service
 	templates *template.Template
 	static    http.Handler
 }
@@ -26,17 +29,20 @@ type page struct {
 }
 
 type viewData struct {
-	ContentTemplate string
-	Content         template.HTML
-	Page            page
-	TotalExamples   int
-	Featured        []catalog.Example
-	Examples        []catalog.Example
-	Example         catalog.Example
-	Year            int
+	ContentTemplate  string
+	Content          template.HTML
+	Page             page
+	TotalExamples    int
+	RunnableExamples int
+	Featured         []catalog.Example
+	Examples         []catalog.Example
+	Example          catalog.Example
+	UpstreamVersion  string
+	UpstreamRepoURL  string
+	Year             int
 }
 
-func New(store *catalog.Store) (http.Handler, error) {
+func New(store *catalog.Store, runService *runner.Service) (http.Handler, error) {
 	templates, err := template.ParseFS(assets, "templates/*.html")
 	if err != nil {
 		return nil, err
@@ -49,6 +55,7 @@ func New(store *catalog.Store) (http.Handler, error) {
 
 	app := &App{
 		store:     store,
+		runner:    runService,
 		templates: templates,
 		static:    http.FileServer(http.FS(staticFS)),
 	}
@@ -63,6 +70,7 @@ func New(store *catalog.Store) (http.Handler, error) {
 	router.Get("/", app.home)
 	router.Get("/healthz", app.healthz)
 	router.Handle("/static/*", http.StripPrefix("/static/", app.static))
+	router.Post("/api/examples/{slug}/run", app.runExample)
 
 	router.Route("/examples", func(r chi.Router) {
 		r.Get("/", app.examplesIndex)
@@ -79,13 +87,16 @@ func (a *App) home(w http.ResponseWriter, r *http.Request) {
 		ContentTemplate: "home",
 		Page: page{
 			Title:       "Vibescript",
-			Description: "A site for learning Vibescript through examples that will become runnable in the browser.",
+			Description: "A site for learning Vibescript through imported examples that can be executed in the browser.",
 			Section:     "home",
 		},
-		Featured:      a.store.Featured(3),
-		Examples:      a.store.All(),
-		TotalExamples: a.store.Count(),
-		Year:          time.Now().Year(),
+		Featured:         a.store.Featured(4),
+		Examples:         a.store.All(),
+		TotalExamples:    a.store.Count(),
+		RunnableExamples: a.store.RunnableCount(),
+		UpstreamVersion:  catalog.UpstreamVersion,
+		UpstreamRepoURL:  catalog.UpstreamRepoURL,
+		Year:             time.Now().Year(),
 	})
 }
 
@@ -94,12 +105,15 @@ func (a *App) examplesIndex(w http.ResponseWriter, r *http.Request) {
 		ContentTemplate: "examples",
 		Page: page{
 			Title:       "Examples",
-			Description: "A growing catalog of Vibescript examples, designed to scale into a large runnable library.",
+			Description: "A growing catalog of imported Vibescript examples, with browser execution for the runnable subset.",
 			Section:     "examples",
 		},
-		Examples:      a.store.All(),
-		TotalExamples: a.store.Count(),
-		Year:          time.Now().Year(),
+		Examples:         a.store.All(),
+		TotalExamples:    a.store.Count(),
+		RunnableExamples: a.store.RunnableCount(),
+		UpstreamVersion:  catalog.UpstreamVersion,
+		UpstreamRepoURL:  catalog.UpstreamRepoURL,
+		Year:             time.Now().Year(),
 	})
 }
 
@@ -118,16 +132,38 @@ func (a *App) exampleDetail(w http.ResponseWriter, r *http.Request) {
 			Description: example.Summary,
 			Section:     "examples",
 		},
-		Example:       example,
-		TotalExamples: a.store.Count(),
-		Year:          time.Now().Year(),
+		Example:          example,
+		TotalExamples:    a.store.Count(),
+		RunnableExamples: a.store.RunnableCount(),
+		UpstreamVersion:  catalog.UpstreamVersion,
+		UpstreamRepoURL:  catalog.UpstreamRepoURL,
+		Year:             time.Now().Year(),
 	})
 }
 
 func (a *App) healthz(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json; charset=utf-8")
-	w.WriteHeader(http.StatusOK)
-	_ = json.NewEncoder(w).Encode(map[string]string{"status": "ok"})
+	a.writeJSON(w, http.StatusOK, map[string]any{
+		"status":            "ok",
+		"examples":          a.store.Count(),
+		"runnable_examples": a.store.RunnableCount(),
+	})
+}
+
+func (a *App) runExample(w http.ResponseWriter, r *http.Request) {
+	result, err := a.runner.Run(r.Context(), chi.URLParam(r, "slug"))
+	if err != nil {
+		status := http.StatusInternalServerError
+		switch {
+		case errors.Is(err, runner.ErrExampleNotFound):
+			status = http.StatusNotFound
+		case errors.Is(err, runner.ErrExampleNotRunnable):
+			status = http.StatusConflict
+		}
+		a.writeJSON(w, status, map[string]string{"error": err.Error()})
+		return
+	}
+
+	a.writeJSON(w, http.StatusOK, map[string]any{"result": result})
 }
 
 func (a *App) notFound(w http.ResponseWriter, r *http.Request) {
@@ -138,9 +174,18 @@ func (a *App) notFound(w http.ResponseWriter, r *http.Request) {
 			Description: "The requested page does not exist.",
 			Section:     "",
 		},
-		TotalExamples: a.store.Count(),
-		Year:          time.Now().Year(),
+		TotalExamples:    a.store.Count(),
+		RunnableExamples: a.store.RunnableCount(),
+		UpstreamVersion:  catalog.UpstreamVersion,
+		UpstreamRepoURL:  catalog.UpstreamRepoURL,
+		Year:             time.Now().Year(),
 	})
+}
+
+func (a *App) writeJSON(w http.ResponseWriter, status int, payload any) {
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	w.WriteHeader(status)
+	_ = json.NewEncoder(w).Encode(payload)
 }
 
 func (a *App) render(w http.ResponseWriter, status int, data viewData) {

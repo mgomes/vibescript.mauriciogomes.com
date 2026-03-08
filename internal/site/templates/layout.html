@@ -7,6 +7,7 @@
     <title>{{.Page.Title}} | vibescript.mauriciogomes.com</title>
     <meta name="description" content="{{.Page.Description}}">
     <link rel="stylesheet" href="/static/site.css">
+    <script src="/static/site.js" defer></script>
   </head>
   <body>
     <div class="site-shell">
@@ -28,8 +29,8 @@
       {{.Content}}
 
       <footer class="site-footer">
-        <span>{{.Year}} Vibescript. Built for a deep examples library.</span>
-        <span>{{.TotalExamples}} examples seeded for launch planning.</span>
+        <span>{{.Year}} Vibescript. Synced from <a class="link-subtle" href="{{.UpstreamRepoURL}}">{{.UpstreamRepoURL}}</a>.</span>
+        <span>{{.TotalExamples}} examples imported. {{.RunnableExamples}} runnable now from {{.UpstreamVersion}}.</span>
       </footer>
     </div>
   </body>

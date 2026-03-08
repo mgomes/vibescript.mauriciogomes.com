@@ -13,6 +13,7 @@ import (
 
 	"github.com/mgomes/vibescript.mauriciogomes.com/internal/catalog"
 	"github.com/mgomes/vibescript.mauriciogomes.com/internal/config"
+	"github.com/mgomes/vibescript.mauriciogomes.com/internal/runner"
 	"github.com/mgomes/vibescript.mauriciogomes.com/internal/site"
 )
 
@@ -25,7 +26,19 @@ func main() {
 		os.Exit(1)
 	}
 
-	app, err := site.New(catalog.NewStore(catalog.SeedExamples()))
+	store, err := catalog.Load()
+	if err != nil {
+		logger.Error("load catalog", "err", err)
+		os.Exit(1)
+	}
+
+	runService, err := runner.New(store)
+	if err != nil {
+		logger.Error("build runner", "err", err)
+		os.Exit(1)
+	}
+
+	app, err := site.New(store, runService)
 	if err != nil {
 		logger.Error("build site", "err", err)
 		os.Exit(1)

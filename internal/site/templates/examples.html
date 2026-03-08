@@ -3,13 +3,13 @@
   <div class="section-header">
     <div class="catalog-copy">
       <span class="eyebrow">Examples Catalog</span>
-      <h2>Build your Vibescript mental model one focused example at a time.</h2>
+      <h2>Browse the upstream Vibescript corpus.</h2>
       <p>
-        The examples page is intentionally flat and scalable. As the catalog grows into the hundreds, it can absorb
-        search, filters, runnable sandboxes, and richer metadata without changing the page structure.
+        Every example on this page is backed by a real `.vibe` file in the imported upstream corpus. Runnable examples
+        execute via the browser today, and the non-runnable ones already have stable URLs, source pages, and metadata.
       </p>
     </div>
-    <p>{{.TotalExamples}} launch examples currently seeded.</p>
+    <p>{{.TotalExamples}} imported examples. {{.RunnableExamples}} runnable now.</p>
   </div>
 
   <div class="card-grid">
@@ -22,6 +22,7 @@
       </div>
       <h3>{{.Title}}</h3>
       <p>{{.Summary}}</p>
+      <p class="source-path">{{.SourcePath}}</p>
       <div class="tag-row">
         {{range .Tags}}
         <span class="tag">{{.}}</span>
@@ -32,4 +33,3 @@
   </div>
 </section>
 {{end}}
-
