@@ -8,7 +8,8 @@
 
 def hanoi_moves(disks, from_peg, to_peg, spare_peg)
   if disks == 0
-    []
+    moves = []
+    moves
   else
     leading = hanoi_moves(disks - 1, from_peg, spare_peg, to_peg)
     trailing = hanoi_moves(disks - 1, spare_peg, to_peg, from_peg)
