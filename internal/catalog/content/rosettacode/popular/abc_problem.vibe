@@ -1,0 +1,74 @@
+# title: ABC Problem
+# source: https://rosettacode.org/wiki/ABC_Problem
+# category: Rosetta Code Popular
+# difficulty: Intermediate
+# summary: Determine whether a word can be formed from a fixed set of two-letter blocks without reusing a block.
+# tags: popular, search, strings, greedy
+# vibe: 0.2
+
+def default_blocks
+  [
+    { id: "bo", letters: "BO" },
+    { id: "xk", letters: "XK" },
+    { id: "dq", letters: "DQ" },
+    { id: "cp", letters: "CP" },
+    { id: "na", letters: "NA" },
+    { id: "gt", letters: "GT" },
+    { id: "re", letters: "RE" },
+    { id: "tg", letters: "TG" },
+    { id: "qd", letters: "QD" },
+    { id: "fs_one", letters: "FS" },
+    { id: "jw", letters: "JW" },
+    { id: "hu", letters: "HU" },
+    { id: "vi", letters: "VI" },
+    { id: "an", letters: "AN" },
+    { id: "ob", letters: "OB" },
+    { id: "er", letters: "ER" },
+    { id: "fs_two", letters: "FS" },
+    { id: "ly", letters: "LY" },
+    { id: "pc", letters: "PC" },
+    { id: "zm", letters: "ZM" }
+  ]
+end
+
+def can_make?(word)
+  blocks = default_blocks
+  used = {}
+  letter_index = 0
+
+  while letter_index < word.length
+    letter = word.slice(letter_index).upcase
+    block_index = 0
+    matched = false
+
+    while block_index < 20
+      block = blocks[block_index]
+      if block[:letters].include?(letter) && used[block[:id]] != true
+        used[block[:id]] = true
+        matched = true
+        break
+      end
+      block_index = block_index + 1
+    end
+
+    if matched == false
+      return false
+    end
+
+    letter_index = letter_index + 1
+  end
+
+  true
+end
+
+def run
+  {
+    a: can_make?("A"),
+    bark: can_make?("BARK"),
+    book: can_make?("BOOK"),
+    treat: can_make?("TREAT"),
+    common: can_make?("COMMON"),
+    squad: can_make?("SQUAD"),
+    confuse: can_make?("CONFUSE")
+  }
+end
