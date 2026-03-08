@@ -2,47 +2,37 @@
 # source: https://rosettacode.org/wiki/Determine_if_a_string_is_squeezable
 # category: Rosetta Code
 # difficulty: Intro
-# summary: Decide whether a string contains adjacent duplicate characters that can be squeezed out.
-# tags: popular, strings, scanning, predicates
+# summary: Collapse repeated adjacent characters and compare the squeezed result with a target string.
+# tags: popular, strings, parsing, basics
 # vibe: 0.2
 
-def squeezable?(text)
-  index = 1
+def squeeze(text)
+  chars = text.split("")
+  result = ""
+  previous = nil
+  index = 0
 
-  while index < text.length
-    if text.slice(index - 1) == text.slice(index)
-      return true
+  while index < chars.size
+    char = chars[index]
+    if char != previous
+      result = result + char
+      previous = char
     end
     index = index + 1
   end
 
-  false
+  result
 end
 
-def squeeze(text)
-  if text == ""
-    return text
-  end
-
-  output = text.slice(0)
-  index = 1
-
-  while index < text.length
-    current = text.slice(index)
-    previous = text.slice(index - 1)
-    if current != previous
-      output = output + current
-    end
-    index = index + 1
-  end
-
-  output
+def squeezable?(text, target)
+  squeeze(text) == target
 end
 
 def run
   {
-    mississippi: { squeezable: squeezable?("mississippi"), squeezed: squeeze("mississippi") },
-    boots: { squeezable: squeezable?("boots"), squeezed: squeeze("boots") },
-    abc: { squeezable: squeezable?("abc"), squeezed: squeeze("abc") }
+    balloon: squeezable?("baalllloooon", "balon"),
+    mississippi: squeezable?("mississippi", "misisipi"),
+    no_change: squeezable?("vibescript", "vibescript"),
+    mismatch: squeezable?("bookkeeper", "bokeper")
   }
 end

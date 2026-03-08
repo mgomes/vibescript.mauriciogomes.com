@@ -1,0 +1,33 @@
+# title: Arrays
+# source: https://rosettacode.org/wiki/Arrays
+# category: Rosetta Code
+# difficulty: Intro
+# summary: Demonstrate basic array creation, indexing, appending, and aggregation in Vibescript.
+# tags: popular, arrays, basics, collections
+# vibe: 0.2
+
+def sum(values)
+  total = 0
+  index = 0
+
+  while index < values.size
+    total = total + values[index]
+    index = index + 1
+  end
+
+  total
+end
+
+def run
+  values = [3, 1, 4]
+  expanded = values.push(1).push(5).push(9)
+
+  {
+    original: values,
+    expanded: expanded,
+    first: expanded[0],
+    last: expanded[expanded.size - 1],
+    count: expanded.size,
+    total: sum(expanded)
+  }
+end

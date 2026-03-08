@@ -2,69 +2,55 @@
 # source: https://rosettacode.org/wiki/Abbreviations,_simple
 # category: Rosetta Code
 # difficulty: Intro
-# summary: Expand simple command abbreviations by matching unique prefixes from a small command table.
-# tags: popular, strings, matching, command-line
+# summary: Resolve simple command abbreviations by matching unique prefixes from a fixed command list.
+# tags: popular, strings, search, basics
 # vibe: 0.2
 
 def commands
   [
     "add",
-    "alter",
-    "backup",
-    "bottom",
-    "change",
-    "close",
+    "append",
     "commit",
     "copy",
     "delete",
-    "down",
-    "find",
     "insert",
-    "mark",
+    "move",
     "print",
-    "quit",
-    "restore",
-    "select",
-    "set",
-    "shift",
-    "stop",
-    "type",
-    "up"
+    "quit"
   ]
 end
 
-def resolve(token)
-  matches = []
-  wanted = token.downcase
-
-  commands.each do |command|
-    if command.start_with?(wanted)
-      matches = matches + [command]
-    end
-  end
-
-  if matches.size == 1
-    matches[0]
-  elsif matches.size == 0
-    "?"
-  else
-    matches.join("|")
-  end
-end
-
-def resolve_line(line)
-  parts = line.split(" ")
-  output = []
+def matches_for(token)
+  results = []
+  available = commands
   index = 0
-
-  while index < parts.size
-    output = output + [resolve(parts[index])]
+  while index < available.size
+    command = available[index]
+    if command.index(token.downcase) == 0
+      results = results + [command]
+    end
     index = index + 1
   end
+  results
+end
 
-  output
+def resolve(token)
+  matches = matches_for(token)
+  if matches.size == 0
+    "unknown"
+  elsif matches.size == 1
+    matches[0]
+  else
+    "ambiguous"
+  end
 end
 
 def run
-  resolve_line("riG rePEAT copies put mo rest types fup. 6 poweRin")
+  {
+    add: resolve("ad"),
+    append: resolve("app"),
+    ambiguous: resolve("c"),
+    delete: resolve("del"),
+    unknown: resolve("zoom")
+  }
 end

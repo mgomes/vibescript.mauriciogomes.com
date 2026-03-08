@@ -1,0 +1,39 @@
+# title: Middle three digits
+# source: https://rosettacode.org/wiki/Middle_three_digits
+# category: Rosetta Code
+# difficulty: Intro
+# summary: Return the middle three digits of integers that have an odd number of digits.
+# tags: popular, numbers, strings, validation
+# vibe: 0.2
+
+def substring(text, start_index, count)
+  output = ""
+  offset = 0
+
+  while offset < count && start_index + offset < text.length
+    output = output + text.slice(start_index + offset)
+    offset = offset + 1
+  end
+
+  output
+end
+
+def middle_three_digits(value)
+  digits = "" + value.abs
+
+  if digits.length < 3 || digits.length.even?
+    return nil
+  end
+
+  middle = (digits.length / 2).floor
+  substring(digits, middle - 1, 3)
+end
+
+def run
+  {
+    one_two_three: middle_three_digits(12345),
+    seven_only: middle_three_digits(7),
+    even_count: middle_three_digits(1001),
+    negative_value: middle_three_digits(-9876543)
+  }
+end

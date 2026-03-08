@@ -2,43 +2,42 @@
 # source: https://rosettacode.org/wiki/Angle_difference_between_two_bearings
 # category: Rosetta Code
 # difficulty: Intro
-# summary: Compute the smallest signed angular difference between two compass bearings.
+# summary: Compute the smallest signed turn needed to move from one bearing to another.
 # tags: popular, math, geometry, normalization
 # vibe: 0.2
 
-def normalize(degrees)
-  value = degrees
-
-  while value < 0
-    value = value + 360
+def normalize(angle)
+  while angle < 0.0
+    angle = angle + 360.0
   end
 
-  while value >= 360
-    value = value - 360
+  while angle >= 360.0
+    angle = angle - 360.0
   end
 
-  value
+  angle
 end
 
-def angle_difference(start, finish)
-  delta = normalize(finish) - normalize(start)
+def angle_difference(from_bearing, to_bearing)
+  difference = normalize(to_bearing) - normalize(from_bearing)
 
-  while delta <= -180
-    delta = delta + 360
+  while difference <= -180.0
+    difference = difference + 360.0
   end
 
-  while delta > 180
-    delta = delta - 360
+  while difference > 180.0
+    difference = difference - 360.0
   end
 
-  delta
+  difference
 end
 
 def run
   {
-    north_to_east: angle_difference(0, 90),
-    east_to_northwest: angle_difference(90, 315),
-    wrapped_positive: angle_difference(350, 10),
-    wrapped_negative: angle_difference(10, 350)
+    north_to_east: angle_difference(0.0, 90.0),
+    east_to_north: angle_difference(90.0, 0.0),
+    wrap_clockwise: angle_difference(350.0, 10.0),
+    wrap_counterclockwise: angle_difference(10.0, 350.0),
+    same_heading: angle_difference(720.0, 0.0)
   }
 end
