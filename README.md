@@ -5,10 +5,10 @@ The Vibescript site. It is a Go `chi` app that imports the upstream Vibescript e
 ## Run
 
 ```bash
-go run .
+just run
 ```
 
-The server listens on `:8080` by default. Override it with `HOST`, `PORT`, and `SHUTDOWN_TIMEOUT`.
+The server listens on `0.0.0.0:8080` by default. Override it with `HOST`, `PORT`, and `SHUTDOWN_TIMEOUT`.
 
 ## Current shape
 

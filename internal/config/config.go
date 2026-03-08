@@ -14,7 +14,7 @@ type Config struct {
 
 func Load() (Config, error) {
 	cfg := Config{
-		Host:            getenv("HOST", ""),
+		Host:            getenv("HOST", "0.0.0.0"),
 		Port:            getenv("PORT", "8080"),
 		ShutdownTimeout: 10 * time.Second,
 	}
