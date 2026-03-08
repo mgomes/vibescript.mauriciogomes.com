@@ -1,64 +1,181 @@
 {{define "home"}}
 <section class="hero">
   <div class="hero-copy fade-in delay-1">
-    <span class="eyebrow">Vibescript Showcase</span>
-    <h1>Idiomatic Vibescript examples, runnable in the browser.</h1>
+    <span class="eyebrow">Open source &middot; MIT Licensed</span>
+    <h1>An embeddable Ruby-like language for safe, AI-friendly apps in Go.</h1>
     <p>
-      The site now leads with showcase examples that lean on semantic types, enums, durations, money, templates, and
-      structured outputs. Upstream references and Rosetta-derived tasks still expand the corpus, but the featured path
-      is unapologetically Vibescript-native.
+      Vibescript is a constrained scripting environment where users express custom logic through
+      Ruby-like syntax, gradual typing, enums, duration and money primitives, and Go-style embeddability —
+      all within safe, predictable bounds.
     </p>
     <div class="hero-actions">
-      <a class="button" href="/examples">Browse all examples</a>
-      <a class="button-secondary" href="/examples/showcase-workflows-release-readiness">Open a showcase example</a>
+      <a class="button" href="/examples">Explore examples</a>
+      <a class="button-secondary" href="/examples/showcase-workflows-release-readiness">Try a live example</a>
     </div>
   </div>
 
   <aside class="hero-panel fade-in delay-2">
-    <div class="stat-grid">
-      <div class="stat-card">
-        <strong>{{.ShowcaseExamples}}</strong>
-        <span>showcase examples</span>
-      </div>
-      <div class="stat-card">
-        <strong>{{.RunnableExamples}}</strong>
-        <span>browser-runnable now</span>
-      </div>
-      <div class="stat-card">
-        <strong>{{.UpstreamVersion}}</strong>
-        <span>upstream import pin</span>
-      </div>
-      <div class="stat-card">
-        <strong>chi</strong>
-        <span>router and API surface</span>
-      </div>
+    <div class="version-badge">
+      <span class="version-label">Current version</span>
+      <span class="version-number">{{.UpstreamVersion}}</span>
     </div>
     <div class="launch-note">
-      The site uses one real <code>.vibe</code> catalog, compiles examples against the actual interpreter, and exposes
-      the runnable subset through the browser without inventing a parallel teaching format.
+      {{.TotalExamples}} examples compiled against the real interpreter. {{.RunnableExamples}} run directly in the browser.
     </div>
   </aside>
+</section>
+
+<div class="feature-grid fade-in delay-2">
+  <div class="feature-card">
+    <header>
+      <h3>Gradual typing</h3>
+      <p>Optional annotations, nullable <code>?</code>, enums, positional and keyword args, return type checks.</p>
+    </header>
+    <pre><code class="language-vibescript">def shipping_quote(speed: ShippingSpeed, subtotal: money) -> hash
+  fee = shipping_fee(speed, subtotal)
+  transit = transit_time(speed)
+
+  {
+    speed: speed.name,
+    fee: fee,
+    total: subtotal + fee,
+    transit: transit.iso8601
+  }
+end</code></pre>
+  </div>
+
+  <div class="feature-card">
+    <header>
+      <h3>Enums</h3>
+      <p>First-class enums with member access, symbol comparison, and cross-enum equality.</p>
+    </header>
+    <pre><code class="language-vibescript">enum AccountStanding
+  Current
+  Grace
+  Delinquent
+end
+
+def standing_for(overdue: duration) -> AccountStanding
+  if overdue <= 3.days
+    AccountStanding::Current
+  elsif overdue <= 15.days
+    AccountStanding::Grace
+  else
+    AccountStanding::Delinquent
+  end
+end</code></pre>
+  </div>
+
+  <div class="feature-card">
+    <header>
+      <h3>Duration &amp; money primitives</h3>
+      <p>Built-in literals, arithmetic, comparisons, and formatting for time and currency.</p>
+    </header>
+    <pre><code class="language-vibescript">def transit_time(speed: ShippingSpeed) -> duration
+  if speed == ShippingSpeed::Economy
+    5.days
+  elsif speed == ShippingSpeed::Priority
+    2.days
+  else
+    6.hours
+  end
+end
+
+def net_after_fee(cents)
+  gross = money_cents(cents, "USD")
+  fee = money("1.75 USD")
+  gross - fee
+end</code></pre>
+  </div>
+
+  <div class="feature-card">
+    <header>
+      <h3>Ruby-like syntax</h3>
+      <p>Blocks, ranges, zero-paren defs, yield, and symbol hashes — familiar and readable.</p>
+    </header>
+    <pre><code class="language-vibescript">def benchmark
+  start = Time.now
+  result = yield
+  elapsed = Time.now - start
+  { result: result, elapsed: elapsed }
+end
+
+def transform_keys(hash)
+  result = {}
+  hash.keys.each do |key|
+    new_key = yield(key)
+    result[new_key] = hash[key]
+  end
+  result
+end</code></pre>
+  </div>
+</div>
+
+<section class="philosophy fade-in delay-2">
+  <div class="philosophy-card">
+    <span class="eyebrow">Designed for AI</span>
+    <h2>Easy to read. Easy for AI to vibe code.</h2>
+    <p>
+      As vibe coding grows, many domains need to narrow what users can build. Instead of a blank canvas,
+      Vibescript offers an opinionated set of well-defined primitives that combine into predictable, safe applications.
+    </p>
+    <p>
+      Think of it less like traditional software development and more like HyperCard: flexible, but within bounds.
+      The Ruby-like syntax mirrors patterns familiar to language models, making it a natural target for AI-generated code.
+    </p>
+    <p>
+      Vibescript embeds directly into any Go application. Scripts expose functions callable from host code,
+      and the host controls exactly what capabilities each script can access.
+    </p>
+  </div>
+  <div class="philosophy-blurb">
+    <h3>Sandbox guardrails</h3>
+    <p>Defaults favor safety over throughput. Adjust per use case.</p>
+    <ul class="guardrail-list">
+      <li>
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+        <div><strong>Step quota</strong><span>Caps execution steps (default 50k) to prevent unbounded loops.</span></div>
+      </li>
+      <li>
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+        <div><strong>Recursion limit</strong><span>Bounds call depth (default 64) to prevent stack blowups.</span></div>
+      </li>
+      <li>
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+        <div><strong>Memory quota</strong><span>Limits allocations (default 64 KiB) with runtime errors instead of OOM.</span></div>
+      </li>
+      <li>
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+        <div><strong>Effects control</strong><span>Require explicit capabilities for side-effecting operations.</span></div>
+      </li>
+      <li>
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+        <div><strong>Module paths</strong><span>Only approved directories are searched by require.</span></div>
+      </li>
+      <li>
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+        <div><strong>Capability gating</strong><span>Host injects safe adapters — scripts only touch what you expose.</span></div>
+      </li>
+    </ul>
+  </div>
 </section>
 
 <section class="section-panel fade-in delay-2">
   <div class="section-header">
     <div>
       <span class="eyebrow">Featured</span>
-      <h2>Start with examples that show what idiomatic Vibescript can look like.</h2>
+      <h2>See what idiomatic Vibescript looks like.</h2>
     </div>
-    <p>These cards are selected because they run now and highlight the language-native features the site is meant to teach.</p>
+    <p>Handpicked examples that highlight the language's native features — all runnable in your browser.</p>
   </div>
   <div class="card-grid">
     {{range .Featured}}
     <a href="/examples/{{.Slug}}" class="example-card">
-      <div class="pill-row">
-        <span class="meta-pill">{{.Category}}</span>
-        <span class="meta-pill">{{.Difficulty}}</span>
-        <span class="meta-pill">{{.Stage}}</span>
-      </div>
       <h3>{{.Title}}</h3>
       <p>{{.Summary}}</p>
       <div class="tag-row">
+        <span class="tag">{{.Category}}</span>
+        <span class="tag">{{.Difficulty}}</span>
         {{range .Tags}}
         <span class="tag">{{.}}</span>
         {{end}}

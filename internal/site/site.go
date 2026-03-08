@@ -88,7 +88,7 @@ func (a *App) home(w http.ResponseWriter, r *http.Request) {
 		ContentTemplate: "home",
 		Page: page{
 			Title:       "Vibescript",
-			Description: "A site for learning Vibescript through idiomatic runnable examples, reference examples, and browser-based execution.",
+			Description: "An embeddable Ruby-like language for building safe, AI-friendly applications in Go. Explore examples and run them in the browser.",
 			Section:     "home",
 		},
 		ShowcaseExamples: a.store.TaggedCount("showcase"),
@@ -107,7 +107,7 @@ func (a *App) examplesIndex(w http.ResponseWriter, r *http.Request) {
 		ContentTemplate: "examples",
 		Page: page{
 			Title:       "Examples",
-			Description: "A growing catalog of Vibescript showcase examples, upstream references, and browser-runnable examples.",
+			Description: "Browse Vibescript examples — from idiomatic showcases to upstream references — all compiled against the real interpreter.",
 			Section:     "examples",
 		},
 		ShowcaseExamples: a.store.TaggedCount("showcase"),

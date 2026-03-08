@@ -34,7 +34,7 @@
           <strong>Source</strong>
           <span>{{.Example.SourcePath}}</span>
         </div>
-        <pre class="code-block"><code>{{.Example.Source}}</code></pre>
+        <pre class="code-block"><code class="language-vibescript">{{.Example.Source}}</code></pre>
       </div>
     </section>
 
@@ -46,7 +46,7 @@
         directly in the browser.
       </p>
       <div class="runner-actions">
-        <button class="button" type="button" data-run-button data-run-url="/api/examples/{{.Example.Slug}}/run">Run example</button>
+        <button class="button run-button" type="button" data-run-button data-run-url="/api/examples/{{.Example.Slug}}/run">Run example</button>
       </div>
       <pre class="runner-output" data-run-output>Press run to execute {{.Example.RunFunction}} from this example.</pre>
       {{else}}
