@@ -1,14 +1,20 @@
 (() => {
+  function formatDuration(us) {
+    if (us < 1000) return `${us}µs`;
+    return `${(us / 1000).toFixed(1)}ms`;
+  }
+
   function renderResult(result) {
+    const dur = formatDuration(result.duration_us);
     if (result.value === null) {
       return `${result.kind}\n\nnull`;
     }
 
     if (typeof result.value === "object") {
-      return `${result.kind} in ${result.duration_ms}ms\n\n${JSON.stringify(result.value, null, 2)}`;
+      return `${result.kind} in ${dur}\n\n${JSON.stringify(result.value, null, 2)}`;
     }
 
-    return `${result.kind} in ${result.duration_ms}ms\n\n${String(result.value)}`;
+    return `${result.kind} in ${dur}\n\n${String(result.value)}`;
   }
 
   function attachRunner() {

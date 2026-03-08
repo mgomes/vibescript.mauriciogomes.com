@@ -20,7 +20,7 @@ type Result struct {
 	Kind       string `json:"kind"`
 	Display    string `json:"display"`
 	Value      any    `json:"value"`
-	DurationMS int64  `json:"duration_ms"`
+	DurationUS int64  `json:"duration_us"`
 }
 
 type Service struct {
@@ -82,7 +82,7 @@ func (s *Service) Run(ctx context.Context, slug string) (Result, error) {
 		Kind:       value.Kind().String(),
 		Display:    value.String(),
 		Value:      exportValue(value),
-		DurationMS: time.Since(started).Milliseconds(),
+		DurationUS: time.Since(started).Microseconds(),
 	}, nil
 }
 
