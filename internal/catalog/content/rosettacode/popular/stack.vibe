@@ -20,10 +20,10 @@ end
 def peek(stack)
   items = stack[:items]
 
-  if items.size == 0
+  if items.empty?
     nil
   else
-    items[items.size - 1]
+    items[items.length - 1]
   end
 end
 
@@ -49,7 +49,7 @@ def run
     peek_before_pop: top_before_pop,
     popped: popped[:value],
     peek_after_pop: peek(stack),
-    size_after_pop: stack[:items].size,
+    size_after_pop: stack[:items].length,
     contents: stack[:items]
   }
 end

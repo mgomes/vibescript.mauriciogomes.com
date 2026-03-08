@@ -4,3 +4,5 @@ github.com/mgomes/vibescript v0.21.0 h1:SVm8VeJExcYDHGhhQ/79coTPXCub98gO4ky06Io9
 github.com/mgomes/vibescript v0.21.0/go.mod h1:1iEfyxu4dau77vKWmqNpXjZ0oFy6YcX5oDWOuI6C1lI=
 github.com/mgomes/vibescript v0.21.1 h1:Kbe82rXKO8OZb9JJiv/JAydifpwAiEZBVoN+sBT4duE=
 github.com/mgomes/vibescript v0.21.1/go.mod h1:1iEfyxu4dau77vKWmqNpXjZ0oFy6YcX5oDWOuI6C1lI=
+github.com/mgomes/vibescript v0.26.2 h1:OKbyydXiABOr0qs43AV54Dn2QE4WP6Gy8/1RrXTSBCE=
+github.com/mgomes/vibescript v0.26.2/go.mod h1:1iEfyxu4dau77vKWmqNpXjZ0oFy6YcX5oDWOuI6C1lI=

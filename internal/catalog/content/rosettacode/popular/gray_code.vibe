@@ -31,15 +31,12 @@ def prefix_all(values, prefix)
 end
 
 def gray_code(bits)
-  codes = [""]
-  current_bits = 0
-
-  while current_bits < bits
-    codes = prefix_all(codes, "0") + prefix_all(reverse_values(codes), "1")
-    current_bits = current_bits + 1
+  if bits == 0
+    [""]
+  else
+    previous = gray_code(bits - 1)
+    prefix_all(previous, "0") + prefix_all(reverse_values(previous), "1")
   end
-
-  codes
 end
 
 def run

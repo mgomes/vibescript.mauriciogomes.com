@@ -14,17 +14,8 @@ def range_extraction(values)
     start_value = values[index]
     finish_value = start_value
 
-    while true
-      next_index = index + 1
-      if next_index >= values.size
-        break
-      end
-
-      if values[next_index] != values[index] + 1
-        break
-      end
-
-      index = next_index
+    while index + 1 < values.length && values[index + 1] == values[index] + 1
+      index = index + 1
       finish_value = values[index]
     end
 

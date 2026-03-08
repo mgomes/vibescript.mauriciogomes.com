@@ -12,14 +12,14 @@ def prime_decomposition(number)
 
   while remaining % 2 == 0
     factors = factors.push(2)
-    remaining = (remaining / 2).floor
+    remaining = remaining / 2
   end
 
   candidate = 3
   while candidate * candidate <= remaining
     while remaining % candidate == 0
       factors = factors.push(candidate)
-      remaining = (remaining / candidate).floor
+      remaining = remaining / candidate
     end
     candidate = candidate + 2
   end

@@ -29,7 +29,7 @@ def middle_three_digits(value)
     return "even digit count"
   end
 
-  middle = ((digits.length - 3) / 2).floor
+  middle = (digits.length - 3) / 2
   substring(digits, middle, 3)
 end
 

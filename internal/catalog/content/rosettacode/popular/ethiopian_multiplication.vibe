@@ -15,7 +15,7 @@ def ethiopian_multiply(left, right)
     if a.odd?
       total = total + b
     end
-    a = (a / 2).floor
+    a = a / 2
     b = b * 2
   end
 

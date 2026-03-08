@@ -10,20 +10,10 @@ def gcd(a, b)
   left = a.abs
   right = b.abs
 
-  if left == 0
-    return right
-  end
-
-  if right == 0
-    return left
-  end
-
-  while left != right
-    if left > right
-      left = left - right
-    else
-      right = right - left
-    end
+  while right != 0
+    remainder = left % right
+    left = right
+    right = remainder
   end
 
   left

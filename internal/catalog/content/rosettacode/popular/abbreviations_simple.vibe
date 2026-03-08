@@ -36,7 +36,7 @@ end
 
 def resolve(token)
   matches = matches_for(token)
-  if matches.size == 0
+  if matches.empty?
     "unknown"
   elsif matches.size == 1
     matches[0]

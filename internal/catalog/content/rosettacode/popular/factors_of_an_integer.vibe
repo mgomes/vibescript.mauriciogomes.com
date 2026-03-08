@@ -14,7 +14,7 @@ def factors_of(number)
   while candidate * candidate <= number
     if number % candidate == 0
       lower = lower.push(candidate)
-      other = (number / candidate).floor
+      other = number / candidate
       if other != candidate
         upper = [other] + upper
       end

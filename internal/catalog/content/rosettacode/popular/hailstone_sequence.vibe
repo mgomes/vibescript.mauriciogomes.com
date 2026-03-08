@@ -14,7 +14,7 @@ def hailstone(value)
     if current == 1
       return sequence
     elsif current.even?
-      current = (current / 2).floor
+      current = current / 2
     else
       current = (current * 3) + 1
     end

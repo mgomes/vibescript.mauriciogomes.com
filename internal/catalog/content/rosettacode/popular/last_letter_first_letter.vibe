@@ -21,7 +21,7 @@ def remove_at(values, skip_index)
 end
 
 def chain_words(current, remaining, chain)
-  if remaining.size == 0
+  if remaining.empty?
     return chain
   end
 

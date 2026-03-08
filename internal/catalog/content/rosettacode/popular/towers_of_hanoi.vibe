@@ -6,18 +6,12 @@
 # tags: popular, recursion, classic-cs, puzzles
 # vibe: 0.2
 
-def collect_moves(moves, disks, from_peg, to_peg, spare_peg)
-  if disks == 0
-    moves
-  else
-    moves = collect_moves(moves, disks - 1, from_peg, spare_peg, to_peg)
-    moves = moves + [{ disk: disks, from: from_peg, to: to_peg }]
-    collect_moves(moves, disks - 1, spare_peg, to_peg, from_peg)
-  end
-end
-
 def hanoi_moves(disks, from_peg, to_peg, spare_peg)
-  collect_moves([], disks, from_peg, to_peg, spare_peg)
+  if disks == 0
+    []
+  else
+    hanoi_moves(disks - 1, from_peg, spare_peg, to_peg) + [{ disk: disks, from: from_peg, to: to_peg }] + hanoi_moves(disks - 1, spare_peg, to_peg, from_peg)
+  end
 end
 
 def run

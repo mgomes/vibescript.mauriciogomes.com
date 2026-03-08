@@ -7,7 +7,7 @@
 # vibe: 0.2
 
 def next_row(previous)
-  if previous.size == 0
+  if previous.empty?
     return [1]
   end
 

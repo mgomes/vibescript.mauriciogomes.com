@@ -57,7 +57,7 @@ def under_hundred(number)
   elsif number < 20
     teens[number - 10]
   else
-    tens = tens_names[(number / 10).floor]
+    tens = tens_names[number / 10]
     remainder = number % 10
     if remainder == 0
       tens
@@ -68,7 +68,7 @@ def under_hundred(number)
 end
 
 def under_thousand(number)
-  hundreds = (number / 100).floor
+  hundreds = number / 100
   remainder = number % 100
 
   if hundreds == 0
@@ -87,7 +87,7 @@ def number_name(number)
   if number < 1000
     under_thousand(number)
   else
-    thousands = (number / 1000).floor
+    thousands = number / 1000
     remainder = number % 1000
     text = under_thousand(thousands) + " thousand"
     if remainder == 0

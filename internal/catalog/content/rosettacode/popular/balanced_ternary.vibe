@@ -35,7 +35,7 @@ def positive_balanced_ternary(value)
 
   while current > 0
     remainder = current % 3
-    current = (current / 3).floor
+    current = current / 3
 
     if remainder == 0
       digits = "0" + digits
