@@ -1,0 +1,54 @@
+# title: Taxicab numbers
+# source: https://rosettacode.org/wiki/Taxicab_numbers
+# category: Rosetta Code
+# difficulty: Medium
+# summary: Search a small cube-sum table for numbers that can be written as two sums of two cubes.
+# tags: popular, math, search, cubes
+# vibe: 0.2
+
+def cube(value)
+  value * value * value
+end
+
+def sum_key(left, right)
+  "" + (cube(left) + cube(right))
+end
+
+def taxicab_numbers(limit)
+  groups = {}
+  order = []
+  left = 1
+
+  while left <= limit
+    right = left
+    while right <= limit
+      key = sum_key(left, right)
+      if groups[key] == nil
+        groups[key] = []
+        order = order.push(key)
+      end
+      groups[key] = groups[key].push([left, right])
+      right = right + 1
+    end
+    left = left + 1
+  end
+
+  rows = []
+  index = 0
+  while index < order.length
+    key = order[index]
+    if groups[key].length > 1
+      rows = rows.push({
+        value: key,
+        decompositions: groups[key]
+      })
+    end
+    index = index + 1
+  end
+
+  rows
+end
+
+def run
+  taxicab_numbers(12).first(2)
+end
