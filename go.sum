@@ -2,3 +2,5 @@ github.com/go-chi/chi/v5 v5.2.5 h1:Eg4myHZBjyvJmAFjFvWgrqDTXFyOzjj7YIm3L3mu6Ug=
 github.com/go-chi/chi/v5 v5.2.5/go.mod h1:X7Gx4mteadT3eDOMTsXzmI4/rwUpOwBHLpAfupzFJP0=
 github.com/mgomes/vibescript v0.21.0 h1:SVm8VeJExcYDHGhhQ/79coTPXCub98gO4ky06Io9cYw=
 github.com/mgomes/vibescript v0.21.0/go.mod h1:1iEfyxu4dau77vKWmqNpXjZ0oFy6YcX5oDWOuI6C1lI=
+github.com/mgomes/vibescript v0.21.1 h1:Kbe82rXKO8OZb9JJiv/JAydifpwAiEZBVoN+sBT4duE=
+github.com/mgomes/vibescript v0.21.1/go.mod h1:1iEfyxu4dau77vKWmqNpXjZ0oFy6YcX5oDWOuI6C1lI=

@@ -1,6 +1,10 @@
 package catalog
 
-import "testing"
+import (
+	"testing"
+
+	"github.com/mgomes/vibescript/vibes"
+)
 
 func TestLoad(t *testing.T) {
 	store, err := Load()
@@ -27,5 +31,19 @@ func TestLoad(t *testing.T) {
 
 	if example.RunFunction != "run" {
 		t.Fatalf("expected run entrypoint, got %q", example.RunFunction)
+	}
+}
+
+func TestAllImportedExamplesCompile(t *testing.T) {
+	store, err := Load()
+	if err != nil {
+		t.Fatalf("load catalog: %v", err)
+	}
+
+	engine := vibes.MustNewEngine(vibes.Config{})
+	for _, example := range store.All() {
+		if _, err := engine.Compile(example.Source); err != nil {
+			t.Fatalf("compile %s: %v", example.SourcePath, err)
+		}
 	}
 }
