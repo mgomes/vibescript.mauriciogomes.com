@@ -1,0 +1,63 @@
+# title: Lychrel numbers
+# source: https://rosettacode.org/wiki/Lychrel_numbers
+# category: Rosetta Code
+# difficulty: Intro
+# summary: Check sample numbers for palindrome formation under the reverse-and-add process.
+# tags: popular, numbers, iteration, palindromes
+# vibe: 0.2
+
+def reverse_text(text)
+  output = ""
+  index = text.length - 1
+
+  while index >= 0
+    output = output + text.slice(index)
+    index = index - 1
+  end
+
+  output
+end
+
+def digit_value(char)
+  "0123456789".index(char)
+end
+
+def to_int(text)
+  value = 0
+  index = 0
+
+  while index < text.length
+    value = (value * 10) + digit_value(text.slice(index))
+    index = index + 1
+  end
+
+  value
+end
+
+def palindrome?(number)
+  text = "" + number
+  text == reverse_text(text)
+end
+
+def lychrel_candidate?(number, limit)
+  current = number
+  iteration = 0
+
+  while iteration < limit
+    current = current + to_int(reverse_text("" + current))
+    if palindrome?(current)
+      return false
+    end
+    iteration = iteration + 1
+  end
+
+  true
+end
+
+def run
+  [
+    { value: 56, lychrel_candidate: lychrel_candidate?(56, 30) },
+    { value: 57, lychrel_candidate: lychrel_candidate?(57, 30) },
+    { value: 196, lychrel_candidate: lychrel_candidate?(196, 30) }
+  ]
+end
