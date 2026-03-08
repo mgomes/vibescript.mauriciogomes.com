@@ -1,24 +1,24 @@
 {{define "home"}}
 <section class="hero">
   <div class="hero-copy fade-in delay-1">
-    <span class="eyebrow">Imported Example Corpus</span>
-    <h1>Imported Vibescript examples, ready for browser execution.</h1>
+    <span class="eyebrow">Vibescript Showcase</span>
+    <h1>Idiomatic Vibescript examples, runnable in the browser.</h1>
     <p>
-      The site now loads both the upstream Vibescript examples and Rosetta Code imports into one browser-focused
-      catalog. The runnable subset already executes through this web app, and the rest have a stable content model
-      for future browser runners.
+      The site now leads with showcase examples that lean on semantic types, enums, durations, money, templates, and
+      structured outputs. Upstream references and Rosetta-derived tasks still expand the corpus, but the featured path
+      is unapologetically Vibescript-native.
     </p>
     <div class="hero-actions">
-      <a class="button" href="/examples">Browse imported examples</a>
-      <a class="button-secondary" href="/examples/strings-operations">Open a runnable example</a>
+      <a class="button" href="/examples">Browse all examples</a>
+      <a class="button-secondary" href="/examples/showcase-workflows-release-readiness">Open a showcase example</a>
     </div>
   </div>
 
   <aside class="hero-panel fade-in delay-2">
     <div class="stat-grid">
       <div class="stat-card">
-        <strong>{{.TotalExamples}}</strong>
-        <span>imported examples</span>
+        <strong>{{.ShowcaseExamples}}</strong>
+        <span>showcase examples</span>
       </div>
       <div class="stat-card">
         <strong>{{.RunnableExamples}}</strong>
@@ -34,8 +34,8 @@
       </div>
     </div>
     <div class="launch-note">
-      The import path is stable now: sync multiple source buckets into the site, compile them against the real
-      interpreter, and expose the runnable subset through the browser without inventing a parallel content format.
+      The site uses one real <code>.vibe</code> catalog, compiles examples against the actual interpreter, and exposes
+      the runnable subset through the browser without inventing a parallel teaching format.
     </div>
   </aside>
 </section>
@@ -44,9 +44,9 @@
   <div class="section-header">
     <div>
       <span class="eyebrow">Featured</span>
-      <h2>Start with the imported examples that already exercise the browser runner.</h2>
+      <h2>Start with examples that show what idiomatic Vibescript can look like.</h2>
     </div>
-    <p>These cards are selected because they already expose a top-level <code>run</code> and demonstrate the current browser runner well.</p>
+    <p>These cards are selected because they run now and highlight the language-native features the site is meant to teach.</p>
   </div>
   <div class="card-grid">
     {{range .Featured}}

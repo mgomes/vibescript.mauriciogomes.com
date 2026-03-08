@@ -32,6 +32,7 @@ type viewData struct {
 	ContentTemplate  string
 	Content          template.HTML
 	Page             page
+	ShowcaseExamples int
 	TotalExamples    int
 	RunnableExamples int
 	Featured         []catalog.Example
@@ -87,9 +88,10 @@ func (a *App) home(w http.ResponseWriter, r *http.Request) {
 		ContentTemplate: "home",
 		Page: page{
 			Title:       "Vibescript",
-			Description: "A site for learning Vibescript through imported examples that can be executed in the browser.",
+			Description: "A site for learning Vibescript through idiomatic runnable examples, reference examples, and browser-based execution.",
 			Section:     "home",
 		},
+		ShowcaseExamples: a.store.TaggedCount("showcase"),
 		Featured:         a.store.Featured(4),
 		Examples:         a.store.All(),
 		TotalExamples:    a.store.Count(),
@@ -105,9 +107,10 @@ func (a *App) examplesIndex(w http.ResponseWriter, r *http.Request) {
 		ContentTemplate: "examples",
 		Page: page{
 			Title:       "Examples",
-			Description: "A growing catalog of imported Vibescript examples, with browser execution for the runnable subset.",
+			Description: "A growing catalog of Vibescript showcase examples, upstream references, and browser-runnable examples.",
 			Section:     "examples",
 		},
+		ShowcaseExamples: a.store.TaggedCount("showcase"),
 		Examples:         a.store.All(),
 		TotalExamples:    a.store.Count(),
 		RunnableExamples: a.store.RunnableCount(),
@@ -132,6 +135,7 @@ func (a *App) exampleDetail(w http.ResponseWriter, r *http.Request) {
 			Description: example.Summary,
 			Section:     "examples",
 		},
+		ShowcaseExamples: a.store.TaggedCount("showcase"),
 		Example:          example,
 		TotalExamples:    a.store.Count(),
 		RunnableExamples: a.store.RunnableCount(),
@@ -174,6 +178,7 @@ func (a *App) notFound(w http.ResponseWriter, r *http.Request) {
 			Description: "The requested page does not exist.",
 			Section:     "",
 		},
+		ShowcaseExamples: a.store.TaggedCount("showcase"),
 		TotalExamples:    a.store.Count(),
 		RunnableExamples: a.store.RunnableCount(),
 		UpstreamVersion:  catalog.UpstreamVersion,

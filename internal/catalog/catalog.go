@@ -6,6 +6,7 @@ import (
 	"path"
 	"regexp"
 	"sort"
+	"strconv"
 	"strings"
 )
 
@@ -15,10 +16,10 @@ const (
 )
 
 var featuredExamples = map[string]int{
-	"control_flow/case_when.vibe": 0,
-	"strings/operations.vibe":     1,
-	"stdlib/core_utilities.vibe":  2,
-	"enums/operations.vibe":       3,
+	"control_flow/case_when.vibe": 100,
+	"strings/operations.vibe":     101,
+	"stdlib/core_utilities.vibe":  102,
+	"enums/operations.vibe":       103,
 }
 
 var runEntryPointPattern = regexp.MustCompile(`(?m)^def run\b`)
@@ -38,6 +39,7 @@ type Example struct {
 	SourcePath  string
 	SourceURL   string
 	RunFunction string
+	FeatureRank int
 }
 
 type Store struct {
@@ -115,7 +117,15 @@ func Load() (*Store, error) {
 	}
 
 	sort.Slice(store.featured, func(i, j int) bool {
-		return featuredExamples[store.featured[i].SourcePath] < featuredExamples[store.featured[j].SourcePath]
+		left := store.featured[i]
+		right := store.featured[j]
+		if left.FeatureRank != right.FeatureRank {
+			return left.FeatureRank < right.FeatureRank
+		}
+		if left.Category != right.Category {
+			return left.Category < right.Category
+		}
+		return left.Title < right.Title
 	})
 
 	return store, nil
@@ -129,6 +139,8 @@ func loadExample(filePath string, source []byte) (Example, bool, error) {
 	}
 
 	switch parts[0] {
+	case "showcase":
+		return loadShowcaseExample(strings.Join(parts[1:], "/"), source), true, nil
 	case "upstream":
 		return loadUpstreamExample(strings.Join(parts[1:], "/"), source), true, nil
 	case "rosettacode":
@@ -180,6 +192,7 @@ func loadUpstreamExample(relativePath string, source []byte) Example {
 		SourcePath:  relativePath,
 		SourceURL:   fmt.Sprintf("%s/blob/%s/examples/%s", UpstreamRepoURL, UpstreamVersion, relativePath),
 		RunFunction: runFunction,
+		FeatureRank: featuredExamples[relativePath],
 	}
 }
 
@@ -243,6 +256,12 @@ func loadRosettaCodeExample(relativePath string, source []byte) Example {
 		runFunction = "run"
 	}
 
+	featured := metadata["featured"] == "true"
+	featureRank := 0
+	if featured {
+		featureRank = parseFeatureRank(metadata["feature_rank"], 500)
+	}
+
 	return Example{
 		Slug:        "rosettacode-" + slugPart(strings.TrimSuffix(relativePath, ".vibe")),
 		Title:       title,
@@ -251,13 +270,90 @@ func loadRosettaCodeExample(relativePath string, source []byte) Example {
 		Category:    category,
 		Difficulty:  difficulty,
 		Stage:       stage,
-		Featured:    metadata["featured"] == "true",
+		Featured:    featured,
 		Runnable:    runnable,
 		Tags:        dedupe(tags),
 		Source:      string(source),
 		SourcePath:  "rosettacode/" + relativePath,
 		SourceURL:   sourceURL,
 		RunFunction: runFunction,
+		FeatureRank: featureRank,
+	}
+}
+
+func loadShowcaseExample(relativePath string, source []byte) Example {
+	metadata := parseMetadata(string(source))
+	titleKey := strings.TrimSuffix(path.Base(relativePath), ".vibe")
+	title := metadata["title"]
+	if title == "" {
+		title = titleize(titleKey)
+	}
+
+	category := metadata["category"]
+	if category == "" {
+		category = "Vibescript Showcase"
+	}
+
+	difficulty := metadata["difficulty"]
+	if difficulty == "" {
+		difficulty = "Showcase"
+	}
+
+	runnable := runEntryPointPattern.Match(source)
+	stage := metadata["stage"]
+	if stage == "" {
+		if runnable {
+			stage = "Showcase"
+		} else {
+			stage = "Draft"
+		}
+	}
+
+	summary := metadata["summary"]
+	if summary == "" {
+		summary = fmt.Sprintf("An idiomatic Vibescript showcase example for %q.", title)
+	}
+
+	description := metadata["description"]
+	if description == "" {
+		description = "This example is written to demonstrate idiomatic Vibescript with semantic types, typed signatures, and structured outputs."
+	}
+
+	tags := []string{"showcase", "idiomatic-vibescript"}
+	if extra := splitMetadataList(metadata["tags"]); len(extra) > 0 {
+		tags = append(tags, extra...)
+	}
+	if runnable {
+		tags = append(tags, "browser-runner")
+	}
+
+	runFunction := ""
+	if runnable {
+		runFunction = "run"
+	}
+
+	featured := metadata["featured"] == "true"
+	featureRank := 0
+	if featured {
+		featureRank = parseFeatureRank(metadata["feature_rank"], 0)
+	}
+
+	return Example{
+		Slug:        "showcase-" + slugPart(strings.TrimSuffix(relativePath, ".vibe")),
+		Title:       title,
+		Summary:     summary,
+		Description: description,
+		Category:    category,
+		Difficulty:  difficulty,
+		Stage:       stage,
+		Featured:    featured,
+		Runnable:    runnable,
+		Tags:        dedupe(tags),
+		Source:      string(source),
+		SourcePath:  "showcase/" + relativePath,
+		SourceURL:   metadata["source"],
+		RunFunction: runFunction,
+		FeatureRank: featureRank,
 	}
 }
 
@@ -326,6 +422,19 @@ func (s *Store) RunnableCount() int {
 	return s.runnableCount
 }
 
+func (s *Store) TaggedCount(tag string) int {
+	count := 0
+	for _, example := range s.examples {
+		for _, current := range example.Tags {
+			if current == tag {
+				count++
+				break
+			}
+		}
+	}
+	return count
+}
+
 func isFeatured(relativePath string) bool {
 	_, ok := featuredExamples[relativePath]
 	return ok
@@ -357,4 +466,17 @@ func dedupe(values []string) []string {
 		out = append(out, value)
 	}
 	return out
+}
+
+func parseFeatureRank(value string, fallback int) int {
+	if strings.TrimSpace(value) == "" {
+		return fallback
+	}
+
+	rank, err := strconv.Atoi(strings.TrimSpace(value))
+	if err != nil {
+		return fallback
+	}
+
+	return rank
 }

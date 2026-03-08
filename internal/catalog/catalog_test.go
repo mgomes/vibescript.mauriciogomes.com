@@ -41,6 +41,15 @@ func TestLoad(t *testing.T) {
 	if !rosettaExample.Runnable {
 		t.Fatalf("expected rosetta example to be runnable")
 	}
+
+	showcaseExample, ok := store.BySlug("showcase-workflows-release-readiness")
+	if !ok {
+		t.Fatalf("expected showcase-workflows-release-readiness to be present")
+	}
+
+	if !showcaseExample.Runnable {
+		t.Fatalf("expected showcase example to be runnable")
+	}
 }
 
 func TestAllImportedExamplesCompile(t *testing.T) {

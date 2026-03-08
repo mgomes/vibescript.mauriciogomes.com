@@ -23,11 +23,11 @@ func TestHomePageRendersFeaturedExamples(t *testing.T) {
 	}
 
 	body := recorder.Body.String()
-	if !strings.Contains(body, "Imported Vibescript examples") {
+	if !strings.Contains(body, "Idiomatic Vibescript examples, runnable in the browser") {
 		t.Fatalf("expected home headline, got %q", body)
 	}
 
-	if !strings.Contains(body, "Case When") {
+	if !strings.Contains(body, "Release readiness") {
 		t.Fatalf("expected featured example title, got %q", body)
 	}
 }
@@ -45,7 +45,7 @@ func TestExamplesPageRendersCatalog(t *testing.T) {
 	}
 
 	body := recorder.Body.String()
-	if !strings.Contains(body, "Browse the imported Vibescript and Rosetta Code corpus") {
+	if !strings.Contains(body, "Browse the Vibescript showcase, references, and seed corpus") {
 		t.Fatalf("expected catalog intro, got %q", body)
 	}
 

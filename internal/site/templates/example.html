@@ -20,7 +20,9 @@
       <p>{{.Example.Description}}</p>
       <div class="source-meta">
         <span class="meta-pill">{{.Example.SourcePath}}</span>
-        <a class="meta-pill link-subtle" href="{{.Example.SourceURL}}">View upstream source</a>
+        {{if .Example.SourceURL}}
+        <a class="meta-pill link-subtle" href="{{.Example.SourceURL}}">View source</a>
+        {{end}}
       </div>
       <div class="tag-row">
         {{range .Example.Tags}}
@@ -40,20 +42,20 @@
       {{if .Example.Runnable}}
       <h3>Run this example</h3>
       <p>
-        This page executes the imported upstream file through the Go-hosted Vibescript interpreter and returns the
-        result value directly in the browser.
+        This page executes the example through the Go-hosted Vibescript interpreter and returns the result value
+        directly in the browser.
       </p>
       <div class="runner-actions">
         <button class="button" type="button" data-run-button data-run-url="/api/examples/{{.Example.Slug}}/run">Run example</button>
       </div>
-      <pre class="runner-output" data-run-output>Press run to execute {{.Example.RunFunction}} from this imported example.</pre>
+      <pre class="runner-output" data-run-output>Press run to execute {{.Example.RunFunction}} from this example.</pre>
       {{else}}
       <h3>Runnable config pending</h3>
       <p>
-        This upstream example is already imported and visible, but it does not define a top-level <code>run</code>
-        entrypoint yet. It needs a browser-run contract before it can execute from this page.
+        This example is already in the catalog, but it does not define a top-level <code>run</code> entrypoint yet.
+        It needs a browser-run contract before it can execute from this page.
       </p>
-      <pre class="runner-output">This imported example does not define run yet.</pre>
+      <pre class="runner-output">This example does not define run yet.</pre>
       {{end}}
     </aside>
   </div>
