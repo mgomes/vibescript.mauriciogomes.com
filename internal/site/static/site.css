@@ -665,6 +665,10 @@ a:hover {
     flex-direction: column;
   }
 
+  .detail-grid .runner-panel {
+    order: -1;
+  }
+
   .site-header,
   .section-header,
   .site-footer {
