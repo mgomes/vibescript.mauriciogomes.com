@@ -477,42 +477,44 @@ a:hover {
   padding: 2rem;
 }
 
-.detail-hero {
+.detail-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1.5rem;
   padding-bottom: 1.5rem;
   margin-bottom: 1.5rem;
   border-bottom: 1px solid var(--line);
 }
 
+.detail-header h1 {
+  margin: 0.3rem 0 0.5rem;
+  font-size: clamp(1.5rem, 3vw, 2.2rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.detail-summary {
+  margin: 0 0 0.75rem;
+}
+
+.runner-compact {
+  flex-shrink: 0;
+  padding-top: 1.5rem;
+}
+
+.runner-compact .run-button {
+  width: auto;
+  white-space: nowrap;
+}
+
 .detail-grid {
   display: grid;
-  grid-template-columns: minmax(0, 1.4fr) minmax(260px, 0.8fr);
+  grid-template-columns: minmax(0, 1.4fr) minmax(260px, 0.6fr);
   gap: 1.5rem;
 }
 
-.detail-body,
-.note-card {
-  padding: 1.5rem;
-}
-
-.note-card {
-  align-self: start;
-}
-
-.note-card h3 {
-  margin-top: 0;
-  margin-bottom: 0.75rem;
-  font-size: 1.3rem;
-}
-
-.source-meta {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.6rem;
-  margin: 1.25rem 0;
-}
-
 .code-panel {
-  margin-top: 1.5rem;
   border: 1px solid var(--line);
   border-radius: var(--radius-md);
   overflow: hidden;
@@ -525,10 +527,10 @@ a:hover {
   justify-content: space-between;
   gap: 0.75rem;
   align-items: center;
-  padding: 1rem 1.25rem;
+  padding: 0.75rem 1.25rem;
   border-bottom: 1px solid var(--code-header-border);
   background: var(--code-header-bg);
-  font-size: 0.9rem;
+  font-size: 0.85rem;
 }
 
 .code-block,
@@ -542,21 +544,46 @@ a:hover {
   white-space: pre-wrap;
 }
 
-.runner-card {
-  gap: 1rem;
+.runner-panel {
+  align-self: start;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  background: var(--code-bg);
 }
 
-.runner-actions {
-  display: flex;
-  gap: 0.75rem;
-  margin: 1rem 0 1.5rem;
+.runner-panel-header {
+  padding: 0.75rem 1.25rem;
+  border-bottom: 1px solid var(--code-header-border);
+  background: var(--code-header-bg);
+  font-size: 0.85rem;
+  font-weight: 600;
 }
 
 .runner-output {
-  min-height: 220px;
-  border-radius: var(--radius-md);
+  min-height: 180px;
   background: var(--code-bg);
   color: var(--code-text);
+}
+
+.detail-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--line);
+}
+
+.note-card {
+  padding: 1.5rem;
+  align-self: start;
+}
+
+.note-card h3 {
+  margin-top: 0;
+  margin-bottom: 0.75rem;
+  font-size: 1.3rem;
 }
 
 .site-footer {
@@ -602,6 +629,10 @@ a:hover {
   .card-grid,
   .feature-grid {
     grid-template-columns: 1fr;
+  }
+
+  .detail-header {
+    flex-direction: column;
   }
 
   .site-header,

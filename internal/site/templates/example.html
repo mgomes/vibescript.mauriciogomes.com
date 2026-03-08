@@ -1,63 +1,50 @@
 {{define "example"}}
 <article class="detail-shell fade-in">
-  <section class="detail-hero">
-    <span class="eyebrow">{{.Example.Category}}</span>
-    <h1>{{.Example.Title}}</h1>
-    <p>{{.Example.Summary}}</p>
-    <div class="detail-meta">
-      <span class="meta-pill">{{.Example.Difficulty}}</span>
-      <span class="meta-pill">{{.Example.Stage}}</span>
-      {{if .Example.Runnable}}
-      <span class="meta-pill">Runs in browser</span>
-      {{else}}
-      <span class="meta-pill">Run config pending</span>
-      {{end}}
-    </div>
-  </section>
-
-  <div class="detail-grid">
-    <section class="detail-body">
-      <p>{{.Example.Description}}</p>
-      <div class="source-meta">
-        <span class="meta-pill">{{.Example.SourcePath}}</span>
+  <header class="detail-header">
+    <div>
+      <span class="eyebrow">{{.Example.Category}}</span>
+      <h1>{{.Example.Title}}</h1>
+      <p class="detail-summary">{{.Example.Summary}}</p>
+      <div class="detail-meta">
+        <span class="meta-pill">{{.Example.Difficulty}}</span>
         {{if .Example.SourceURL}}
         <a class="meta-pill link-subtle" href="{{.Example.SourceURL}}">View source</a>
         {{end}}
       </div>
-      <div class="tag-row">
-        {{range .Example.Tags}}
-        <span class="tag">{{.}}</span>
-        {{end}}
-      </div>
-      <div class="code-panel">
-        <div class="code-header">
-          <strong>Source</strong>
-          <span>{{.Example.SourcePath}}</span>
-        </div>
-        <pre class="code-block"><code class="language-vibescript">{{.Example.Source}}</code></pre>
-      </div>
-    </section>
-
-    <aside class="note-card runner-card" data-example-runner="{{.Example.Slug}}">
+    </div>
+    <aside class="runner-compact" data-example-runner="{{.Example.Slug}}">
       {{if .Example.Runnable}}
-      <h3>Run this example</h3>
-      <p>
-        This page executes the example through the Go-hosted Vibescript interpreter and returns the result value
-        directly in the browser.
-      </p>
-      <div class="runner-actions">
-        <button class="button run-button" type="button" data-run-button data-run-url="/api/examples/{{.Example.Slug}}/run">Run example</button>
-      </div>
-      <pre class="runner-output" data-run-output>Press run to execute {{.Example.RunFunction}} from this example.</pre>
-      {{else}}
-      <h3>Runnable config pending</h3>
-      <p>
-        This example is already in the catalog, but it does not define a top-level <code>run</code> entrypoint yet.
-        It needs a browser-run contract before it can execute from this page.
-      </p>
-      <pre class="runner-output">This example does not define run yet.</pre>
+      <button class="button run-button" type="button" data-run-button data-run-url="/api/examples/{{.Example.Slug}}/run">Run example</button>
       {{end}}
     </aside>
+  </header>
+
+  <div class="detail-grid">
+    <div class="code-panel">
+      <div class="code-header">
+        <strong>Source</strong>
+        <span>{{.Example.SourcePath}}</span>
+      </div>
+      <pre class="code-block"><code class="language-vibescript">{{.Example.Source}}</code></pre>
+    </div>
+
+    <div class="runner-panel" data-example-runner="{{.Example.Slug}}">
+      {{if .Example.Runnable}}
+      <div class="runner-panel-header">Output</div>
+      <pre class="runner-output" data-run-output>Press run to execute {{.Example.RunFunction}} from this example.</pre>
+      {{else}}
+      <div class="runner-panel-header">Output</div>
+      <pre class="runner-output" data-run-output>This example does not define a run entrypoint yet.</pre>
+      {{end}}
+    </div>
   </div>
+
+  {{if .Example.Tags}}
+  <div class="detail-tags">
+    {{range .Example.Tags}}
+    <span class="tag">{{.}}</span>
+    {{end}}
+  </div>
+  {{end}}
 </article>
 {{end}}

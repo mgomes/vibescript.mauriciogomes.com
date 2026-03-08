@@ -11,9 +11,9 @@
     return `${result.kind} in ${result.duration_ms}ms\n\n${String(result.value)}`;
   }
 
-  function attachRunner(panel) {
-    const button = panel.querySelector("[data-run-button]");
-    const output = panel.querySelector("[data-run-output]");
+  function attachRunner() {
+    const button = document.querySelector("[data-run-button]");
+    const output = document.querySelector("[data-run-output]");
     if (!button || !output) {
       return;
     }
@@ -263,7 +263,7 @@
   }
 
   document.addEventListener("DOMContentLoaded", () => {
-    document.querySelectorAll("[data-example-runner]").forEach(attachRunner);
+    attachRunner();
 
     document.querySelectorAll("code.language-vibescript").forEach((el) => {
       el.innerHTML = highlightVibescript(el.textContent);
