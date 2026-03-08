@@ -1,35 +1,27 @@
 {{define "examples"}}
-<section class="section-panel fade-in">
-  <div class="section-header">
-    <div class="catalog-copy">
-      <span class="eyebrow">Examples Catalog</span>
-      <h2>Browse the Vibescript showcase, references, and seed corpus.</h2>
-      <p>
-        Every example on this page is backed by a real <code>.vibe</code> file. The catalog leads with idiomatic
-        showcase examples, then expands into upstream references and Rosetta-derived seed tasks that help deepen coverage.
-      </p>
+<div class="catalog fade-in">
+  <aside class="catalog-sidebar" data-catalog-sidebar>
+    <div class="catalog-sidebar-header">
+      <span class="eyebrow">Examples</span>
+      <h2>Browse examples</h2>
+      <p>{{.TotalExamples}} examples. {{.RunnableExamples}} runnable.</p>
     </div>
-    <p>{{.ShowcaseExamples}} showcase examples. {{.TotalExamples}} total. {{.RunnableExamples}} runnable now.</p>
-  </div>
+    <nav class="catalog-nav" data-catalog-nav></nav>
+  </aside>
 
-  <div class="card-grid">
-    {{range .Examples}}
-    <a href="/examples/{{.Slug}}" class="example-card">
-      <div class="pill-row">
-        <span class="meta-pill">{{.Category}}</span>
-        <span class="meta-pill">{{.Difficulty}}</span>
-        <span class="meta-pill">{{.Stage}}</span>
-      </div>
-      <h3>{{.Title}}</h3>
-      <p>{{.Summary}}</p>
-      <p class="source-path">{{.SourcePath}}</p>
-      <div class="tag-row">
-        {{range .Tags}}
-        <span class="tag">{{.}}</span>
-        {{end}}
-      </div>
-    </a>
-    {{end}}
+  <div class="catalog-main">
+    <div class="catalog-toolbar" data-catalog-toolbar>
+      <div class="catalog-active-filters" data-active-filters></div>
+    </div>
+    <div class="card-grid" data-catalog-grid>
+      {{range .Examples}}
+      <a href="/examples/{{.Slug}}" class="example-card" data-category="{{.Category}}" data-tags="{{range .Tags}}{{.}} {{end}}">
+        <h3>{{.Title}}</h3>
+        <p>{{.Summary}}</p>
+        <span class="card-category">{{.Category}}</span>
+      </a>
+      {{end}}
+    </div>
   </div>
-</section>
+</div>
 {{end}}
