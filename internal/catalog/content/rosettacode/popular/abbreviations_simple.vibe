@@ -1,0 +1,70 @@
+# title: Abbreviations, simple
+# source: https://rosettacode.org/wiki/Abbreviations,_simple
+# category: Rosetta Code
+# difficulty: Intro
+# summary: Expand simple command abbreviations by matching unique prefixes from a small command table.
+# tags: popular, strings, matching, command-line
+# vibe: 0.2
+
+def commands
+  [
+    "add",
+    "alter",
+    "backup",
+    "bottom",
+    "change",
+    "close",
+    "commit",
+    "copy",
+    "delete",
+    "down",
+    "find",
+    "insert",
+    "mark",
+    "print",
+    "quit",
+    "restore",
+    "select",
+    "set",
+    "shift",
+    "stop",
+    "type",
+    "up"
+  ]
+end
+
+def resolve(token)
+  matches = []
+  wanted = token.downcase
+
+  commands.each do |command|
+    if command.start_with?(wanted)
+      matches = matches + [command]
+    end
+  end
+
+  if matches.size == 1
+    matches[0]
+  elsif matches.size == 0
+    "?"
+  else
+    matches.join("|")
+  end
+end
+
+def resolve_line(line)
+  parts = line.split(" ")
+  output = []
+  index = 0
+
+  while index < parts.size
+    output = output + [resolve(parts[index])]
+    index = index + 1
+  end
+
+  output
+end
+
+def run
+  resolve_line("riG rePEAT copies put mo rest types fup. 6 poweRin")
+end

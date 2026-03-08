@@ -1,0 +1,44 @@
+# title: Angle difference between two bearings
+# source: https://rosettacode.org/wiki/Angle_difference_between_two_bearings
+# category: Rosetta Code
+# difficulty: Intro
+# summary: Compute the smallest signed angular difference between two compass bearings.
+# tags: popular, math, geometry, normalization
+# vibe: 0.2
+
+def normalize(degrees)
+  value = degrees
+
+  while value < 0
+    value = value + 360
+  end
+
+  while value >= 360
+    value = value - 360
+  end
+
+  value
+end
+
+def angle_difference(start, finish)
+  delta = normalize(finish) - normalize(start)
+
+  while delta <= -180
+    delta = delta + 360
+  end
+
+  while delta > 180
+    delta = delta - 360
+  end
+
+  delta
+end
+
+def run
+  {
+    north_to_east: angle_difference(0, 90),
+    east_to_northwest: angle_difference(90, 315),
+    wrapped_positive: angle_difference(350, 10),
+    wrapped_negative: angle_difference(10, 350)
+  }
+end

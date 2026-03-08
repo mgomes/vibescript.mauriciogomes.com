@@ -1,0 +1,38 @@
+# title: I before E except after C
+# source: https://rosettacode.org/wiki/I_before_E_except_after_C
+# category: Rosetta Code
+# difficulty: Intro
+# summary: Check sample words against the classic English spelling heuristic and report whether each word follows it.
+# tags: popular, strings, heuristics, scanning
+# vibe: 0.2
+
+def follows_rule?(word)
+  text = word.downcase
+  index = 0
+
+  while index < text.length - 1
+    pair = text.slice(index, index + 2)
+    if pair == "ie" && (index == 0 || text.slice(index - 1) != "c")
+      return true
+    end
+    if pair == "ei" && index > 0 && text.slice(index - 1) == "c"
+      return true
+    end
+    if pair == "ie" || pair == "ei"
+      return false
+    end
+    index = index + 1
+  end
+
+  true
+end
+
+def run
+  {
+    believe: follows_rule?("believe"),
+    ceiling: follows_rule?("ceiling"),
+    science: follows_rule?("science"),
+    weird: follows_rule?("weird"),
+    receipt: follows_rule?("receipt")
+  }
+end
