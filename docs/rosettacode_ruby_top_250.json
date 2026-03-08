@@ -1,0 +1,1258 @@
+{
+  "source": "https://rosettacode.org/wiki/Category:Ruby",
+  "selection_heuristic": "Top Ruby-category tasks after side-effect-heavy keyword filtering, ranked by Rosetta Code page length as a popularity proxy.",
+  "total_ruby_tasks": 1254,
+  "candidate_tasks": 1001,
+  "tasks": [
+    {
+      "title": "Sieve of Eratosthenes",
+      "length": 866596,
+      "url": "https://rosettacode.org/wiki/Sieve_of_Eratosthenes"
+    },
+    {
+      "title": "2048",
+      "length": 590178,
+      "url": "https://rosettacode.org/wiki/2048"
+    },
+    {
+      "title": "Mandelbrot set",
+      "length": 581679,
+      "url": "https://rosettacode.org/wiki/Mandelbrot_set"
+    },
+    {
+      "title": "Tic-tac-toe",
+      "length": 576539,
+      "url": "https://rosettacode.org/wiki/Tic-tac-toe"
+    },
+    {
+      "title": "Sudoku",
+      "length": 568869,
+      "url": "https://rosettacode.org/wiki/Sudoku"
+    },
+    {
+      "title": "Conway's Game of Life",
+      "length": 552841,
+      "url": "https://rosettacode.org/wiki/Conway's_Game_of_Life"
+    },
+    {
+      "title": "Align columns",
+      "length": 552336,
+      "url": "https://rosettacode.org/wiki/Align_columns"
+    },
+    {
+      "title": "15 puzzle game",
+      "length": 549156,
+      "url": "https://rosettacode.org/wiki/15_puzzle_game"
+    },
+    {
+      "title": "N-queens problem",
+      "length": 518286,
+      "url": "https://rosettacode.org/wiki/N-queens_problem"
+    },
+    {
+      "title": "Calendar",
+      "length": 512134,
+      "url": "https://rosettacode.org/wiki/Calendar"
+    },
+    {
+      "title": "Hamming numbers",
+      "length": 507042,
+      "url": "https://rosettacode.org/wiki/Hamming_numbers"
+    },
+    {
+      "title": "Langton's ant",
+      "length": 489844,
+      "url": "https://rosettacode.org/wiki/Langton's_ant"
+    },
+    {
+      "title": "Fibonacci sequence",
+      "length": 489068,
+      "url": "https://rosettacode.org/wiki/Fibonacci_sequence"
+    },
+    {
+      "title": "Universal Turing machine",
+      "length": 480236,
+      "url": "https://rosettacode.org/wiki/Universal_Turing_machine"
+    },
+    {
+      "title": "Knight's tour",
+      "length": 469083,
+      "url": "https://rosettacode.org/wiki/Knight's_tour"
+    },
+    {
+      "title": "Abbreviations, automatic",
+      "length": 463641,
+      "url": "https://rosettacode.org/wiki/Abbreviations,_automatic"
+    },
+    {
+      "title": "100 doors",
+      "length": 458641,
+      "url": "https://rosettacode.org/wiki/100_doors"
+    },
+    {
+      "title": "99 bottles of beer",
+      "length": 453412,
+      "url": "https://rosettacode.org/wiki/99_bottles_of_beer"
+    },
+    {
+      "title": "24 game",
+      "length": 425610,
+      "url": "https://rosettacode.org/wiki/24_game"
+    },
+    {
+      "title": "Maze generation",
+      "length": 391966,
+      "url": "https://rosettacode.org/wiki/Maze_generation"
+    },
+    {
+      "title": "Zebra puzzle",
+      "length": 383488,
+      "url": "https://rosettacode.org/wiki/Zebra_puzzle"
+    },
+    {
+      "title": "Ulam spiral (for primes)",
+      "length": 382790,
+      "url": "https://rosettacode.org/wiki/Ulam_spiral_(for_primes)"
+    },
+    {
+      "title": "Isqrt (integer square root) of X",
+      "length": 378612,
+      "url": "https://rosettacode.org/wiki/Isqrt_(integer_square_root)_of_X"
+    },
+    {
+      "title": "Stable marriage problem",
+      "length": 374624,
+      "url": "https://rosettacode.org/wiki/Stable_marriage_problem"
+    },
+    {
+      "title": "P-value correction",
+      "length": 366591,
+      "url": "https://rosettacode.org/wiki/P-value_correction"
+    },
+    {
+      "title": "Arrays",
+      "length": 364263,
+      "url": "https://rosettacode.org/wiki/Arrays"
+    },
+    {
+      "title": "ABC problem",
+      "length": 355297,
+      "url": "https://rosettacode.org/wiki/ABC_problem"
+    },
+    {
+      "title": "FizzBuzz",
+      "length": 354768,
+      "url": "https://rosettacode.org/wiki/FizzBuzz"
+    },
+    {
+      "title": "Parse EBNF",
+      "length": 353666,
+      "url": "https://rosettacode.org/wiki/Parse_EBNF"
+    },
+    {
+      "title": "Evolutionary algorithm",
+      "length": 343891,
+      "url": "https://rosettacode.org/wiki/Evolutionary_algorithm"
+    },
+    {
+      "title": "Hailstone sequence",
+      "length": 340727,
+      "url": "https://rosettacode.org/wiki/Hailstone_sequence"
+    },
+    {
+      "title": "Tree traversal",
+      "length": 334970,
+      "url": "https://rosettacode.org/wiki/Tree_traversal"
+    },
+    {
+      "title": "Factorial",
+      "length": 326607,
+      "url": "https://rosettacode.org/wiki/Factorial"
+    },
+    {
+      "title": "Natural sorting",
+      "length": 325681,
+      "url": "https://rosettacode.org/wiki/Natural_sorting"
+    },
+    {
+      "title": "Anagrams",
+      "length": 318230,
+      "url": "https://rosettacode.org/wiki/Anagrams"
+    },
+    {
+      "title": "Palindromic gapful numbers",
+      "length": 317276,
+      "url": "https://rosettacode.org/wiki/Palindromic_gapful_numbers"
+    },
+    {
+      "title": "Strassen's algorithm",
+      "length": 313994,
+      "url": "https://rosettacode.org/wiki/Strassen's_algorithm"
+    },
+    {
+      "title": "Abundant odd numbers",
+      "length": 310958,
+      "url": "https://rosettacode.org/wiki/Abundant_odd_numbers"
+    },
+    {
+      "title": "Priority queue",
+      "length": 310757,
+      "url": "https://rosettacode.org/wiki/Priority_queue"
+    },
+    {
+      "title": "Julia set",
+      "length": 309974,
+      "url": "https://rosettacode.org/wiki/Julia_set"
+    },
+    {
+      "title": "Quaternion",
+      "length": 308874,
+      "url": "https://rosettacode.org/wiki/Quaternion"
+    },
+    {
+      "title": "Number names",
+      "length": 308827,
+      "url": "https://rosettacode.org/wiki/Number_names"
+    },
+    {
+      "title": "Ackermann function",
+      "length": 308707,
+      "url": "https://rosettacode.org/wiki/Ackermann_function"
+    },
+    {
+      "title": "Box the compass",
+      "length": 304702,
+      "url": "https://rosettacode.org/wiki/Box_the_compass"
+    },
+    {
+      "title": "Dijkstra's algorithm",
+      "length": 302867,
+      "url": "https://rosettacode.org/wiki/Dijkstra's_algorithm"
+    },
+    {
+      "title": "Conditional structures",
+      "length": 300257,
+      "url": "https://rosettacode.org/wiki/Conditional_structures"
+    },
+    {
+      "title": "Twin primes whose sum is square number",
+      "length": 298983,
+      "url": "https://rosettacode.org/wiki/Twin_primes_whose_sum_is_square_number"
+    },
+    {
+      "title": "Parse an IP Address",
+      "length": 297898,
+      "url": "https://rosettacode.org/wiki/Parse_an_IP_Address"
+    },
+    {
+      "title": "Dragon curve",
+      "length": 294902,
+      "url": "https://rosettacode.org/wiki/Dragon_curve"
+    },
+    {
+      "title": "Miller-Rabin primality test",
+      "length": 294287,
+      "url": "https://rosettacode.org/wiki/Miller-Rabin_primality_test"
+    },
+    {
+      "title": "Word wrap",
+      "length": 293986,
+      "url": "https://rosettacode.org/wiki/Word_wrap"
+    },
+    {
+      "title": "Call a function",
+      "length": 289044,
+      "url": "https://rosettacode.org/wiki/Call_a_function"
+    },
+    {
+      "title": "Rare numbers",
+      "length": 287737,
+      "url": "https://rosettacode.org/wiki/Rare_numbers"
+    },
+    {
+      "title": "Minesweeper game",
+      "length": 287163,
+      "url": "https://rosettacode.org/wiki/Minesweeper_game"
+    },
+    {
+      "title": "Angles (geometric), normalization and conversion",
+      "length": 285581,
+      "url": "https://rosettacode.org/wiki/Angles_(geometric),_normalization_and_conversion"
+    },
+    {
+      "title": "Top rank per group",
+      "length": 285279,
+      "url": "https://rosettacode.org/wiki/Top_rank_per_group"
+    },
+    {
+      "title": "Forest fire",
+      "length": 285230,
+      "url": "https://rosettacode.org/wiki/Forest_fire"
+    },
+    {
+      "title": "Peaceful chess queen armies",
+      "length": 281594,
+      "url": "https://rosettacode.org/wiki/Peaceful_chess_queen_armies"
+    },
+    {
+      "title": "Arithmetic evaluation",
+      "length": 279722,
+      "url": "https://rosettacode.org/wiki/Arithmetic_evaluation"
+    },
+    {
+      "title": "Show ASCII table",
+      "length": 277585,
+      "url": "https://rosettacode.org/wiki/Show_ASCII_table"
+    },
+    {
+      "title": "Set",
+      "length": 276975,
+      "url": "https://rosettacode.org/wiki/Set"
+    },
+    {
+      "title": "Esthetic numbers",
+      "length": 275850,
+      "url": "https://rosettacode.org/wiki/Esthetic_numbers"
+    },
+    {
+      "title": "Long multiplication",
+      "length": 275114,
+      "url": "https://rosettacode.org/wiki/Long_multiplication"
+    },
+    {
+      "title": "Sierpinski carpet",
+      "length": 273933,
+      "url": "https://rosettacode.org/wiki/Sierpinski_carpet"
+    },
+    {
+      "title": "Execute Brain****",
+      "length": 273447,
+      "url": "https://rosettacode.org/wiki/Execute_Brain****"
+    },
+    {
+      "title": "Multiplication tables",
+      "length": 272623,
+      "url": "https://rosettacode.org/wiki/Multiplication_tables"
+    },
+    {
+      "title": "Bulls and cows",
+      "length": 272458,
+      "url": "https://rosettacode.org/wiki/Bulls_and_cows"
+    },
+    {
+      "title": "Extensible prime generator",
+      "length": 272057,
+      "url": "https://rosettacode.org/wiki/Extensible_prime_generator"
+    },
+    {
+      "title": "Calendar - for \"REAL\" programmers",
+      "length": 271357,
+      "url": "https://rosettacode.org/wiki/Calendar_-_for_\"REAL\"_programmers"
+    },
+    {
+      "title": "Dining philosophers",
+      "length": 271111,
+      "url": "https://rosettacode.org/wiki/Dining_philosophers"
+    },
+    {
+      "title": "Humble numbers",
+      "length": 269963,
+      "url": "https://rosettacode.org/wiki/Humble_numbers"
+    },
+    {
+      "title": "Topological sort",
+      "length": 268220,
+      "url": "https://rosettacode.org/wiki/Topological_sort"
+    },
+    {
+      "title": "Balanced brackets",
+      "length": 267988,
+      "url": "https://rosettacode.org/wiki/Balanced_brackets"
+    },
+    {
+      "title": "Binary search",
+      "length": 267684,
+      "url": "https://rosettacode.org/wiki/Binary_search"
+    },
+    {
+      "title": "Compare sorting algorithms' performance",
+      "length": 267586,
+      "url": "https://rosettacode.org/wiki/Compare_sorting_algorithms'_performance"
+    },
+    {
+      "title": "Draw a clock",
+      "length": 264346,
+      "url": "https://rosettacode.org/wiki/Draw_a_clock"
+    },
+    {
+      "title": "Determine if two triangles overlap",
+      "length": 263037,
+      "url": "https://rosettacode.org/wiki/Determine_if_two_triangles_overlap"
+    },
+    {
+      "title": "Permutations",
+      "length": 262874,
+      "url": "https://rosettacode.org/wiki/Permutations"
+    },
+    {
+      "title": "Paraffins",
+      "length": 262430,
+      "url": "https://rosettacode.org/wiki/Paraffins"
+    },
+    {
+      "title": "Variables",
+      "length": 262303,
+      "url": "https://rosettacode.org/wiki/Variables"
+    },
+    {
+      "title": "Bitwise operations",
+      "length": 258668,
+      "url": "https://rosettacode.org/wiki/Bitwise_operations"
+    },
+    {
+      "title": "Caesar cipher",
+      "length": 257142,
+      "url": "https://rosettacode.org/wiki/Caesar_cipher"
+    },
+    {
+      "title": "Playing cards",
+      "length": 256120,
+      "url": "https://rosettacode.org/wiki/Playing_cards"
+    },
+    {
+      "title": "Bernoulli numbers",
+      "length": 256007,
+      "url": "https://rosettacode.org/wiki/Bernoulli_numbers"
+    },
+    {
+      "title": "Draw a sphere",
+      "length": 255165,
+      "url": "https://rosettacode.org/wiki/Draw_a_sphere"
+    },
+    {
+      "title": "100 prisoners",
+      "length": 254569,
+      "url": "https://rosettacode.org/wiki/100_prisoners"
+    },
+    {
+      "title": "Xiaolin Wu's line algorithm",
+      "length": 251569,
+      "url": "https://rosettacode.org/wiki/Xiaolin_Wu's_line_algorithm"
+    },
+    {
+      "title": "Pi",
+      "length": 251525,
+      "url": "https://rosettacode.org/wiki/Pi"
+    },
+    {
+      "title": "ASCII art diagram converter",
+      "length": 250412,
+      "url": "https://rosettacode.org/wiki/ASCII_art_diagram_converter"
+    },
+    {
+      "title": "Find words which contain the most consonants",
+      "length": 247109,
+      "url": "https://rosettacode.org/wiki/Find_words_which_contain_the_most_consonants"
+    },
+    {
+      "title": "Babbage problem",
+      "length": 246280,
+      "url": "https://rosettacode.org/wiki/Babbage_problem"
+    },
+    {
+      "title": "Holidays related to Easter",
+      "length": 244760,
+      "url": "https://rosettacode.org/wiki/Holidays_related_to_Easter"
+    },
+    {
+      "title": "Hunt the Wumpus",
+      "length": 244696,
+      "url": "https://rosettacode.org/wiki/Hunt_the_Wumpus"
+    },
+    {
+      "title": "4-rings or 4-squares puzzle",
+      "length": 244664,
+      "url": "https://rosettacode.org/wiki/4-rings_or_4-squares_puzzle"
+    },
+    {
+      "title": "Poker hand analyser",
+      "length": 241721,
+      "url": "https://rosettacode.org/wiki/Poker_hand_analyser"
+    },
+    {
+      "title": "Towers of Hanoi",
+      "length": 241656,
+      "url": "https://rosettacode.org/wiki/Towers_of_Hanoi"
+    },
+    {
+      "title": "Aliquot sequence classifications",
+      "length": 241261,
+      "url": "https://rosettacode.org/wiki/Aliquot_sequence_classifications"
+    },
+    {
+      "title": "Yin and yang",
+      "length": 241041,
+      "url": "https://rosettacode.org/wiki/Yin_and_yang"
+    },
+    {
+      "title": "Last letter-first letter",
+      "length": 240912,
+      "url": "https://rosettacode.org/wiki/Last_letter-first_letter"
+    },
+    {
+      "title": "Mayan numerals",
+      "length": 239868,
+      "url": "https://rosettacode.org/wiki/Mayan_numerals"
+    },
+    {
+      "title": "Numerical integration",
+      "length": 239355,
+      "url": "https://rosettacode.org/wiki/Numerical_integration"
+    },
+    {
+      "title": "Convex hull",
+      "length": 238005,
+      "url": "https://rosettacode.org/wiki/Convex_hull"
+    },
+    {
+      "title": "Gaussian elimination",
+      "length": 237922,
+      "url": "https://rosettacode.org/wiki/Gaussian_elimination"
+    },
+    {
+      "title": "Rot-13",
+      "length": 234145,
+      "url": "https://rosettacode.org/wiki/Rot-13"
+    },
+    {
+      "title": "Maze solving",
+      "length": 232450,
+      "url": "https://rosettacode.org/wiki/Maze_solving"
+    },
+    {
+      "title": "Truth table",
+      "length": 232363,
+      "url": "https://rosettacode.org/wiki/Truth_table"
+    },
+    {
+      "title": "Letter frequency",
+      "length": 231256,
+      "url": "https://rosettacode.org/wiki/Letter_frequency"
+    },
+    {
+      "title": "S-expressions",
+      "length": 230511,
+      "url": "https://rosettacode.org/wiki/S-expressions"
+    },
+    {
+      "title": "Factors of an integer",
+      "length": 230495,
+      "url": "https://rosettacode.org/wiki/Factors_of_an_integer"
+    },
+    {
+      "title": "Levenshtein distance",
+      "length": 230355,
+      "url": "https://rosettacode.org/wiki/Levenshtein_distance"
+    },
+    {
+      "title": "Huffman coding",
+      "length": 230270,
+      "url": "https://rosettacode.org/wiki/Huffman_coding"
+    },
+    {
+      "title": "21 game",
+      "length": 229947,
+      "url": "https://rosettacode.org/wiki/21_game"
+    },
+    {
+      "title": "Sutherland-Hodgman polygon clipping",
+      "length": 228735,
+      "url": "https://rosettacode.org/wiki/Sutherland-Hodgman_polygon_clipping"
+    },
+    {
+      "title": "IBAN",
+      "length": 228696,
+      "url": "https://rosettacode.org/wiki/IBAN"
+    },
+    {
+      "title": "Password generator",
+      "length": 226727,
+      "url": "https://rosettacode.org/wiki/Password_generator"
+    },
+    {
+      "title": "Balanced ternary",
+      "length": 225676,
+      "url": "https://rosettacode.org/wiki/Balanced_ternary"
+    },
+    {
+      "title": "Pathological floating point problems",
+      "length": 224182,
+      "url": "https://rosettacode.org/wiki/Pathological_floating_point_problems"
+    },
+    {
+      "title": "Morse code",
+      "length": 224040,
+      "url": "https://rosettacode.org/wiki/Morse_code"
+    },
+    {
+      "title": "Gamma function",
+      "length": 223591,
+      "url": "https://rosettacode.org/wiki/Gamma_function"
+    },
+    {
+      "title": "Five weekends",
+      "length": 221575,
+      "url": "https://rosettacode.org/wiki/Five_weekends"
+    },
+    {
+      "title": "The Twelve Days of Christmas",
+      "length": 220964,
+      "url": "https://rosettacode.org/wiki/The_Twelve_Days_of_Christmas"
+    },
+    {
+      "title": "Color Difference CIE \u0394E2000",
+      "length": 220646,
+      "url": "https://rosettacode.org/wiki/Color_Difference_CIE_\u0394E2000"
+    },
+    {
+      "title": "Cyclops numbers",
+      "length": 219842,
+      "url": "https://rosettacode.org/wiki/Cyclops_numbers"
+    },
+    {
+      "title": "Floyd-Warshall algorithm",
+      "length": 218773,
+      "url": "https://rosettacode.org/wiki/Floyd-Warshall_algorithm"
+    },
+    {
+      "title": "AKS test for primes",
+      "length": 218138,
+      "url": "https://rosettacode.org/wiki/AKS_test_for_primes"
+    },
+    {
+      "title": "Quine",
+      "length": 217677,
+      "url": "https://rosettacode.org/wiki/Quine"
+    },
+    {
+      "title": "Zhang-Suen thinning algorithm",
+      "length": 216935,
+      "url": "https://rosettacode.org/wiki/Zhang-Suen_thinning_algorithm"
+    },
+    {
+      "title": "Cistercian numerals",
+      "length": 216650,
+      "url": "https://rosettacode.org/wiki/Cistercian_numerals"
+    },
+    {
+      "title": "Zumkeller numbers",
+      "length": 216645,
+      "url": "https://rosettacode.org/wiki/Zumkeller_numbers"
+    },
+    {
+      "title": "Draw a cuboid",
+      "length": 215687,
+      "url": "https://rosettacode.org/wiki/Draw_a_cuboid"
+    },
+    {
+      "title": "9 billion names of God the integer",
+      "length": 215583,
+      "url": "https://rosettacode.org/wiki/9_billion_names_of_God_the_integer"
+    },
+    {
+      "title": "Wireworld",
+      "length": 214988,
+      "url": "https://rosettacode.org/wiki/Wireworld"
+    },
+    {
+      "title": "Brownian tree",
+      "length": 214542,
+      "url": "https://rosettacode.org/wiki/Brownian_tree"
+    },
+    {
+      "title": "Animate a pendulum",
+      "length": 214145,
+      "url": "https://rosettacode.org/wiki/Animate_a_pendulum"
+    },
+    {
+      "title": "Run-length encoding",
+      "length": 213512,
+      "url": "https://rosettacode.org/wiki/Run-length_encoding"
+    },
+    {
+      "title": "Luhn test of credit card numbers",
+      "length": 211879,
+      "url": "https://rosettacode.org/wiki/Luhn_test_of_credit_card_numbers"
+    },
+    {
+      "title": "Solve a Hidato puzzle",
+      "length": 211686,
+      "url": "https://rosettacode.org/wiki/Solve_a_Hidato_puzzle"
+    },
+    {
+      "title": "Cuban primes",
+      "length": 211594,
+      "url": "https://rosettacode.org/wiki/Cuban_primes"
+    },
+    {
+      "title": "Matrix multiplication",
+      "length": 209358,
+      "url": "https://rosettacode.org/wiki/Matrix_multiplication"
+    },
+    {
+      "title": "Y combinator",
+      "length": 209102,
+      "url": "https://rosettacode.org/wiki/Y_combinator"
+    },
+    {
+      "title": "Gray code",
+      "length": 208926,
+      "url": "https://rosettacode.org/wiki/Gray_code"
+    },
+    {
+      "title": "Rock-paper-scissors",
+      "length": 208879,
+      "url": "https://rosettacode.org/wiki/Rock-paper-scissors"
+    },
+    {
+      "title": "Four bit adder",
+      "length": 208594,
+      "url": "https://rosettacode.org/wiki/Four_bit_adder"
+    },
+    {
+      "title": "Execute a Markov algorithm",
+      "length": 208138,
+      "url": "https://rosettacode.org/wiki/Execute_a_Markov_algorithm"
+    },
+    {
+      "title": "Kaprekar numbers",
+      "length": 206964,
+      "url": "https://rosettacode.org/wiki/Kaprekar_numbers"
+    },
+    {
+      "title": "Legendre prime counting function",
+      "length": 206598,
+      "url": "https://rosettacode.org/wiki/Legendre_prime_counting_function"
+    },
+    {
+      "title": "First perfect square in base n with n unique digits",
+      "length": 206338,
+      "url": "https://rosettacode.org/wiki/First_perfect_square_in_base_n_with_n_unique_digits"
+    },
+    {
+      "title": "Smith numbers",
+      "length": 206152,
+      "url": "https://rosettacode.org/wiki/Smith_numbers"
+    },
+    {
+      "title": "Sierpinski triangle",
+      "length": 205466,
+      "url": "https://rosettacode.org/wiki/Sierpinski_triangle"
+    },
+    {
+      "title": "Stack",
+      "length": 205322,
+      "url": "https://rosettacode.org/wiki/Stack"
+    },
+    {
+      "title": "Dinesman's multiple-dwelling problem",
+      "length": 205005,
+      "url": "https://rosettacode.org/wiki/Dinesman's_multiple-dwelling_problem"
+    },
+    {
+      "title": "A+B",
+      "length": 204773,
+      "url": "https://rosettacode.org/wiki/A+B"
+    },
+    {
+      "title": "Taxicab numbers",
+      "length": 204739,
+      "url": "https://rosettacode.org/wiki/Taxicab_numbers"
+    },
+    {
+      "title": "Prime decomposition",
+      "length": 204423,
+      "url": "https://rosettacode.org/wiki/Prime_decomposition"
+    },
+    {
+      "title": "Greatest common divisor",
+      "length": 204086,
+      "url": "https://rosettacode.org/wiki/Greatest_common_divisor"
+    },
+    {
+      "title": "Set puzzle",
+      "length": 203740,
+      "url": "https://rosettacode.org/wiki/Set_puzzle"
+    },
+    {
+      "title": "Range extraction",
+      "length": 202921,
+      "url": "https://rosettacode.org/wiki/Range_extraction"
+    },
+    {
+      "title": "Flipping bits game",
+      "length": 202791,
+      "url": "https://rosettacode.org/wiki/Flipping_bits_game"
+    },
+    {
+      "title": "Substring",
+      "length": 202720,
+      "url": "https://rosettacode.org/wiki/Substring"
+    },
+    {
+      "title": "Ternary logic",
+      "length": 202091,
+      "url": "https://rosettacode.org/wiki/Ternary_logic"
+    },
+    {
+      "title": "Fibonacci n-step number sequences",
+      "length": 201807,
+      "url": "https://rosettacode.org/wiki/Fibonacci_n-step_number_sequences"
+    },
+    {
+      "title": "Farey sequence",
+      "length": 201602,
+      "url": "https://rosettacode.org/wiki/Farey_sequence"
+    },
+    {
+      "title": "LU decomposition",
+      "length": 201420,
+      "url": "https://rosettacode.org/wiki/LU_decomposition"
+    },
+    {
+      "title": "LZW compression",
+      "length": 201382,
+      "url": "https://rosettacode.org/wiki/LZW_compression"
+    },
+    {
+      "title": "Sum to 100",
+      "length": 201353,
+      "url": "https://rosettacode.org/wiki/Sum_to_100"
+    },
+    {
+      "title": "Greedy algorithm for Egyptian fractions",
+      "length": 201061,
+      "url": "https://rosettacode.org/wiki/Greedy_algorithm_for_Egyptian_fractions"
+    },
+    {
+      "title": "Pascal's triangle",
+      "length": 201050,
+      "url": "https://rosettacode.org/wiki/Pascal's_triangle"
+    },
+    {
+      "title": "Ethiopian multiplication",
+      "length": 199386,
+      "url": "https://rosettacode.org/wiki/Ethiopian_multiplication"
+    },
+    {
+      "title": "Euler's sum of powers conjecture",
+      "length": 198619,
+      "url": "https://rosettacode.org/wiki/Euler's_sum_of_powers_conjecture"
+    },
+    {
+      "title": "Gauss-Jordan matrix inversion",
+      "length": 198442,
+      "url": "https://rosettacode.org/wiki/Gauss-Jordan_matrix_inversion"
+    },
+    {
+      "title": "Middle three digits",
+      "length": 198280,
+      "url": "https://rosettacode.org/wiki/Middle_three_digits"
+    },
+    {
+      "title": "Palindrome detection",
+      "length": 197307,
+      "url": "https://rosettacode.org/wiki/Palindrome_detection"
+    },
+    {
+      "title": "Abbreviations, simple",
+      "length": 197090,
+      "url": "https://rosettacode.org/wiki/Abbreviations,_simple"
+    },
+    {
+      "title": "Angle difference between two bearings",
+      "length": 196824,
+      "url": "https://rosettacode.org/wiki/Angle_difference_between_two_bearings"
+    },
+    {
+      "title": "Determine if a string is squeezable",
+      "length": 194280,
+      "url": "https://rosettacode.org/wiki/Determine_if_a_string_is_squeezable"
+    },
+    {
+      "title": "Total circles area",
+      "length": 194197,
+      "url": "https://rosettacode.org/wiki/Total_circles_area"
+    },
+    {
+      "title": "Square-free integers",
+      "length": 194012,
+      "url": "https://rosettacode.org/wiki/Square-free_integers"
+    },
+    {
+      "title": "Fibonacci word",
+      "length": 193591,
+      "url": "https://rosettacode.org/wiki/Fibonacci_word"
+    },
+    {
+      "title": "I before E except after C",
+      "length": 193316,
+      "url": "https://rosettacode.org/wiki/I_before_E_except_after_C"
+    },
+    {
+      "title": "Brace expansion",
+      "length": 192897,
+      "url": "https://rosettacode.org/wiki/Brace_expansion"
+    },
+    {
+      "title": "Bacon cipher",
+      "length": 192412,
+      "url": "https://rosettacode.org/wiki/Bacon_cipher"
+    },
+    {
+      "title": "Stern-Brocot sequence",
+      "length": 192146,
+      "url": "https://rosettacode.org/wiki/Stern-Brocot_sequence"
+    },
+    {
+      "title": "Temperature conversion",
+      "length": 192015,
+      "url": "https://rosettacode.org/wiki/Temperature_conversion"
+    },
+    {
+      "title": "Fractal tree",
+      "length": 191483,
+      "url": "https://rosettacode.org/wiki/Fractal_tree"
+    },
+    {
+      "title": "Trigonometric functions",
+      "length": 190984,
+      "url": "https://rosettacode.org/wiki/Trigonometric_functions"
+    },
+    {
+      "title": "Binary strings",
+      "length": 190608,
+      "url": "https://rosettacode.org/wiki/Binary_strings"
+    },
+    {
+      "title": "Heronian triangles",
+      "length": 190449,
+      "url": "https://rosettacode.org/wiki/Heronian_triangles"
+    },
+    {
+      "title": "Fractran",
+      "length": 190345,
+      "url": "https://rosettacode.org/wiki/Fractran"
+    },
+    {
+      "title": "Binary digits",
+      "length": 190253,
+      "url": "https://rosettacode.org/wiki/Binary_digits"
+    },
+    {
+      "title": "Sequence of primorial primes",
+      "length": 189856,
+      "url": "https://rosettacode.org/wiki/Sequence_of_primorial_primes"
+    },
+    {
+      "title": "Zig-zag matrix",
+      "length": 189471,
+      "url": "https://rosettacode.org/wiki/Zig-zag_matrix"
+    },
+    {
+      "title": "Pythagorean triples",
+      "length": 189157,
+      "url": "https://rosettacode.org/wiki/Pythagorean_triples"
+    },
+    {
+      "title": "Floyd's triangle",
+      "length": 188980,
+      "url": "https://rosettacode.org/wiki/Floyd's_triangle"
+    },
+    {
+      "title": "Chaocipher",
+      "length": 187769,
+      "url": "https://rosettacode.org/wiki/Chaocipher"
+    },
+    {
+      "title": "One-dimensional cellular automata",
+      "length": 187267,
+      "url": "https://rosettacode.org/wiki/One-dimensional_cellular_automata"
+    },
+    {
+      "title": "Solve a Holy Knight's tour",
+      "length": 187238,
+      "url": "https://rosettacode.org/wiki/Solve_a_Holy_Knight's_tour"
+    },
+    {
+      "title": "Fraction reduction",
+      "length": 187093,
+      "url": "https://rosettacode.org/wiki/Fraction_reduction"
+    },
+    {
+      "title": "Determine if a string is collapsible",
+      "length": 187034,
+      "url": "https://rosettacode.org/wiki/Determine_if_a_string_is_collapsible"
+    },
+    {
+      "title": "String comparison",
+      "length": 186495,
+      "url": "https://rosettacode.org/wiki/String_comparison"
+    },
+    {
+      "title": "N-smooth numbers",
+      "length": 185985,
+      "url": "https://rosettacode.org/wiki/N-smooth_numbers"
+    },
+    {
+      "title": "String matching",
+      "length": 185450,
+      "url": "https://rosettacode.org/wiki/String_matching"
+    },
+    {
+      "title": "Welch's t-test",
+      "length": 185302,
+      "url": "https://rosettacode.org/wiki/Welch's_t-test"
+    },
+    {
+      "title": "Amb",
+      "length": 185174,
+      "url": "https://rosettacode.org/wiki/Amb"
+    },
+    {
+      "title": "Chinese zodiac",
+      "length": 184728,
+      "url": "https://rosettacode.org/wiki/Chinese_zodiac"
+    },
+    {
+      "title": "Chemical calculator",
+      "length": 184608,
+      "url": "https://rosettacode.org/wiki/Chemical_calculator"
+    },
+    {
+      "title": "Word frequency",
+      "length": 184259,
+      "url": "https://rosettacode.org/wiki/Word_frequency"
+    },
+    {
+      "title": "Abundant, deficient and perfect number classifications",
+      "length": 183900,
+      "url": "https://rosettacode.org/wiki/Abundant,_deficient_and_perfect_number_classifications"
+    },
+    {
+      "title": "Monty Hall problem",
+      "length": 182269,
+      "url": "https://rosettacode.org/wiki/Monty_Hall_problem"
+    },
+    {
+      "title": "Spiral matrix",
+      "length": 181755,
+      "url": "https://rosettacode.org/wiki/Spiral_matrix"
+    },
+    {
+      "title": "Left factorials",
+      "length": 181689,
+      "url": "https://rosettacode.org/wiki/Left_factorials"
+    },
+    {
+      "title": "Deming's funnel",
+      "length": 181525,
+      "url": "https://rosettacode.org/wiki/Deming's_funnel"
+    },
+    {
+      "title": "Happy numbers",
+      "length": 180898,
+      "url": "https://rosettacode.org/wiki/Happy_numbers"
+    },
+    {
+      "title": "Narcissistic decimal number",
+      "length": 180838,
+      "url": "https://rosettacode.org/wiki/Narcissistic_decimal_number"
+    },
+    {
+      "title": "Sum multiples of 3 and 5",
+      "length": 180654,
+      "url": "https://rosettacode.org/wiki/Sum_multiples_of_3_and_5"
+    },
+    {
+      "title": "Vigen\u00e8re cipher",
+      "length": 180432,
+      "url": "https://rosettacode.org/wiki/Vigen\u00e8re_cipher"
+    },
+    {
+      "title": "Stem-and-leaf plot",
+      "length": 180273,
+      "url": "https://rosettacode.org/wiki/Stem-and-leaf_plot"
+    },
+    {
+      "title": "Playfair cipher",
+      "length": 179814,
+      "url": "https://rosettacode.org/wiki/Playfair_cipher"
+    },
+    {
+      "title": "Metronome",
+      "length": 179717,
+      "url": "https://rosettacode.org/wiki/Metronome"
+    },
+    {
+      "title": "Magic squares of odd order",
+      "length": 179110,
+      "url": "https://rosettacode.org/wiki/Magic_squares_of_odd_order"
+    },
+    {
+      "title": "Determine if a string is numeric",
+      "length": 178760,
+      "url": "https://rosettacode.org/wiki/Determine_if_a_string_is_numeric"
+    },
+    {
+      "title": "N'th",
+      "length": 177917,
+      "url": "https://rosettacode.org/wiki/N'th"
+    },
+    {
+      "title": "Circles of given radius through two points",
+      "length": 177052,
+      "url": "https://rosettacode.org/wiki/Circles_of_given_radius_through_two_points"
+    },
+    {
+      "title": "Arithmetic-geometric mean",
+      "length": 176941,
+      "url": "https://rosettacode.org/wiki/Arithmetic-geometric_mean"
+    },
+    {
+      "title": "Day of the week",
+      "length": 176536,
+      "url": "https://rosettacode.org/wiki/Day_of_the_week"
+    },
+    {
+      "title": "Find palindromic numbers in both binary and ternary bases",
+      "length": 176514,
+      "url": "https://rosettacode.org/wiki/Find_palindromic_numbers_in_both_binary_and_ternary_bases"
+    },
+    {
+      "title": "Collections",
+      "length": 176458,
+      "url": "https://rosettacode.org/wiki/Collections"
+    },
+    {
+      "title": "Pig the dice game",
+      "length": 175799,
+      "url": "https://rosettacode.org/wiki/Pig_the_dice_game"
+    },
+    {
+      "title": "Brazilian numbers",
+      "length": 175568,
+      "url": "https://rosettacode.org/wiki/Brazilian_numbers"
+    },
+    {
+      "title": "Discordian date",
+      "length": 175139,
+      "url": "https://rosettacode.org/wiki/Discordian_date"
+    },
+    {
+      "title": "Reduced row echelon form",
+      "length": 174488,
+      "url": "https://rosettacode.org/wiki/Reduced_row_echelon_form"
+    },
+    {
+      "title": "Twelve statements",
+      "length": 174327,
+      "url": "https://rosettacode.org/wiki/Twelve_statements"
+    },
+    {
+      "title": "Amicable pairs",
+      "length": 174156,
+      "url": "https://rosettacode.org/wiki/Amicable_pairs"
+    },
+    {
+      "title": "Cartesian product of two or more lists",
+      "length": 173969,
+      "url": "https://rosettacode.org/wiki/Cartesian_product_of_two_or_more_lists"
+    },
+    {
+      "title": "Vector products",
+      "length": 173727,
+      "url": "https://rosettacode.org/wiki/Vector_products"
+    },
+    {
+      "title": "URL parser",
+      "length": 173380,
+      "url": "https://rosettacode.org/wiki/URL_parser"
+    },
+    {
+      "title": "Closest-pair problem",
+      "length": 173325,
+      "url": "https://rosettacode.org/wiki/Closest-pair_problem"
+    },
+    {
+      "title": "Old lady swallowed a fly",
+      "length": 173148,
+      "url": "https://rosettacode.org/wiki/Old_lady_swallowed_a_fly"
+    },
+    {
+      "title": "Best shuffle",
+      "length": 172908,
+      "url": "https://rosettacode.org/wiki/Best_shuffle"
+    },
+    {
+      "title": "Imaginary base numbers",
+      "length": 172838,
+      "url": "https://rosettacode.org/wiki/Imaginary_base_numbers"
+    },
+    {
+      "title": "Catalan numbers",
+      "length": 172684,
+      "url": "https://rosettacode.org/wiki/Catalan_numbers"
+    },
+    {
+      "title": "Lychrel numbers",
+      "length": 172116,
+      "url": "https://rosettacode.org/wiki/Lychrel_numbers"
+    },
+    {
+      "title": "De Bruijn sequences",
+      "length": 171988,
+      "url": "https://rosettacode.org/wiki/De_Bruijn_sequences"
+    },
+    {
+      "title": "Four is magic",
+      "length": 170556,
+      "url": "https://rosettacode.org/wiki/Four_is_magic"
+    },
+    {
+      "title": "Elementary cellular automaton",
+      "length": 170253,
+      "url": "https://rosettacode.org/wiki/Elementary_cellular_automaton"
+    },
+    {
+      "title": "UTF-8 encode and decode",
+      "length": 169382,
+      "url": "https://rosettacode.org/wiki/UTF-8_encode_and_decode"
+    },
+    {
+      "title": "SHA-256",
+      "length": 168996,
+      "url": "https://rosettacode.org/wiki/SHA-256"
+    },
+    {
+      "title": "Quickselect algorithm",
+      "length": 168894,
+      "url": "https://rosettacode.org/wiki/Quickselect_algorithm"
+    },
+    {
+      "title": "Minimum multiple of m where digital sum equals m",
+      "length": 168725,
+      "url": "https://rosettacode.org/wiki/Minimum_multiple_of_m_where_digital_sum_equals_m"
+    },
+    {
+      "title": "UPC",
+      "length": 167045,
+      "url": "https://rosettacode.org/wiki/UPC"
+    },
+    {
+      "title": "Fast Fourier transform",
+      "length": 166868,
+      "url": "https://rosettacode.org/wiki/Fast_Fourier_transform"
+    }
+  ]
+}

@@ -1,12 +1,12 @@
 {{define "home"}}
 <section class="hero">
   <div class="hero-copy fade-in delay-1">
-    <span class="eyebrow">Upstream Example Import</span>
+    <span class="eyebrow">Imported Example Corpus</span>
     <h1>Imported Vibescript examples, ready for browser execution.</h1>
     <p>
-      The site now loads the upstream Vibescript examples corpus directly into a browser-focused catalog. The
-      runnable subset already executes through this web app, and the rest have a stable content model for future
-      browser runners.
+      The site now loads both the upstream Vibescript examples and Rosetta Code imports into one browser-focused
+      catalog. The runnable subset already executes through this web app, and the rest have a stable content model
+      for future browser runners.
     </p>
     <div class="hero-actions">
       <a class="button" href="/examples">Browse imported examples</a>
@@ -34,8 +34,8 @@
       </div>
     </div>
     <div class="launch-note">
-      The import path is stable now: sync upstream examples into the site, compile them against the real interpreter,
-      and expose the runnable subset through the browser without inventing a parallel content format.
+      The import path is stable now: sync multiple source buckets into the site, compile them against the real
+      interpreter, and expose the runnable subset through the browser without inventing a parallel content format.
     </div>
   </aside>
 </section>
@@ -46,7 +46,7 @@
       <span class="eyebrow">Featured</span>
       <h2>Start with the imported examples that already exercise the browser runner.</h2>
     </div>
-    <p>These cards come straight from the upstream repo and are selected because they already expose a top-level <code>run</code>.</p>
+    <p>These cards are selected because they already expose a top-level <code>run</code> and demonstrate the current browser runner well.</p>
   </div>
   <div class="card-grid">
     {{range .Featured}}

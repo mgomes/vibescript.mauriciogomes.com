@@ -58,3 +58,28 @@ func TestRunNonRunnableExample(t *testing.T) {
 		t.Fatalf("expected ErrExampleNotRunnable, got %v", err)
 	}
 }
+
+func TestRunAllRunnableExamples(t *testing.T) {
+	store, err := catalog.Load()
+	if err != nil {
+		t.Fatalf("load catalog: %v", err)
+	}
+
+	service, err := New(store)
+	if err != nil {
+		t.Fatalf("new service: %v", err)
+	}
+
+	for _, example := range store.All() {
+		if !example.Runnable {
+			continue
+		}
+
+		example := example
+		t.Run(example.Slug, func(t *testing.T) {
+			if _, err := service.Run(context.Background(), example.Slug); err != nil {
+				t.Fatalf("run %s: %v", example.Slug, err)
+			}
+		})
+	}
+}

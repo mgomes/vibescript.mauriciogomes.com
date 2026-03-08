@@ -2,5 +2,5 @@ package catalog
 
 import "embed"
 
-//go:embed content/upstream
+//go:embed content
 var content embed.FS

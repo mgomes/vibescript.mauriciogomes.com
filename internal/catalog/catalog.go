@@ -48,9 +48,9 @@ type Store struct {
 }
 
 func Load() (*Store, error) {
-	examples := make([]Example, 0, 34)
+	examples := make([]Example, 0, 64)
 
-	err := fs.WalkDir(content, "content/upstream", func(filePath string, entry fs.DirEntry, err error) error {
+	err := fs.WalkDir(content, "content", func(filePath string, entry fs.DirEntry, err error) error {
 		if err != nil {
 			return err
 		}
@@ -63,51 +63,15 @@ func Load() (*Store, error) {
 			return fmt.Errorf("read %s: %w", filePath, err)
 		}
 
-		relativePath := strings.TrimPrefix(filePath, "content/upstream/")
-		categoryKey := path.Dir(relativePath)
-		titleKey := strings.TrimSuffix(path.Base(relativePath), ".vibe")
-		runnable := runEntryPointPattern.Match(source)
-
-		stage := "Imported"
-		summary := fmt.Sprintf(
-			"Imported from the upstream Vibescript examples at %s and ready for browser discovery.",
-			relativePath,
-		)
-		description := fmt.Sprintf(
-			"This example is synced from the upstream Vibescript repository and serves as part of the site's growing examples corpus.",
-		)
-		runFunction := ""
-		if runnable {
-			stage = "Runnable"
-			summary = fmt.Sprintf(
-				"Imported from the upstream Vibescript examples at %s and runnable in the browser today.",
-				relativePath,
-			)
-			description = "This example defines a top-level run function, so the site can compile and execute it directly through the browser runner."
-			runFunction = "run"
+		example, ok, err := loadExample(filePath, source)
+		if err != nil {
+			return err
+		}
+		if !ok {
+			return nil
 		}
 
-		tags := []string{"upstream", slugPart(categoryKey)}
-		if runnable {
-			tags = append(tags, "browser-runner")
-		}
-
-		examples = append(examples, Example{
-			Slug:        slugPart(strings.TrimSuffix(relativePath, ".vibe")),
-			Title:       titleize(titleKey),
-			Summary:     summary,
-			Description: description,
-			Category:    titleize(categoryKey),
-			Difficulty:  "Reference",
-			Stage:       stage,
-			Featured:    isFeatured(relativePath),
-			Runnable:    runnable,
-			Tags:        tags,
-			Source:      string(source),
-			SourcePath:  relativePath,
-			SourceURL:   fmt.Sprintf("%s/blob/%s/examples/%s", UpstreamRepoURL, UpstreamVersion, relativePath),
-			RunFunction: runFunction,
-		})
+		examples = append(examples, example)
 
 		return nil
 	})
@@ -157,6 +121,183 @@ func Load() (*Store, error) {
 	return store, nil
 }
 
+func loadExample(filePath string, source []byte) (Example, bool, error) {
+	relativeToContent := strings.TrimPrefix(filePath, "content/")
+	parts := strings.Split(relativeToContent, "/")
+	if len(parts) < 2 {
+		return Example{}, false, nil
+	}
+
+	switch parts[0] {
+	case "upstream":
+		return loadUpstreamExample(strings.Join(parts[1:], "/"), source), true, nil
+	case "rosettacode":
+		return loadRosettaCodeExample(strings.Join(parts[1:], "/"), source), true, nil
+	default:
+		return Example{}, false, nil
+	}
+}
+
+func loadUpstreamExample(relativePath string, source []byte) Example {
+	categoryKey := path.Dir(relativePath)
+	titleKey := strings.TrimSuffix(path.Base(relativePath), ".vibe")
+	runnable := runEntryPointPattern.Match(source)
+
+	stage := "Imported"
+	summary := fmt.Sprintf(
+		"Imported from the upstream Vibescript examples at %s and ready for browser discovery.",
+		relativePath,
+	)
+	description := "This example is synced from the upstream Vibescript repository and serves as part of the site's growing examples corpus."
+	runFunction := ""
+	if runnable {
+		stage = "Runnable"
+		summary = fmt.Sprintf(
+			"Imported from the upstream Vibescript examples at %s and runnable in the browser today.",
+			relativePath,
+		)
+		description = "This example defines a top-level run function, so the site can compile and execute it directly through the browser runner."
+		runFunction = "run"
+	}
+
+	tags := []string{"upstream", slugPart(categoryKey)}
+	if runnable {
+		tags = append(tags, "browser-runner")
+	}
+
+	return Example{
+		Slug:        slugPart(strings.TrimSuffix(relativePath, ".vibe")),
+		Title:       titleize(titleKey),
+		Summary:     summary,
+		Description: description,
+		Category:    titleize(categoryKey),
+		Difficulty:  "Reference",
+		Stage:       stage,
+		Featured:    isFeatured(relativePath),
+		Runnable:    runnable,
+		Tags:        tags,
+		Source:      string(source),
+		SourcePath:  relativePath,
+		SourceURL:   fmt.Sprintf("%s/blob/%s/examples/%s", UpstreamRepoURL, UpstreamVersion, relativePath),
+		RunFunction: runFunction,
+	}
+}
+
+func loadRosettaCodeExample(relativePath string, source []byte) Example {
+	metadata := parseMetadata(string(source))
+	titleKey := strings.TrimSuffix(path.Base(relativePath), ".vibe")
+	title := metadata["title"]
+	if title == "" {
+		title = titleize(titleKey)
+	}
+
+	category := metadata["category"]
+	if category == "" {
+		category = "Rosetta Code"
+	}
+
+	difficulty := metadata["difficulty"]
+	if difficulty == "" {
+		difficulty = "Reference"
+	}
+
+	runnable := runEntryPointPattern.Match(source)
+	stage := metadata["stage"]
+	if stage == "" {
+		if runnable {
+			stage = "Runnable"
+		} else {
+			stage = "Draft"
+		}
+	}
+
+	summary := metadata["summary"]
+	if summary == "" {
+		if runnable {
+			summary = fmt.Sprintf("A Vibescript implementation of the Rosetta Code task %q that runs in the browser.", title)
+		} else {
+			summary = fmt.Sprintf("A Vibescript implementation draft for the Rosetta Code task %q.", title)
+		}
+	}
+
+	description := metadata["description"]
+	if description == "" {
+		description = "This example is part of the Rosetta Code task import for the Vibescript site."
+	}
+
+	sourceURL := metadata["source"]
+	if sourceURL == "" {
+		sourceURL = "https://rosettacode.org/wiki/" + strings.ReplaceAll(title, " ", "_")
+	}
+
+	tags := []string{"rosetta-code"}
+	if extra := splitMetadataList(metadata["tags"]); len(extra) > 0 {
+		tags = append(tags, extra...)
+	}
+	if runnable {
+		tags = append(tags, "browser-runner")
+	}
+
+	runFunction := ""
+	if runnable {
+		runFunction = "run"
+	}
+
+	return Example{
+		Slug:        "rosettacode-" + slugPart(strings.TrimSuffix(relativePath, ".vibe")),
+		Title:       title,
+		Summary:     summary,
+		Description: description,
+		Category:    category,
+		Difficulty:  difficulty,
+		Stage:       stage,
+		Featured:    metadata["featured"] == "true",
+		Runnable:    runnable,
+		Tags:        dedupe(tags),
+		Source:      string(source),
+		SourcePath:  "rosettacode/" + relativePath,
+		SourceURL:   sourceURL,
+		RunFunction: runFunction,
+	}
+}
+
+func parseMetadata(source string) map[string]string {
+	metadata := map[string]string{}
+	for _, line := range strings.Split(source, "\n") {
+		trimmed := strings.TrimSpace(line)
+		if !strings.HasPrefix(trimmed, "# ") || !strings.Contains(trimmed, ":") {
+			if trimmed == "" {
+				continue
+			}
+			break
+		}
+
+		parts := strings.SplitN(strings.TrimPrefix(trimmed, "# "), ":", 2)
+		key := strings.ToLower(strings.TrimSpace(parts[0]))
+		value := strings.TrimSpace(parts[1])
+		metadata[key] = value
+	}
+
+	return metadata
+}
+
+func splitMetadataList(value string) []string {
+	if strings.TrimSpace(value) == "" {
+		return nil
+	}
+
+	parts := strings.Split(value, ",")
+	items := make([]string, 0, len(parts))
+	for _, part := range parts {
+		trimmed := strings.TrimSpace(part)
+		if trimmed != "" {
+			items = append(items, trimmed)
+		}
+	}
+
+	return items
+}
+
 func (s *Store) All() []Example {
 	ordered := make([]Example, len(s.examples))
 	copy(ordered, s.examples)
@@ -203,4 +344,17 @@ func titleize(value string) string {
 		parts[i] = strings.ToUpper(part[:1]) + part[1:]
 	}
 	return strings.Join(parts, " ")
+}
+
+func dedupe(values []string) []string {
+	seen := map[string]struct{}{}
+	out := make([]string, 0, len(values))
+	for _, value := range values {
+		if _, ok := seen[value]; ok {
+			continue
+		}
+		seen[value] = struct{}{}
+		out = append(out, value)
+	}
+	return out
 }

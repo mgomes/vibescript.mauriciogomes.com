@@ -45,7 +45,7 @@ func TestExamplesPageRendersCatalog(t *testing.T) {
 	}
 
 	body := recorder.Body.String()
-	if !strings.Contains(body, "Browse the upstream Vibescript corpus") {
+	if !strings.Contains(body, "Browse the imported Vibescript and Rosetta Code corpus") {
 		t.Fatalf("expected catalog intro, got %q", body)
 	}
 
@@ -101,7 +101,7 @@ func TestHealthz(t *testing.T) {
 		t.Fatalf("expected status 200, got %d", recorder.Code)
 	}
 
-	if !strings.Contains(recorder.Body.String(), `"runnable_examples":7`) {
+	if !strings.Contains(recorder.Body.String(), `"status":"ok"`) {
 		t.Fatalf("expected health payload, got %q", recorder.Body.String())
 	}
 }

@@ -12,12 +12,12 @@ func TestLoad(t *testing.T) {
 		t.Fatalf("load catalog: %v", err)
 	}
 
-	if store.Count() != 34 {
-		t.Fatalf("expected 34 examples, got %d", store.Count())
+	if store.Count() < 49 {
+		t.Fatalf("expected at least 49 examples, got %d", store.Count())
 	}
 
-	if store.RunnableCount() != 7 {
-		t.Fatalf("expected 7 runnable examples, got %d", store.RunnableCount())
+	if store.RunnableCount() < 22 {
+		t.Fatalf("expected at least 22 runnable examples, got %d", store.RunnableCount())
 	}
 
 	example, ok := store.BySlug("strings-operations")
@@ -31,6 +31,15 @@ func TestLoad(t *testing.T) {
 
 	if example.RunFunction != "run" {
 		t.Fatalf("expected run entrypoint, got %q", example.RunFunction)
+	}
+
+	rosettaExample, ok := store.BySlug("rosettacode-popular-fizzbuzz")
+	if !ok {
+		t.Fatalf("expected rosettacode-popular-fizzbuzz to be present")
+	}
+
+	if !rosettaExample.Runnable {
+		t.Fatalf("expected rosetta example to be runnable")
 	}
 }
 

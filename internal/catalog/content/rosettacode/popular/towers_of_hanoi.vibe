@@ -1,0 +1,25 @@
+# title: Towers of Hanoi
+# source: https://rosettacode.org/wiki/Towers_of_Hanoi
+# category: Rosetta Code
+# difficulty: Medium
+# summary: Solve Towers of Hanoi recursively and return the ordered move list for a small deterministic puzzle.
+# tags: popular, recursion, classic-cs, puzzles
+# vibe: 0.2
+
+def hanoi_moves(disks, from_peg, to_peg, spare_peg)
+  if disks == 0
+    []
+  else
+    leading = hanoi_moves(disks - 1, from_peg, spare_peg, to_peg)
+    trailing = hanoi_moves(disks - 1, spare_peg, to_peg, from_peg)
+    leading + [{ disk: disks, from: from_peg, to: to_peg }] + trailing
+  end
+end
+
+def run
+  moves = hanoi_moves(3, 1, 3, 2)
+  {
+    move_count: moves.size,
+    moves: moves
+  }
+end
