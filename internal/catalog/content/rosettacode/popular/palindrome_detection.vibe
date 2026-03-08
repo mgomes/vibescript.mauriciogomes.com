@@ -39,6 +39,7 @@ end
 
 def run
   rows = []
+  rows = rows.push(["text", "palindrome"])
   rows = rows.push(["racecar", palindrome?("racecar")])
   rows = rows.push(["Able was I ere I saw Elba", palindrome?("Able was I ere I saw Elba")])
   rows = rows.push(["12321", palindrome?("12321")])

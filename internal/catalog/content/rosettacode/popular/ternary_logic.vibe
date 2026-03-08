@@ -1,7 +1,7 @@
 # title: Ternary logic
 # source: https://rosettacode.org/wiki/Ternary_logic
 # category: Rosetta Code
-# difficulty: Intermediate
+# difficulty: Medium
 # summary: Build a small truth table for three-valued logic with true, maybe, and false states.
 # tags: popular, logic, booleans, truth-tables
 # vibe: 0.2

@@ -36,5 +36,5 @@ def build_triangle(rows_count)
 end
 
 def run
-  build_triangle(8)
+  build_triangle(7)
 end

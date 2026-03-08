@@ -21,6 +21,7 @@ end
 def run
   sample = "Vibescript examples"
   rows = []
+  rows = rows.push(["start", "count", "value"])
   rows = rows.push([0, 10, substring(sample, 0, 10)])
   rows = rows.push([4, 6, substring(sample, 4, 6)])
   rows = rows.push([11, 8, substring(sample, 11, 8)])

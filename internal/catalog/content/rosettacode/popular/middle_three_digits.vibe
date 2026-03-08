@@ -35,6 +35,7 @@ end
 
 def run
   rows = []
+  rows = rows.push(["input", "middle_three"])
   rows = rows.push([123, middle_three_digits(123)])
   rows = rows.push([12345, middle_three_digits(12345)])
   rows = rows.push([1234567, middle_three_digits(1234567)])
