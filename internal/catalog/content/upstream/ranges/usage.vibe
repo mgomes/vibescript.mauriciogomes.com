@@ -33,3 +33,11 @@ def range_even_numbers(start, finish)
   end
   output
 end
+
+def run
+  {
+    inclusive_sum: inclusive_range_sum(1, 10),
+    descending: descending_range_collect(5, 1),
+    evens: range_even_numbers(1, 20)
+  }
+end

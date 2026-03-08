@@ -40,3 +40,24 @@ def transform_keys(hash)
   end
   result
 end
+
+def run
+  collected = []
+  times(5) do |i|
+    collected = collected + [i]
+  end
+
+  tapped = tap(42) do |v|
+    v * 2
+  end
+
+  keys = transform_keys({ name: "Alice", age: 30 }) do |k|
+    k
+  end
+
+  {
+    times: collected,
+    tap: tapped,
+    transform_keys: keys
+  }
+end

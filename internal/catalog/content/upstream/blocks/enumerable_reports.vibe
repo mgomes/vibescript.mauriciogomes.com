@@ -12,3 +12,12 @@ def total_raised_by_currency(donations)
   end
   grouped
 end
+
+def run
+  donations = [
+    { amount: money("25.00 USD") },
+    { amount: money("50.00 USD") },
+    { amount: money("10.00 USD") }
+  ]
+  total_raised_by_currency(donations)
+end

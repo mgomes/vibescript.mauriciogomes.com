@@ -8,3 +8,10 @@ end
 def coach?
   ctx.user.role == "coach"
 end
+
+def run
+  {
+    note: "This example requires the ctx capability which is injected by the host application.",
+    functions: ["current_user_id", "coach?"]
+  }
+end

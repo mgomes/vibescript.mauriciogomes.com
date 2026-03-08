@@ -23,3 +23,14 @@ def choose_label(status)
     "unknown"
   end
 end
+
+def run
+  {
+    legend: fundraising_badge(100000),
+    gold: fundraising_badge(5000),
+    bronze: fundraising_badge(100),
+    active: choose_label("active"),
+    complete: choose_label("complete"),
+    other: choose_label("pending")
+  }
+end

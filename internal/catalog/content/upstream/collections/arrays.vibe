@@ -16,3 +16,12 @@ def replace_first(values, value)
   values[0] = value
   values
 end
+
+def run
+  {
+    head: head([10, 20, 30]),
+    tail: tail([10, 20, 30]),
+    matrix: build_matrix(1, 2),
+    replaced: replace_first([1, 2, 3], 99)
+  }
+end

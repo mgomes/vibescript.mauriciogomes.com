@@ -21,3 +21,14 @@ end
 def nested_lookup(record)
   record[:meta][:tag]
 end
+
+def run
+  player = make_player("Alice", 1000)
+  completed = mark_complete(make_player("Bob", 500))
+  {
+    player: player,
+    completed: completed,
+    with_bonus: total_with_bonus({ raised: 250 }, 50),
+    nested: nested_lookup({ meta: { tag: "vip" } })
+  }
+end

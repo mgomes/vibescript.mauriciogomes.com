@@ -39,3 +39,18 @@ def any_large?(values, threshold)
   end
   found
 end
+
+def run
+  players = [
+    { active: true },
+    { active: false },
+    { active: true },
+    { active: true }
+  ]
+
+  {
+    active_count: count_active(players),
+    max_score: max_score([10, 45, 23, 67, 12]),
+    any_large: any_large?([1, 2, 3, 100], 50)
+  }
+end

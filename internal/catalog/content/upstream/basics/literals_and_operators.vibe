@@ -28,3 +28,13 @@ def mix_literals
     flags: [true, false, nil]
   }
 end
+
+def run
+  {
+    add: add_numbers(10, 25),
+    combine: combine_strings("hello", "world"),
+    negate: negate(7),
+    truth: truth_table(true),
+    literals: mix_literals
+  }
+end

@@ -57,3 +57,13 @@ end
 def duration_to_i_math
   (3.seconds + 5.seconds).to_i
 end
+
+def run
+  {
+    parts: duration_parts,
+    parse_build: duration_parse_build,
+    to_i: duration_to_i,
+    math: duration_math,
+    to_i_math: duration_to_i_math
+  }
+end

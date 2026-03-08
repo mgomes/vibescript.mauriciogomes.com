@@ -16,3 +16,7 @@ def fizzbuzz(limit)
   end
   output
 end
+
+def run
+  fizzbuzz(20)
+end

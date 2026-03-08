@@ -17,3 +17,10 @@ def total_scores(scores)
     running_total + score
   end
 end
+
+def run
+  {
+    doubled: double_each([10, 20, 30]),
+    total: total_scores([100, 200, 300])
+  }
+end

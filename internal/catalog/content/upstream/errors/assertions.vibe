@@ -14,3 +14,11 @@ def guard_present(value)
   assert value != nil
   value
 end
+
+def run
+  {
+    positive: ensure_positive(42),
+    currency: ensure_currency(money("25.00 USD")),
+    present: guard_present("hello")
+  }
+end

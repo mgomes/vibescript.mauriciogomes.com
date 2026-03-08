@@ -21,3 +21,12 @@ def max_value(a, b)
     b
   end
 end
+
+def run
+  {
+    greet: greet("vibescript"),
+    decorated: decorated_greeting("vibescript"),
+    sum: sum_three(10, 20, 30),
+    max: max_value(42, 17)
+  }
+end

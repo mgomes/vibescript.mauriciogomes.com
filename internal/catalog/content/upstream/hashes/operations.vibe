@@ -56,3 +56,21 @@ def hash_flags(record)
     includes_raised: record.include?("raised")
   }
 end
+
+def run
+  defaults = { status: "active", raised: money("0.00 USD"), goal: money("100.00 USD") }
+  player = { name: "Alice", raised: money("75.00 USD") }
+  players = [
+    { id: 1, name: "Alice", raised: money("50.00 USD"), status: "active" },
+    { id: 2, name: "Bob", raised: money("30.00 USD"), status: "complete" }
+  ]
+
+  {
+    merged: merge_defaults(player, defaults),
+    overridden: merge_with_override({ a: 1 }, { a: 2, b: 3 }),
+    tally: tally_statuses([
+      { status: "active" }, { status: "active" }, { status: "complete" }
+    ]),
+    flags: hash_flags({ name: "test", goal: 100 })
+  }
+end

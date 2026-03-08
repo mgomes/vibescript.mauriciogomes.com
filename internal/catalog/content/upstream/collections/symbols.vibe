@@ -7,3 +7,10 @@ end
 def fetch_symbol_key(record, key)
   record[key]
 end
+
+def run
+  {
+    keys: permission_keys,
+    fetched: fetch_symbol_key({ name: "Alice", role: "coach" }, :name)
+  }
+end
