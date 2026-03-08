@@ -775,17 +775,18 @@ a:hover {
   font-size: 0.92rem;
 }
 
-@media (max-width: 960px) {
-  .philosophy {
-    grid-template-columns: 1fr;
-  }
-}
-
 .feature-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 1.5rem;
   margin-bottom: 2rem;
+}
+
+@media (max-width: 960px) {
+  .philosophy,
+  .feature-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 .feature-card {
