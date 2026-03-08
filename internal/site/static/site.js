@@ -262,8 +262,20 @@
     });
   }
 
+  function initExpandToggle() {
+    const toggle = document.querySelector("[data-expand-toggle]");
+    if (!toggle) return;
+
+    toggle.addEventListener("click", () => {
+      const grid = toggle.closest(".detail-grid");
+      if (!grid) return;
+      grid.classList.toggle("output-expanded");
+    });
+  }
+
   document.addEventListener("DOMContentLoaded", () => {
     attachRunner();
+    initExpandToggle();
 
     document.querySelectorAll("code.language-vibescript").forEach((el) => {
       el.innerHTML = highlightVibescript(el.textContent);

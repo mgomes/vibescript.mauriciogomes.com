@@ -327,6 +327,7 @@ a:hover {
 }
 
 .run-button:hover {
+  background: linear-gradient(135deg, var(--accent-strong) 0%, var(--accent-strong) 100%);
   box-shadow: 0 12px 32px rgba(34, 197, 94, 0.35);
 }
 
@@ -553,11 +554,40 @@ a:hover {
 }
 
 .runner-panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   padding: 0.75rem 1.25rem;
   border-bottom: 1px solid var(--code-header-border);
   background: var(--code-header-bg);
   font-size: 0.85rem;
   font-weight: 600;
+}
+
+.expand-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.25rem;
+  border: none;
+  border-radius: 4px;
+  background: none;
+  color: var(--muted);
+  cursor: pointer;
+  transition: color 0.15s ease;
+}
+
+.expand-toggle:hover {
+  color: var(--ink);
+}
+
+.detail-grid.output-expanded .runner-panel {
+  grid-column: 1 / -1;
+  order: -1;
+}
+
+.detail-grid.output-expanded .runner-output {
+  min-height: 300px;
 }
 
 .runner-output {
