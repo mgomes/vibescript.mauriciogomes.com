@@ -34,13 +34,13 @@ def middle_three_digits(value)
 end
 
 def run
-  [
-    [123, middle_three_digits(123)],
-    [12345, middle_three_digits(12345)],
-    [1234567, middle_three_digits(1234567)],
-    [10001, middle_three_digits(10001)],
-    [-10001, middle_three_digits(-10001)],
-    [1, middle_three_digits(1)],
-    [2002, middle_three_digits(2002)]
-  ]
+  rows = []
+  rows = rows.push([123, middle_three_digits(123)])
+  rows = rows.push([12345, middle_three_digits(12345)])
+  rows = rows.push([1234567, middle_three_digits(1234567)])
+  rows = rows.push([10001, middle_three_digits(10001)])
+  rows = rows.push([-10001, middle_three_digits(-10001)])
+  rows = rows.push([1, middle_three_digits(1)])
+  rows = rows.push([2002, middle_three_digits(2002)])
+  rows
 end

@@ -62,5 +62,7 @@ def truth_rows
 end
 
 def run
-  [["left", "right", "and", "or", "not_left"]] + truth_rows
+  rows = []
+  rows = rows.push(["left", "right", "and", "or", "not_left"])
+  rows + truth_rows
 end

@@ -20,9 +20,9 @@ end
 
 def run
   sample = "Vibescript examples"
-  {
-    prefix: substring(sample, 0, 10),
-    middle: substring(sample, 4, 6),
-    suffix: substring(sample, 11, 8)
-  }
+  rows = []
+  rows = rows.push([0, 10, substring(sample, 0, 10)])
+  rows = rows.push([4, 6, substring(sample, 4, 6)])
+  rows = rows.push([11, 8, substring(sample, 11, 8)])
+  rows
 end
