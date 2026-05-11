@@ -23,7 +23,7 @@ func TestHomePageRendersFeaturedExamples(t *testing.T) {
 	}
 
 	body := recorder.Body.String()
-	if !strings.Contains(body, "Idiomatic Vibescript examples, runnable in the browser") {
+	if !strings.Contains(body, "An embeddable Ruby-like language for safe, AI-friendly apps in Go.") {
 		t.Fatalf("expected home headline, got %q", body)
 	}
 
@@ -45,7 +45,7 @@ func TestExamplesPageRendersCatalog(t *testing.T) {
 	}
 
 	body := recorder.Body.String()
-	if !strings.Contains(body, "Browse the Vibescript showcase, references, and seed corpus") {
+	if !strings.Contains(body, "Browse examples") {
 		t.Fatalf("expected catalog intro, got %q", body)
 	}
 
@@ -71,7 +71,7 @@ func TestExamplePageRendersDetail(t *testing.T) {
 		t.Fatalf("expected detail title, got %q", body)
 	}
 
-	if !strings.Contains(body, "Run this example") {
+	if !strings.Contains(body, "Run example") {
 		t.Fatalf("expected runner copy, got %q", body)
 	}
 }
@@ -131,7 +131,7 @@ func TestRunExample(t *testing.T) {
 func TestRunNonRunnableExample(t *testing.T) {
 	app := newTestApp(t)
 
-	request := httptest.NewRequest(http.MethodPost, "/api/examples/basics-functions-and-calls/run", nil)
+	request := httptest.NewRequest(http.MethodPost, "/api/examples/"+firstNonRunnableSlug(t)+"/run", nil)
 	recorder := httptest.NewRecorder()
 
 	app.ServeHTTP(recorder, request)
@@ -160,4 +160,22 @@ func newTestApp(t *testing.T) http.Handler {
 	}
 
 	return app
+}
+
+func firstNonRunnableSlug(t *testing.T) string {
+	t.Helper()
+
+	store, err := catalog.Load()
+	if err != nil {
+		t.Fatalf("load catalog: %v", err)
+	}
+
+	for _, example := range store.All() {
+		if !example.Runnable {
+			return example.Slug
+		}
+	}
+
+	t.Skip("catalog has no non-runnable examples")
+	return ""
 }

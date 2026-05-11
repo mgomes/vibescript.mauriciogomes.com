@@ -87,9 +87,10 @@ func TestRunNonRunnableExample(t *testing.T) {
 		t.Fatalf("new service: %v", err)
 	}
 
-	_, err = service.Run(context.Background(), "basics-functions-and-calls")
+	slug := firstNonRunnableSlug(t, store)
+	_, err = service.Run(context.Background(), slug)
 	if !errors.Is(err, ErrExampleNotRunnable) {
-		t.Fatalf("expected ErrExampleNotRunnable, got %v", err)
+		t.Fatalf("Run(%q) error = %v, want ErrExampleNotRunnable", slug, err)
 	}
 }
 
@@ -129,4 +130,17 @@ func numericValueEquals(value any, expected int) bool {
 	default:
 		return false
 	}
+}
+
+func firstNonRunnableSlug(t *testing.T, store *catalog.Store) string {
+	t.Helper()
+
+	for _, example := range store.All() {
+		if !example.Runnable {
+			return example.Slug
+		}
+	}
+
+	t.Skip("catalog has no non-runnable examples")
+	return ""
 }
