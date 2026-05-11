@@ -10,6 +10,10 @@ just run
 
 The server listens on `0.0.0.0:8080` by default. Override it with `HOST`, `PORT`, and `SHUTDOWN_TIMEOUT`.
 
+## Deploy
+
+Deployments are configured for Miren on Vultr. See [docs/deployment.md](docs/deployment.md).
+
 ## Current shape
 
 - Imports `34` upstream examples from `github.com/mgomes/vibescript`.
