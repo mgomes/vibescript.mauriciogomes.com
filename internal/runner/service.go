@@ -9,6 +9,7 @@ import (
 
 	"github.com/mgomes/vibescript.mauriciogomes.com/internal/catalog"
 	"github.com/mgomes/vibescript/vibes"
+	"github.com/mgomes/vibescript/vibes/value"
 )
 
 var (
@@ -73,40 +74,40 @@ func (s *Service) Run(ctx context.Context, slug string) (Result, error) {
 	}
 
 	started := time.Now()
-	value, err := script.Call(ctx, example.RunFunction, nil, vibes.CallOptions{})
+	result, err := script.Call(ctx, example.RunFunction, nil, vibes.CallOptions{})
 	if err != nil {
 		return Result{}, err
 	}
 
 	return Result{
-		Kind:       value.Kind().String(),
-		Display:    value.String(),
-		Value:      exportValue(value),
+		Kind:       result.Kind().String(),
+		Display:    result.String(),
+		Value:      exportValue(result),
 		DurationUS: time.Since(started).Microseconds(),
 	}, nil
 }
 
-func exportValue(value vibes.Value) any {
-	switch value.Kind() {
-	case vibes.KindNil:
+func exportValue(v value.Value) any {
+	switch v.Kind() {
+	case value.KindNil:
 		return nil
-	case vibes.KindBool:
-		return value.Bool()
-	case vibes.KindInt:
-		return value.Int()
-	case vibes.KindFloat:
-		return value.Float()
-	case vibes.KindString, vibes.KindSymbol, vibes.KindMoney, vibes.KindDuration, vibes.KindTime, vibes.KindRange, vibes.KindEnum, vibes.KindEnumValue, vibes.KindClass, vibes.KindInstance:
-		return value.String()
-	case vibes.KindArray:
-		items := value.Array()
+	case value.KindBool:
+		return v.Bool()
+	case value.KindInt:
+		return v.Int()
+	case value.KindFloat:
+		return v.Float()
+	case value.KindString, value.KindSymbol, value.KindMoney, value.KindDuration, value.KindTime, value.KindRange, value.KindEnum, value.KindEnumValue, value.KindClass, value.KindInstance:
+		return v.String()
+	case value.KindArray:
+		items := v.Array()
 		exported := make([]any, len(items))
 		for i, item := range items {
 			exported[i] = exportValue(item)
 		}
 		return exported
-	case vibes.KindHash, vibes.KindObject:
-		hash := value.Hash()
+	case value.KindHash, value.KindObject:
+		hash := v.Hash()
 		keys := make([]string, 0, len(hash))
 		for key := range hash {
 			keys = append(keys, key)
@@ -119,6 +120,6 @@ func exportValue(value vibes.Value) any {
 		}
 		return exported
 	default:
-		return value.String()
+		return v.String()
 	}
 }
