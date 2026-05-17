@@ -66,6 +66,45 @@ miren app history -a vibescript
 miren rollback -a vibescript
 ```
 
+## Vibescript Version Bumps
+
+The most common deploy is tracking a new upstream `vibescript` release. The version is pinned in two places: `go.mod` and the `UpstreamVersion` constant in `internal/catalog/catalog.go:15`. That constant feeds the header badge, the homepage version chip, and the per-example "view source" links.
+
+Replace `vX.Y.Z` with the target tag:
+
+```bash
+go get github.com/mgomes/vibescript@vX.Y.Z
+go mod tidy
+# edit internal/catalog/catalog.go: UpstreamVersion = "vX.Y.Z"
+go build ./...
+go test ./...
+```
+
+`TestAllImportedExamplesCompile` is the real signal that the new release doesn't break any embedded example.
+
+Spot-check locally:
+
+```bash
+go run .
+curl -s http://localhost:8080/ | grep brand-version
+curl -s http://localhost:8080/examples/strings-operations | grep -oE 'blob/v[0-9.]+/[^"]+' | head -1
+```
+
+Commit as two atomic changes on `master` (matching prior bumps):
+
+1. `Bump vibescript to X.Y.Z` — `go.mod`, `go.sum`
+2. `Show vibescript X.Y.Z in version badge and source links` — `internal/catalog/catalog.go`
+
+Deploy and verify:
+
+```bash
+miren deploy
+curl -s https://vibescript.mauriciogomes.com/healthz
+curl -s https://vibescript.mauriciogomes.com/ | grep brand-version
+```
+
+If the new tag exposes a runtime regression that only shows up in production, `miren rollback -a vibescript` reverts; then bisect upstream from a clean state.
+
 ## Credentials
 
 Do not commit provider credentials, root passwords, or API tokens. Rotate any credentials that were previously stored in local deployment scripts before relying on the Miren deployment path.
