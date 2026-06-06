@@ -31,10 +31,12 @@ type Service struct {
 
 func New(store *catalog.Store) (*Service, error) {
 	engine, err := vibes.NewEngine(vibes.Config{
-		StepQuota:        20_000,
-		MemoryQuotaBytes: 256 << 10,
-		RecursionLimit:   32,
-		StrictEffects:    true,
+		StepQuota:              20_000,
+		MemoryQuotaBytes:       256 << 10,
+		RecursionLimit:         32,
+		StrictEffects:          true,
+		DefaultTaskConcurrency: 4,
+		MaxTaskConcurrency:     8,
 	})
 	if err != nil {
 		return nil, fmt.Errorf("new vibes engine: %w", err)
