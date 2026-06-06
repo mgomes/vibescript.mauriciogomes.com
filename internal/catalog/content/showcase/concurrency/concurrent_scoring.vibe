@@ -1,0 +1,33 @@
+# title: Concurrent scoring
+# category: Vibescript Showcase
+# difficulty: Showcase
+# summary: Fan a list of records through one scoring function with Tasks.map and collect ordered results concurrently.
+# description: Tasks.map runs the same named function across every input concurrently, bounds the fanout with max:, and preserves input order in the result. This is the idiomatic way to parallelize independent per-record work in Vibescript 0.40.
+# tags: concurrency, tasks, structured-concurrency, fanout
+# featured: true
+# feature_rank: 0
+# vibe: 0.4
+
+def score_user(user)
+  user[:score] * user[:weight]
+end
+
+def score_users(users)
+  Tasks.map(users, max: 4, with: :score_user)
+end
+
+def run
+  users = [
+    { id: "u1", score: 10, weight: 3 },
+    { id: "u2", score: 7, weight: 5 },
+    { id: "u3", score: 9, weight: 2 },
+    { id: "u4", score: 4, weight: 8 }
+  ]
+
+  scores = score_users(users)
+
+  {
+    scores: scores,
+    total: scores.sum
+  }
+end

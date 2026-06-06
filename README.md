@@ -16,7 +16,7 @@ Deployments are configured for Miren on Vultr. See [docs/deployment.md](docs/dep
 
 ## Current shape
 
-- Imports `34` upstream examples from `github.com/mgomes/vibescript`.
+- Imports `35` upstream examples from `github.com/mgomes/vibescript`.
 - Exposes detail pages with real `.vibe` source.
 - Runs the examples that define a top-level `run` function through `/api/examples/{slug}/run`.
 

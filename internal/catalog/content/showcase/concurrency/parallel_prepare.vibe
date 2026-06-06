@@ -1,0 +1,40 @@
+# title: Parallel preparation
+# category: Vibescript Showcase
+# difficulty: Showcase
+# summary: Start several independent functions in one Tasks.run scope and combine their handle values.
+# description: Tasks.run opens a structured scope where tasks.spawn starts named functions and returns handles. Reading handle.value waits for that task. The scope auto-waits at exit, so no task can outlive it.
+# tags: concurrency, tasks, structured-concurrency, spawn
+# vibe: 0.4
+
+def prepare_user(user)
+  {
+    id: user[:id],
+    greeting: "ready:" + user[:id]
+  }
+end
+
+def prepare_team(lead, second, third)
+  Tasks.run(max: 3) do |tasks|
+    a = tasks.spawn(:prepare_user, lead)
+    b = tasks.spawn(:prepare_user, second)
+    c = tasks.spawn(:prepare_user, third)
+
+    first = a.value
+    second_ready = b.value
+    third_ready = c.value
+    return [first, second_ready, third_ready]
+  end
+end
+
+def run
+  prepared = prepare_team(
+    { id: "alice" },
+    { id: "bob" },
+    { id: "carol" }
+  )
+
+  {
+    prepared: prepared,
+    count: prepared.length
+  }
+end

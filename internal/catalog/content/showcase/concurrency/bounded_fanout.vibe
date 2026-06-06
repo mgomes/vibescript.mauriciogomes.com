@@ -1,0 +1,30 @@
+# title: Bounded fanout
+# category: Vibescript Showcase
+# difficulty: Showcase
+# summary: Cap concurrency with max: so a large batch never exceeds the configured task budget.
+# description: The max: keyword bounds how many tasks run at once. Requests above the host cap raise an error instead of being silently clamped, so the script's intended concurrency is always explicit and enforced.
+# tags: concurrency, tasks, structured-concurrency, fanout, max
+# vibe: 0.4
+
+def enrich_id(record)
+  record[:id] * record[:id]
+end
+
+def run
+  records = [
+    { id: 2 },
+    { id: 3 },
+    { id: 4 },
+    { id: 5 },
+    { id: 6 },
+    { id: 7 }
+  ]
+
+  squares = Tasks.map(records, max: 4, with: :enrich_id)
+
+  {
+    max_concurrency: 4,
+    batch_size: records.length,
+    squares: squares
+  }
+end

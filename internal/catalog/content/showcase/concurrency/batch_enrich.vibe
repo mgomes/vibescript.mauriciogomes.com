@@ -1,0 +1,28 @@
+# title: Batch enrichment
+# category: Vibescript Showcase
+# difficulty: Showcase
+# summary: Derive new fields for each record concurrently with Tasks.map and return the enriched collection.
+# description: Each task receives a cloned copy of its input and returns data-only results, so concurrent enrichment stays isolated. Tasks.map keeps the output aligned with the input order, which makes the enriched batch easy to consume downstream.
+# tags: concurrency, tasks, structured-concurrency, enrichment
+# vibe: 0.4
+
+def enrich_order(order)
+  subtotal = order[:price] * order[:quantity]
+  {
+    id: order[:id],
+    subtotal: subtotal,
+    priority: subtotal > 100
+  }
+end
+
+def run
+  orders = [
+    { id: "o1", price: 25, quantity: 2 },
+    { id: "o2", price: 60, quantity: 3 },
+    { id: "o3", price: 12, quantity: 1 }
+  ]
+
+  {
+    orders: Tasks.map(orders, max: 4, with: :enrich_order)
+  }
+end
