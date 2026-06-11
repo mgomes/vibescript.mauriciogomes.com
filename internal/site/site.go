@@ -92,7 +92,7 @@ func (a *App) home(w http.ResponseWriter, r *http.Request) {
 		ContentTemplate: "home",
 		Page: page{
 			Title:       "Vibescript",
-			Description: "An embeddable Ruby-like language for building safe, AI-friendly applications in Go. Explore examples and run them in the browser.",
+			Description: "An embeddable Ruby-like language for Go — safe by default and easy for AI to write. Explore examples and run them in the browser.",
 			Section:     "home",
 		},
 		ShowcaseExamples: a.store.TaggedCount("showcase"),

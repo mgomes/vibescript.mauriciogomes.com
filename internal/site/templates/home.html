@@ -2,17 +2,16 @@
 <section class="hero">
   <div class="hero-copy fade-in delay-1">
     <p class="eyebrow">Open source &middot; MIT licensed</p>
-    <h1>An embeddable Ruby-like language for safe, AI-friendly apps in Go.</h1>
+    <h1>An embeddable Ruby-like language for Go. Safe by default, easy for AI to write.</h1>
     <p class="hero-lede">
-      Vibescript is a constrained scripting environment where users express custom logic through
-      Ruby-like syntax, gradual typing, enums, duration and money primitives, and Go-style embeddability —
-      all within safe, predictable bounds.
+      Vibescript is a small, readable scripting language that embeds in your Go app.
+      Users and AI agents write the scripts; the host decides exactly what they can touch.
     </p>
     <div class="hero-actions">
       <a class="button" href="/examples">Explore examples</a>
       <a class="button-secondary" href="/examples/showcase-workflows-release-readiness">Try a live example</a>
     </div>
-    <p class="hero-meta">{{.RunnableExamples}} examples runnable in your browser</p>
+    <p class="hero-meta">{{.RunnableExamples}} examples run live in your browser</p>
   </div>
 
   <div class="hero-panel fade-in delay-2">
@@ -43,7 +42,7 @@ end</code></pre>
   <dl class="feature-grid">
     <div class="feature">
       <dt>Gradual typing</dt>
-      <dd class="feature-desc">Optional annotations, nullable <code>?</code>, enums, positional and keyword args, return type checks.</dd>
+      <dd class="feature-desc">Optional annotations, nullable <code>?</code>, keyword and positional args, checked return types.</dd>
       <dd>
         <div class="code-window">
           <div class="code-window-header">
@@ -152,8 +151,8 @@ end</code></pre>
     <p class="eyebrow">Designed for AI</p>
     <h2>Easy to read. Easy for AI to vibe code.</h2>
     <p>
-      As vibe coding grows, many domains need to narrow what users can build. Instead of a blank canvas,
-      Vibescript offers an opinionated set of well-defined primitives that combine into predictable, safe applications.
+      As vibe coding spreads, most products need limits on what users can build. Instead of a blank canvas,
+      Vibescript hands them an opinionated set of primitives that combine into predictable, safe applications.
     </p>
     <p>
       Think of it less like traditional software development and more like HyperCard: flexible, but within bounds.
@@ -179,7 +178,7 @@ end</code></pre>
       </div>
       <div class="guardrail">
         <dt>Memory quota <span class="guardrail-default">64 KiB</span></dt>
-        <dd>Limits allocations with runtime errors instead of OOM.</dd>
+        <dd>Limits allocations so scripts fail cleanly instead of OOMing the host.</dd>
       </div>
       <div class="guardrail">
         <dt>Effects control <span class="guardrail-default">opt-in</span></dt>
@@ -187,7 +186,7 @@ end</code></pre>
       </div>
       <div class="guardrail">
         <dt>Module paths <span class="guardrail-default">allowlist</span></dt>
-        <dd>Only approved directories are searched by require.</dd>
+        <dd>Module lookups only resolve inside directories you approve.</dd>
       </div>
       <div class="guardrail">
         <dt>Capability gating <span class="guardrail-default">host adapters</span></dt>
@@ -201,7 +200,7 @@ end</code></pre>
   <div class="section-intro">
     <p class="eyebrow">Featured</p>
     <h2>See what idiomatic Vibescript looks like.</h2>
-    <p class="section-sub">Handpicked examples that highlight the language's native features — all runnable in your browser.</p>
+    <p class="section-sub">Handpicked examples that show off the language's native features. Each one runs in your browser.</p>
   </div>
   <div class="card-grid">
     {{range .Featured}}

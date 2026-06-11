@@ -23,7 +23,7 @@ func TestHomePageRendersFeaturedExamples(t *testing.T) {
 	}
 
 	body := recorder.Body.String()
-	if !strings.Contains(body, "An embeddable Ruby-like language for safe, AI-friendly apps in Go.") {
+	if !strings.Contains(body, "An embeddable Ruby-like language for Go. Safe by default, easy for AI to write.") {
 		t.Fatalf("expected home headline, got %q", body)
 	}
 
