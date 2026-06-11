@@ -443,6 +443,20 @@ h3 {
 .hero-decor .s3 { bottom: 6%; left: 46%; width: 14px; height: 14px; color: var(--tok-string); opacity: 0.75; }
 .hero-decor .s4 { top: 8%; right: 32%; width: 11px; height: 11px; color: var(--accent); opacity: 0.6; }
 
+@keyframes twinkle {
+  0%, 100% { opacity: 0.45; }
+  50% { opacity: 1; }
+}
+
+.hero-decor .spark {
+  animation: twinkle 3.4s ease-in-out infinite;
+}
+
+.hero-decor .s1 { animation-delay: 0s; }
+.hero-decor .s2 { animation-delay: 0.7s; }
+.hero-decor .s3 { animation-delay: 1.5s; }
+.hero-decor .s4 { animation-delay: 2.2s; }
+
 .hero-copy,
 .hero-panel {
   position: relative;
@@ -541,10 +555,11 @@ h3 {
 
 .code-window-title::before {
   content: "";
-  width: 0.65rem;
-  height: 0.65rem;
-  border-radius: 999px;
+  width: 0.85rem;
+  height: 0.85rem;
   background: var(--accent);
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 0C12 6.6 17.4 12 24 12 17.4 12 12 17.4 12 24 12 17.4 6.6 12 0 12 6.6 12 12 6.6 12 0Z'/%3E%3C/svg%3E") center / contain no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 0C12 6.6 17.4 12 24 12 17.4 12 12 17.4 12 24 12 17.4 6.6 12 0 12 6.6 12 12 6.6 12 0Z'/%3E%3C/svg%3E") center / contain no-repeat;
   flex-shrink: 0;
 }
 
@@ -656,8 +671,29 @@ h3 {
   color: var(--accent);
 }
 
+.feature {
+  display: flex;
+  flex-direction: column;
+}
+
 .feature dd {
   margin: 0;
+}
+
+/* Stretch the code panel so side-by-side features match height */
+.feature dd:last-child {
+  flex: 1;
+  display: flex;
+}
+
+.feature dd:last-child .code-window {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.feature dd:last-child .code-window pre {
+  flex: 1;
 }
 
 .feature .feature-desc {
@@ -714,6 +750,12 @@ h3 {
   background: var(--panel);
   padding: 1.85rem;
   border: 1.5px solid var(--line-strong);
+  transform: rotate(-1.1deg);
+  transition: transform 200ms ease;
+}
+
+.guardrails:hover {
+  transform: rotate(0deg);
 }
 
 [data-theme="light"] .guardrails {
@@ -1201,6 +1243,16 @@ h3 {
   font-size: 0.875rem;
 }
 
+.site-footer-mark {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.site-footer-mark .spark {
+  color: var(--accent);
+}
+
 .site-footer-links {
   display: flex;
   gap: 1.5rem;
@@ -1249,8 +1301,13 @@ h3 {
   .hero-panel,
   .brand-version,
   .site-nav a.is-active::after,
+  .guardrails,
   .mark::before {
     transform: none;
+  }
+
+  .hero-decor .spark {
+    animation: none;
   }
 }
 
@@ -1285,6 +1342,10 @@ h3 {
 
   .hero-panel {
     transform: rotate(0.8deg);
+  }
+
+  .guardrails {
+    transform: none;
   }
 
   .features,
