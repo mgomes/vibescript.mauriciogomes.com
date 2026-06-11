@@ -18,22 +18,17 @@
   <div class="hero-panel fade-in delay-2">
     <div class="code-window">
       <div class="code-window-header">
-        <span class="code-window-title">quote.vibe</span>
+        <span class="code-window-title">late_fee.vibe</span>
         <span class="code-window-version">{{.UpstreamVersion}}</span>
       </div>
-      <pre><code class="language-vibescript">enum ShippingSpeed
-  Economy
-  Express
-end
-
-def quote(speed: ShippingSpeed, cart: money) -> hash
-  fee = shipping_fee(speed, cart)
-
-  {
-    speed: speed.name,
-    total: cart + fee,
-    eta: transit_time(speed).iso8601
-  }
+      <pre><code class="language-vibescript">def late_fee(overdue: duration) -> money
+  if overdue <= 3.days
+    money("0.00 USD")
+  elsif overdue <= 14.days
+    money("5.00 USD")
+  else
+    money("15.00 USD")
+  end
 end</code></pre>
     </div>
   </div>
