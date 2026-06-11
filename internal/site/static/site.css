@@ -24,14 +24,14 @@
   --gap: 2rem;
   --font-mono: "Cascadia Mono", "SFMono-Regular", "SF Mono", Menlo, Consolas, monospace;
 
-  --tok-keyword: #c586c0;
-  --tok-string: #ce9178;
-  --tok-number: #b5cea8;
-  --tok-comment: #6a9955;
-  --tok-constant: #4fc1ff;
-  --tok-type: #4ec9b0;
-  --tok-function: #dcdcaa;
-  --tok-operator: #d4d4d4;
+  --tok-keyword: #f472b6;
+  --tok-string: #fbbf24;
+  --tok-number: #c084fc;
+  --tok-comment: #76b364;
+  --tok-constant: #93c5fd;
+  --tok-type: #22d3ee;
+  --tok-function: #4ade80;
+  --tok-operator: #e2e8f0;
 }
 
 [data-theme="light"] {
@@ -54,14 +54,14 @@
   --code-header-bg: #eef1ef;
   --code-header-border: rgba(21, 24, 27, 0.08);
 
-  --tok-keyword: #8b3e8b;
-  --tok-string: #a3512e;
-  --tok-number: #1a7f37;
+  --tok-keyword: #c026d3;
+  --tok-string: #d97706;
+  --tok-number: #7c3aed;
   --tok-comment: #57803a;
-  --tok-constant: #0969da;
-  --tok-type: #1a7f6d;
-  --tok-function: #7a6e1e;
-  --tok-operator: #383a42;
+  --tok-constant: #2563eb;
+  --tok-type: #0d9488;
+  --tok-function: #15803d;
+  --tok-operator: #475569;
 }
 
 *,
