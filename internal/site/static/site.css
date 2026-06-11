@@ -438,7 +438,6 @@ h3 {
   opacity: 0.9;
 }
 
-.hero-decor .s1 { top: 0; left: 4%; width: 26px; height: 26px; color: var(--accent); transform: rotate(8deg); }
 .hero-decor .s2 { top: 32%; right: 1%; width: 18px; height: 18px; color: var(--tok-keyword); transform: rotate(-6deg); opacity: 0.8; }
 .hero-decor .s3 { bottom: 6%; left: 46%; width: 14px; height: 14px; color: var(--tok-string); opacity: 0.75; }
 .hero-decor .s4 { top: 8%; right: 32%; width: 11px; height: 11px; color: var(--accent); opacity: 0.6; }
@@ -452,7 +451,6 @@ h3 {
   animation: twinkle 3.4s ease-in-out infinite;
 }
 
-.hero-decor .s1 { animation-delay: 0s; }
 .hero-decor .s2 { animation-delay: 0.7s; }
 .hero-decor .s3 { animation-delay: 1.5s; }
 .hero-decor .s4 { animation-delay: 2.2s; }
