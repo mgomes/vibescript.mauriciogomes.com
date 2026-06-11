@@ -43,7 +43,11 @@ type viewData struct {
 	UpstreamRepoURL  string
 	Year             int
 	CacheBust        string
+	SiteBaseURL      string
+	CanonicalURL     string
 }
+
+const siteBaseURL = "https://vibescript.mauriciogomes.com"
 
 var cacheBust = fmt.Sprintf("%d", time.Now().UnixMilli())
 
@@ -88,7 +92,7 @@ func New(store *catalog.Store, runService *runner.Service) (http.Handler, error)
 }
 
 func (a *App) home(w http.ResponseWriter, r *http.Request) {
-	a.render(w, http.StatusOK, viewData{
+	a.render(w, r, http.StatusOK, viewData{
 		ContentTemplate: "home",
 		Page: page{
 			Title:       "Vibescript",
@@ -107,7 +111,7 @@ func (a *App) home(w http.ResponseWriter, r *http.Request) {
 }
 
 func (a *App) examplesIndex(w http.ResponseWriter, r *http.Request) {
-	a.render(w, http.StatusOK, viewData{
+	a.render(w, r, http.StatusOK, viewData{
 		ContentTemplate: "examples",
 		Page: page{
 			Title:       "Examples",
@@ -132,7 +136,7 @@ func (a *App) exampleDetail(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	a.render(w, http.StatusOK, viewData{
+	a.render(w, r, http.StatusOK, viewData{
 		ContentTemplate: "example",
 		Page: page{
 			Title:       example.Title,
@@ -175,7 +179,7 @@ func (a *App) runExample(w http.ResponseWriter, r *http.Request) {
 }
 
 func (a *App) notFound(w http.ResponseWriter, r *http.Request) {
-	a.render(w, http.StatusNotFound, viewData{
+	a.render(w, r, http.StatusNotFound, viewData{
 		ContentTemplate: "not-found",
 		Page: page{
 			Title:       "Not Found",
@@ -197,8 +201,10 @@ func (a *App) writeJSON(w http.ResponseWriter, status int, payload any) {
 	_ = json.NewEncoder(w).Encode(payload)
 }
 
-func (a *App) render(w http.ResponseWriter, status int, data viewData) {
+func (a *App) render(w http.ResponseWriter, r *http.Request, status int, data viewData) {
 	data.CacheBust = cacheBust
+	data.SiteBaseURL = siteBaseURL
+	data.CanonicalURL = siteBaseURL + r.URL.Path
 	var body bytes.Buffer
 	if err := a.templates.ExecuteTemplate(&body, data.ContentTemplate, data); err != nil {
 		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
