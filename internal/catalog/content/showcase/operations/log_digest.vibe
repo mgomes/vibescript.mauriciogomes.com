@@ -1,0 +1,40 @@
+# title: Log digest
+# category: Vibescript Showcase
+# difficulty: Showcase
+# summary: Turn a raw log blob into a leveled digest with each_line, partition, group_by, and select.
+# description: A small pipeline shows the 1.0 string and collection helpers working together: split lines, partition each into level and message, then group and count without manual parsing state.
+# tags: operations, strings, collections, logs
+# vibe: 0.4
+
+def digest(text: string) -> array
+  entries = []
+  text.each_line do |line|
+    trimmed = line.strip
+    if !trimmed.empty?
+      parts = trimmed.partition(" ")
+      entries.push({ level: parts[0], message: parts[2] })
+    end
+  end
+  entries
+end
+
+def counts_by_level(entries: array) -> hash
+  counts = {}
+  grouped = entries.group_by { |entry| entry[:level] }
+  grouped.each do |level, items|
+    counts[level] = items.length
+  end
+  counts
+end
+
+def run
+  log = "INFO service started\nWARN disk at 82%\nERROR upstream timeout\nINFO healthy\nWARN memory high"
+  entries = digest(log)
+
+  {
+    entry_count: entries.length,
+    first_message: entries[0][:message],
+    counts_by_level: counts_by_level(entries),
+    warnings: entries.select { |entry| entry[:level] == "WARN" }.map { |entry| entry[:message] }
+  }
+end
