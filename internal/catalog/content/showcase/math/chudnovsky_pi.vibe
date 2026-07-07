@@ -1,183 +1,51 @@
 # title: Chudnovsky π
 # category: Vibescript Showcase
 # difficulty: Showcase
-# summary: Compute π to 40 digits with the Chudnovsky series over fixed-point limb arithmetic.
-# description: A scripting-scale port of the chudnovsky Go project. It evaluates the same series with the same integer-domain pipeline — Newton reciprocal and inverse square root need only multiplies — over base-10^8 limb arrays, with float64 used only to seed Newton. Each series term contributes about 14 digits, so three terms carry 40 digits.
-# tags: math, numerics, fixed-point, newton
+# summary: Compute π to 100 digits with the Chudnovsky series and binary splitting on native big integers.
+# description: A direct port of the chudnovsky Go project's pipeline. Binary splitting merges the series' P, Q, and T products, an integer Newton square root supplies √10005 at scale, and everything runs in the integer domain on arbitrary-precision integers (new in 1.0-rc2). Each series term contributes about 14 digits, so nine terms carry 100.
+# tags: math, numerics, bignum, newton
 # source: https://github.com/mgomes/chudnovsky
 # vibe: 0.4
 
-# Fixed-point numbers are little-endian arrays of seven base-10^8 limbs:
-# one integer limb on top of six fraction limbs (48 fractional digits).
-
-def zeros
-  (1..7).map { 0 }
-end
-
-def fp_from_int(n)
-  x = zeros
-  x[6] = n
-  x
-end
-
-def fp_from_float(value)
-  x = zeros
-  x[6] = value.floor
-  frac = value - value.floor
-  i = 5
-  while i >= 0
-    frac = frac * 100_000_000.0
-    digit = frac.floor
-    x[i] = digit
-    frac = frac - digit
-    i = i - 1
-  end
-  x
-end
-
-def fp_add(a, b)
-  out = zeros
-  carry = 0
-  7.times do |i|
-    total = a[i] + b[i] + carry
-    out[i] = total % 100_000_000
-    carry = total / 100_000_000
-  end
-  out
-end
-
-def fp_sub(a, b)
-  out = zeros
-  borrow = 0
-  7.times do |i|
-    total = a[i] - b[i] - borrow
-    if total < 0
-      out[i] = total + 100_000_000
-      borrow = 1
+# Binary splitting: each leaf holds one series term's P, Q, T; merges combine
+# ranges with T(a,b) = Q(m,b)T(a,m) + P(a,m)T(m,b), exactly as the Go
+# implementation does across CPU cores. 10939058860032000 is 640320^3 / 24.
+def split_series(a, b)
+  if b - a == 1
+    if a == 0
+      p = 1
+      q = 1
     else
-      out[i] = total
-      borrow = 0
+      p = (6 * a - 5) * (2 * a - 1) * (6 * a - 1)
+      q = a * a * a * 10939058860032000
     end
-  end
-  out
-end
-
-def fp_mul_small(a, m)
-  out = zeros
-  carry = 0
-  7.times do |i|
-    total = a[i] * m + carry
-    out[i] = total % 100_000_000
-    carry = total / 100_000_000
-  end
-  out
-end
-
-def fp_div_small(a, d)
-  out = zeros
-  rem = 0
-  i = 6
-  while i >= 0
-    total = rem * 100_000_000 + a[i]
-    out[i] = total / d
-    rem = total % d
-    i = i - 1
-  end
-  out
-end
-
-def fp_mul(a, b)
-  full = (1..14).map { 0 }
-  7.times do |i|
-    7.times do |j|
-      full[i + j] = full[i + j] + a[i] * b[j]
+    t = p * (13591409 + 545140134 * a)
+    if a % 2 == 1
+      t = -t
     end
+    [p, q, t]
+  else
+    m = (a + b) / 2
+    left = split_series(a, m)
+    right = split_series(m, b)
+    [
+      left[0] * right[0],
+      left[1] * right[1],
+      right[1] * left[2] + left[0] * right[2]
+    ]
   end
-
-  out = zeros
-  carry = 0
-  14.times do |k|
-    total = full[k] + carry
-    carry = total / 100_000_000
-    if k >= 6 && k <= 12
-      out[k - 6] = total % 100_000_000
-    end
-  end
-  out
 end
 
-def fp_render(x, digits)
-  fraction = ""
-  i = 5
-  while i >= 0
-    fraction = fraction + x[i].to_s.rjust(8, "0")
-    i = i - 1
+# Integer Newton square root. The float seed is inflated above the true root,
+# so the sequence descends monotonically and stops exactly at floor(sqrt(n)).
+def integer_sqrt(n, seed)
+  x = (seed + n / seed) / 2
+  y = (x + n / x) / 2
+  while y < x
+    x = y
+    y = (x + n / x) / 2
   end
-  "#{x[6]}.#{fraction.slice(0, digits)}"
-end
-
-# S = sum over k of (-1)^k (6k)! (13591409 + 545140134k) / ((3k)! (k!)^3 640320^(3k)).
-# The term magnitude follows the recurrence
-#   m(k+1) = m(k) * 24(6k+1)(2k+1)(6k+5) / ((k+1)^3 * 640320^3),
-# the same leaf ratio the binary-splitting implementation multiplies together.
-def chudnovsky_sum
-  m = fp_from_int(1)
-  positive = fp_mul_small(m, 13591409)
-  negative = zeros
-
-  k = 0
-  while k < 2
-    m = fp_mul_small(m, 24 * (6 * k + 1) * (2 * k + 1) * (6 * k + 5))
-    m = fp_div_small(m, (k + 1) ** 3)
-    m = fp_div_small(m, 640320)
-    m = fp_div_small(m, 640320)
-    m = fp_div_small(m, 640320)
-
-    contribution = fp_mul_small(m, 13591409 + 545140134 * (k + 1))
-    if (k + 1) % 2 == 1
-      negative = fp_add(negative, contribution)
-    else
-      positive = fp_add(positive, contribution)
-    end
-    k = k + 1
-  end
-
-  fp_sub(positive, negative)
-end
-
-def float_sum
-  c = 1.0
-  sum = 13591409.0
-  k = 0
-  while k < 2
-    c = c * 24.0 * (6 * k + 1) * (2 * k + 1) * (6 * k + 5) / (((k + 1) ** 3) * 262537412640768000.0)
-    sign = (k + 1) % 2 == 1 ? -1.0 : 1.0
-    sum = sum + sign * c * (13591409.0 + 545140134.0 * (k + 1))
-    k = k + 1
-  end
-  sum
-end
-
-# Newton's method doubles correct digits per step, so a float64 seed
-# (~15 digits) reaches 48 fractional digits in two iterations.
-def newton_invsqrt_10005
-  y = fp_from_float(1.0 / Math.sqrt(10005.0))
-  three = fp_from_int(3)
-  2.times do
-    squared = fp_mul(y, y)
-    scaled = fp_mul_small(squared, 10005)
-    y = fp_div_small(fp_mul(y, fp_sub(three, scaled)), 2)
-  end
-  y
-end
-
-def newton_recip(s, seed)
-  r = fp_from_float(seed)
-  two = fp_from_int(2)
-  2.times do
-    r = fp_mul(r, fp_sub(two, fp_mul(s, r)))
-  end
-  r
+  x
 end
 
 def matching_digits(computed, reference)
@@ -191,24 +59,24 @@ def matching_digits(computed, reference)
 end
 
 def run
-  s = chudnovsky_sum
-  s_float = float_sum
+  digits = 100
+  scale = digits + 5
+  terms = scale / 14 + 2
 
-  inv_sqrt = newton_invsqrt_10005
-  sqrt_10005 = fp_mul_small(inv_sqrt, 10005)
-  recip_s = newton_recip(s, 1.0 / s_float)
+  p, q, t = split_series(0, terms)
 
-  # pi = 426880 * sqrt(10005) / S
-  pi = fp_mul_small(fp_mul(sqrt_10005, recip_s), 426880)
+  seed = (Math.sqrt(10005.0) * 1.001 * (10.0 ** scale)).to_i
+  sqrt_c = integer_sqrt(10005 * (10 ** (2 * scale)), seed)
 
-  computed = fp_render(pi, 40)
-  reference = "3.1415926535897932384626433832795028841971"
+  # pi * 10^scale = 426880 * sqrt(10005 * 10^(2*scale)) * Q / T
+  pi = (q * 426880 * sqrt_c) / t
+  computed = "3.#{pi.to_s.slice(1, digits)}"
+  reference = "3.1415926535897932384626433832795028841971693993751058209749445923078164062862089986280348253421170679"
 
   {
-    pi_40_digits: computed,
+    pi_100_digits: computed,
     matching_reference_digits: matching_digits(computed, reference),
-    float64_pi: 426880.0 * Math.sqrt(10005.0) / s_float,
-    terms_used: 3,
+    terms_used: terms,
     digits_per_term: 14.18
   }
 end
