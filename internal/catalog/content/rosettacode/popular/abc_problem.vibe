@@ -4,7 +4,7 @@
 # difficulty: Intermediate
 # summary: Determine whether a word can be formed from a fixed set of two-letter blocks without reusing a block.
 # tags: popular, search, strings, recursion
-# vibe: 0.2
+# vibe: 0.4
 
 def blocks
   [
@@ -15,38 +15,22 @@ def blocks
   ]
 end
 
-def remove_at(values, skip_index)
-  out = []
-  index = 0
-
-  while index < values.size
-    if index != skip_index
-      out = out + [values[index]]
-    end
-    index = index + 1
-  end
-
-  out
-end
-
 def block_matches?(block, letter)
-  block.slice(0) == letter || block.slice(1) == letter
+  block.start_with?(letter) || block.slice(1) == letter
 end
 
-def can_make_from?(word, word_index, available_blocks)
-  letters = word.upcase.split("")
-
-  if word_index >= letters.size
+def can_make_from?(letters, letter_index, available_blocks)
+  if letter_index >= letters.size
     return true
   end
 
-  letter = letters[word_index]
+  letter = letters[letter_index]
   block_index = 0
 
   while block_index < available_blocks.size
-    block = available_blocks[block_index]
-    if block_matches?(block, letter)
-      if can_make_from?(word, word_index + 1, remove_at(available_blocks, block_index))
+    if block_matches?(available_blocks[block_index], letter)
+      remaining = available_blocks.take(block_index) + available_blocks.drop(block_index + 1)
+      if can_make_from?(letters, letter_index + 1, remaining)
         return true
       end
     end
@@ -57,7 +41,7 @@ def can_make_from?(word, word_index, available_blocks)
 end
 
 def can_make?(word)
-  can_make_from?(word, 0, blocks)
+  can_make_from?(word.upcase.chars, 0, blocks)
 end
 
 def run

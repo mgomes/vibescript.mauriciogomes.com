@@ -1,0 +1,43 @@
+# title: Batch pipeline
+# category: Vibescript Showcase
+# difficulty: Showcase
+# summary: Slice work into batches, enrich each batch concurrently with Tasks.map, then partition the results.
+# description: Structured concurrency and the 1.0 collection helpers compose cleanly: each_slice bounds each fanout, Tasks.map parallelizes the per-record work, and partition sorts the enriched output.
+# tags: concurrency, tasks, collections, fanout
+# vibe: 0.4
+
+def enrich(order)
+  {
+    id: order[:id],
+    total: order[:qty] * order[:price],
+    priority: order[:qty] >= 5
+  }
+end
+
+def process_batch(batch)
+  Tasks.map(batch, max: 4, with: :enrich)
+end
+
+def run
+  orders = [
+    { id: "o1", qty: 2, price: 10 },
+    { id: "o2", qty: 6, price: 4 },
+    { id: "o3", qty: 1, price: 25 },
+    { id: "o4", qty: 8, price: 3 },
+    { id: "o5", qty: 3, price: 7 }
+  ]
+
+  enriched = []
+  orders.each_slice(2) do |batch|
+    enriched = enriched + process_batch(batch)
+  end
+
+  parts = enriched.partition { |order| order[:priority] }
+
+  {
+    enriched: enriched,
+    priority_orders: parts[0].map { |order| order[:id] },
+    standard_orders: parts[1].map { |order| order[:id] },
+    total_value: enriched.map { |order| order[:total] }.sum
+  }
+end

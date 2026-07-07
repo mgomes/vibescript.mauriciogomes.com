@@ -1,4 +1,4 @@
-# vibe: 0.2
+# vibe: 0.4
 
 def first_two(values)
   values.first(2)
@@ -19,11 +19,11 @@ def double_sum(values)
 end
 
 def push_and_pop(values, extra)
-  pushed = values.push(extra)
-  result = pushed.pop
+  values.push(extra)
+  popped = values.pop
   {
-    array: result[:array],
-    popped: result[:popped]
+    array: values,
+    popped: popped
   }
 end
 
@@ -37,6 +37,22 @@ end
 
 def subtract_values(first, second)
   first - second
+end
+
+def shovel_value(values, extra)
+  values << extra
+end
+
+def accumulate_with_shovel(values)
+  result = []
+  for value in values
+    result = result << value
+  end
+  result
+end
+
+def intersect_values(first, second)
+  first & second
 end
 
 def include_value(values, value)
@@ -143,10 +159,13 @@ def run
     last_three: last_three(values),
     numeric_sum: numeric_sum(values),
     double_sum: double_sum(values),
-    push_and_pop: push_and_pop(values, 20),
+    push_and_pop: push_and_pop(values.dup, 20),
     uniq_values: uniq_values(values),
     concat_values: concat_values([1, 2], [3, 4]),
     subtract_values: subtract_values(values, [4, 15]),
+    shovel_value: shovel_value([1, 2], 3),
+    accumulate_with_shovel: accumulate_with_shovel(values),
+    intersect_values: intersect_values([1, 2, 3, 4], [2, 4, 6]),
     include_value: include_value(values, 12),
     first_match: first_match(values, 10),
     first_match_index: first_match_index(values, 10),
