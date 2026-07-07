@@ -26,7 +26,7 @@ def egyptian_fraction(numerator, denominator)
 
   while left != 0
     unit = (right + left - 1) / left
-    terms = terms.push("1/" + ("" + unit))
+    terms << "1/#{unit}"
     left = (left * unit) - right
     right = right * unit
 

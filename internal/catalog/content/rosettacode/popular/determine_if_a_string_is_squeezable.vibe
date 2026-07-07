@@ -4,21 +4,17 @@
 # difficulty: Intro
 # summary: Collapse repeated adjacent characters and compare the squeezed result with a target string.
 # tags: popular, strings, parsing, basics
-# vibe: 0.2
+# vibe: 0.4
 
 def squeeze(text)
-  chars = text.split("")
   result = ""
   previous = nil
-  index = 0
 
-  while index < chars.size
-    char = chars[index]
+  text.chars.each do |char|
     if char != previous
       result = result + char
       previous = char
     end
-    index = index + 1
   end
 
   result
