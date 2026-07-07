@@ -4,7 +4,7 @@
 # difficulty: Medium
 # summary: Build short aliquot sequences and classify whether they terminate, loop, or are perfect.
 # tags: popular, math, sequences, divisors
-# vibe: 0.2
+# vibe: 0.4
 
 def proper_divisor_sum(number)
   if number == 1
@@ -33,23 +33,20 @@ def aliquot_sequence(start_value, limit)
   seen = {}
   current = start_value
 
-  while values.length < limit && !seen.fetch("" + current, false)
-    values = values.push(current)
-    seen["" + current] = true
+  while values.length < limit && !seen.fetch(current.to_s, false)
+    values << current
+    seen[current.to_s] = true
     current = proper_divisor_sum(current)
   end
 
-  values = values.push(current)
+  values << current
   values
 end
 
 def classification(sequence)
-  last_value = sequence[sequence.length - 1]
-  first_value = sequence[0]
-
-  if last_value == 0
+  if sequence.last == 0
     "terminating"
-  elsif last_value == first_value
+  elsif sequence.last == sequence.first
     "perfect"
   else
     "looping"
@@ -57,19 +54,12 @@ def classification(sequence)
 end
 
 def run
-  values = [6, 10, 12]
-  rows = []
-  index = 0
-
-  while index < values.length
-    sequence = aliquot_sequence(values[index], 8)
-    rows = rows.push({
-      start: values[index],
+  [6, 10, 12].map do |start|
+    sequence = aliquot_sequence(start, 8)
+    {
+      start:,
       classification: classification(sequence),
-      sequence: sequence
-    })
-    index = index + 1
+      sequence:
+    }
   end
-
-  rows
 end
