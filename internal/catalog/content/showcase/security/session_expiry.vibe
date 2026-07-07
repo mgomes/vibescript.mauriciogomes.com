@@ -4,7 +4,7 @@
 # summary: Model session expiry with typed risk enums, Duration-based TTLs, and deterministic timestamps.
 # description: This example shows how security policy code gets easier to read when risk levels, TTLs, and refresh logic use domain types instead of anonymous numbers.
 # tags: security, durations, enums, sessions
-# vibe: 0.2
+# vibe: 0.4
 
 enum SessionRisk
   Trusted
@@ -31,7 +31,7 @@ def refresh_window(risk: SessionRisk) -> duration
 end
 
 def session_snapshot(user_id: string, risk: SessionRisk, issued_at: time, now: time) -> hash
-  age = now - issued_at
+  age = Duration.build((now - issued_at).to_i)
   ttl = ttl_for(risk)
 
   {

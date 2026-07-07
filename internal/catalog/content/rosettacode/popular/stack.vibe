@@ -4,7 +4,7 @@
 # difficulty: Easy
 # summary: Model a small LIFO stack with push, pop, and peek over an array-backed store.
 # tags: popular, stack, arrays, data-structures
-# vibe: 0.2
+# vibe: 0.4
 
 def new_stack
   {
@@ -13,7 +13,7 @@ def new_stack
 end
 
 def push(stack, value)
-  stack[:items] = stack[:items].push(value)
+  stack[:items].push(value)
   stack
 end
 
@@ -28,11 +28,10 @@ def peek(stack)
 end
 
 def pop(stack)
-  popped = stack[:items].pop
-  stack[:items] = popped[:array]
+  value = stack[:items].pop
   {
     stack: stack,
-    value: popped[:popped]
+    value: value
   }
 end
 

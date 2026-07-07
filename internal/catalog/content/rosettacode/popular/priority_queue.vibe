@@ -4,7 +4,7 @@
 # difficulty: Medium
 # summary: Model a simple highest-priority-first queue with sorted insertion over an array-backed store.
 # tags: popular, data-structures, sorting, queues
-# vibe: 0.2
+# vibe: 0.4
 
 def new_priority_queue
   {
@@ -33,6 +33,14 @@ def enqueue(queue, priority, value)
   queue
 end
 
+def dequeue(queue)
+  value = queue[:items].pop
+  {
+    queue: queue,
+    item: value
+  }
+end
+
 def peek(queue)
   items = queue[:items]
   if items.empty?
@@ -40,15 +48,6 @@ def peek(queue)
   else
     items[items.length - 1]
   end
-end
-
-def dequeue(queue)
-  popped = queue[:items].pop
-  queue[:items] = popped[:array]
-  {
-    queue: queue,
-    item: popped[:popped]
-  }
 end
 
 def run

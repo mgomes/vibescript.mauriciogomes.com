@@ -6,7 +6,7 @@
 # tags: policies, money, durations, enums
 # featured: true
 # feature_rank: 4
-# vibe: 0.2
+# vibe: 0.4
 
 enum RefundDecision
   Full
@@ -35,7 +35,7 @@ def refund_amount(total: money, decision: RefundDecision) -> money
 end
 
 def refund_quote(total: money, purchased_at: time, requested_at: time, used: bool) -> hash
-  age = requested_at - purchased_at
+  age = Duration.build((requested_at - purchased_at).to_i)
   decision = refund_decision(age, used)
 
   {
