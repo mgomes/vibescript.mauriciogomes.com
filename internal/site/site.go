@@ -47,7 +47,7 @@ type viewData struct {
 	CanonicalURL     string
 }
 
-const siteBaseURL = "https://vibescript.mauriciogomes.com"
+const siteBaseURL = "https://vibescript-lang.org"
 
 var cacheBust = fmt.Sprintf("%d", time.Now().UnixMilli())
 
@@ -75,6 +75,7 @@ func New(store *catalog.Store, runService *runner.Service) (http.Handler, error)
 	router.Use(middleware.Recoverer)
 	router.Use(middleware.Compress(5))
 	router.Use(middleware.Timeout(30 * time.Second))
+	router.Use(redirectLegacyHosts)
 
 	router.Get("/", app.home)
 	router.Get("/healthz", app.healthz)
@@ -89,6 +90,17 @@ func New(store *catalog.Store, runService *runner.Service) (http.Handler, error)
 	router.NotFound(app.notFound)
 
 	return router, nil
+}
+
+func redirectLegacyHosts(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		switch r.Host {
+		case "vibescript.mauriciogomes.com", "www.vibescript-lang.org":
+			http.Redirect(w, r, "https://vibescript-lang.org"+r.URL.RequestURI(), http.StatusMovedPermanently)
+		default:
+			next.ServeHTTP(w, r)
+		}
+	})
 }
 
 func (a *App) home(w http.ResponseWriter, r *http.Request) {
