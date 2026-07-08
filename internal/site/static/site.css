@@ -25,9 +25,9 @@
   --radius-md: 0.7rem;
   --radius-sm: 0.4rem;
   --gap: 2rem;
-  --font-display: "Satoshi", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  --font-sans: "Satoshi", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  --font-mono: "Cascadia Mono", "SFMono-Regular", "SF Mono", Menlo, Consolas, monospace;
+  --font-display: "MonoLisaText", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-sans: "MonoLisaText", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-mono: "MonoLisaCode", "SFMono-Regular", "SF Mono", Menlo, Consolas, monospace;
 
   --tok-keyword: #f472b6;
   --tok-string: #fbbf24;
@@ -91,6 +91,14 @@ body {
   font-weight: 500;
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
+}
+
+/* The UA stylesheet's `code { font-family: monospace }` beats inheritance,
+   so without this floor the code inside styled <pre> panels renders in the
+   browser default instead of the site's mono face. */
+pre,
+code {
+  font-family: var(--font-mono);
 }
 
 /* Faint dot-grid paper texture */
