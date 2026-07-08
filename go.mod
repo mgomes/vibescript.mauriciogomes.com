@@ -1,4 +1,4 @@
-module github.com/mgomes/vibescript.mauriciogomes.com
+module github.com/mgomes/vibescript-lang.org
 
 go 1.26.1
 

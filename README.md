@@ -1,4 +1,4 @@
-# vibescript.mauriciogomes.com
+# vibescript-lang.org
 
 The Vibescript site. It is a Go `chi` app that imports the upstream Vibescript examples corpus, serves the `.vibe` source through the web UI, and executes the runnable subset in the browser through a Go-hosted Vibescript runtime.
 

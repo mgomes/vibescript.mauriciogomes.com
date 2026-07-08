@@ -12,8 +12,8 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
-	"github.com/mgomes/vibescript.mauriciogomes.com/internal/catalog"
-	"github.com/mgomes/vibescript.mauriciogomes.com/internal/runner"
+	"github.com/mgomes/vibescript-lang.org/internal/catalog"
+	"github.com/mgomes/vibescript-lang.org/internal/runner"
 )
 
 type App struct {
