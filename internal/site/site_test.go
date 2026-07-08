@@ -142,6 +142,41 @@ func TestRunNonRunnableExample(t *testing.T) {
 	}
 }
 
+func TestStaticAsset(t *testing.T) {
+	app := newTestApp(t)
+
+	request := httptest.NewRequest(http.MethodGet, "/static/site.css", nil)
+	recorder := httptest.NewRecorder()
+
+	app.ServeHTTP(recorder, request)
+
+	if recorder.Code != http.StatusOK {
+		t.Fatalf("expected status 200, got %d", recorder.Code)
+	}
+
+	if !strings.Contains(recorder.Body.String(), "--font-display") {
+		t.Fatalf("expected stylesheet body, got %q", recorder.Body.String())
+	}
+}
+
+func TestLegacyHostRedirect(t *testing.T) {
+	app := newTestApp(t)
+
+	request := httptest.NewRequest(http.MethodGet, "https://vibescript.mauriciogomes.com/examples?tag=arrays", nil)
+	recorder := httptest.NewRecorder()
+
+	app.ServeHTTP(recorder, request)
+
+	if recorder.Code != http.StatusMovedPermanently {
+		t.Fatalf("expected status 301, got %d", recorder.Code)
+	}
+
+	want := "https://vibescript-lang.org/examples?tag=arrays"
+	if got := recorder.Header().Get("Location"); got != want {
+		t.Fatalf("expected redirect %q, got %q", want, got)
+	}
+}
+
 func newTestApp(t *testing.T) http.Handler {
 	t.Helper()
 

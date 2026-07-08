@@ -2,16 +2,17 @@ package site
 
 import (
 	"bytes"
-	"encoding/json"
+	"context"
 	"errors"
 	"fmt"
 	"html/template"
+	"io"
 	"io/fs"
 	"net/http"
+	"strings"
 	"time"
 
-	"github.com/go-chi/chi/v5"
-	"github.com/go-chi/chi/v5/middleware"
+	"github.com/mgomes/ohm"
 	"github.com/mgomes/vibescript-lang.org/internal/catalog"
 	"github.com/mgomes/vibescript-lang.org/internal/runner"
 )
@@ -51,7 +52,7 @@ const siteBaseURL = "https://vibescript-lang.org"
 
 var cacheBust = fmt.Sprintf("%d", time.Now().UnixMilli())
 
-func New(store *catalog.Store, runService *runner.Service) (http.Handler, error) {
+func New(store *catalog.Store, runService *runner.Service) (*ohm.App, error) {
 	templates, err := template.ParseFS(assets, "templates/*.html")
 	if err != nil {
 		return nil, err
@@ -69,27 +70,18 @@ func New(store *catalog.Store, runService *runner.Service) (http.Handler, error)
 		static:    http.FileServer(http.FS(staticFS)),
 	}
 
-	router := chi.NewRouter()
-	router.Use(middleware.RequestID)
-	router.Use(middleware.RealIP)
-	router.Use(middleware.Recoverer)
-	router.Use(middleware.Compress(5))
-	router.Use(middleware.Timeout(30 * time.Second))
-	router.Use(redirectLegacyHosts)
+	application := ohm.New()
+	application.Use(ohm.Recoverer(nil), realIP, requestTimeout(30*time.Second), redirectLegacyHosts)
+	application.Get("/", app.home)
+	application.Get("/healthz", app.healthz)
+	application.GetHTTP("/static/*", http.StripPrefix("/static/", app.static))
+	application.Post("/api/examples/{slug}/run", app.runExample)
+	application.Get("/examples", app.examplesIndex)
+	application.Get("/examples/", app.examplesIndex)
+	application.Get("/examples/{slug}", app.exampleDetail)
+	application.NotFound(app.notFound)
 
-	router.Get("/", app.home)
-	router.Get("/healthz", app.healthz)
-	router.Handle("/static/*", http.StripPrefix("/static/", app.static))
-	router.Post("/api/examples/{slug}/run", app.runExample)
-
-	router.Route("/examples", func(r chi.Router) {
-		r.Get("/", app.examplesIndex)
-		r.Get("/{slug}", app.exampleDetail)
-	})
-
-	router.NotFound(app.notFound)
-
-	return router, nil
+	return application, nil
 }
 
 func redirectLegacyHosts(next http.Handler) http.Handler {
@@ -103,8 +95,31 @@ func redirectLegacyHosts(next http.Handler) http.Handler {
 	})
 }
 
-func (a *App) home(w http.ResponseWriter, r *http.Request) {
-	a.render(w, r, http.StatusOK, viewData{
+func realIP(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if forwarded := r.Header.Get("X-Forwarded-For"); forwarded != "" {
+			host, _, _ := strings.Cut(forwarded, ",")
+			r.RemoteAddr = strings.TrimSpace(host)
+		}
+		if realIP := r.Header.Get("X-Real-IP"); realIP != "" {
+			r.RemoteAddr = realIP
+		}
+		next.ServeHTTP(w, r)
+	})
+}
+
+func requestTimeout(timeout time.Duration) ohm.Middleware {
+	return func(next http.Handler) http.Handler {
+		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			ctx, cancel := context.WithTimeout(r.Context(), timeout)
+			defer cancel()
+			next.ServeHTTP(w, r.WithContext(ctx))
+		})
+	}
+}
+
+func (a *App) home(req *ohm.Request) error {
+	return a.render(req, http.StatusOK, viewData{
 		ContentTemplate: "home",
 		Page: page{
 			Title:       "Vibescript",
@@ -122,8 +137,8 @@ func (a *App) home(w http.ResponseWriter, r *http.Request) {
 	})
 }
 
-func (a *App) examplesIndex(w http.ResponseWriter, r *http.Request) {
-	a.render(w, r, http.StatusOK, viewData{
+func (a *App) examplesIndex(req *ohm.Request) error {
+	return a.render(req, http.StatusOK, viewData{
 		ContentTemplate: "examples",
 		Page: page{
 			Title:       "Examples",
@@ -140,15 +155,14 @@ func (a *App) examplesIndex(w http.ResponseWriter, r *http.Request) {
 	})
 }
 
-func (a *App) exampleDetail(w http.ResponseWriter, r *http.Request) {
-	identifier := chi.URLParam(r, "slug")
+func (a *App) exampleDetail(req *ohm.Request) error {
+	identifier := req.Param("slug")
 	example, ok := a.store.BySlug(identifier)
 	if !ok {
-		a.notFound(w, r)
-		return
+		return a.renderNotFound(req.ResponseWriter(), req.HTTPRequest())
 	}
 
-	a.render(w, r, http.StatusOK, viewData{
+	return a.render(req, http.StatusOK, viewData{
 		ContentTemplate: "example",
 		Page: page{
 			Title:       example.Title,
@@ -165,16 +179,17 @@ func (a *App) exampleDetail(w http.ResponseWriter, r *http.Request) {
 	})
 }
 
-func (a *App) healthz(w http.ResponseWriter, r *http.Request) {
-	a.writeJSON(w, http.StatusOK, map[string]any{
+func (a *App) healthz(req *ohm.Request) error {
+	req.JSON(http.StatusOK, map[string]any{
 		"status":            "ok",
 		"examples":          a.store.Count(),
 		"runnable_examples": a.store.RunnableCount(),
 	})
+	return nil
 }
 
-func (a *App) runExample(w http.ResponseWriter, r *http.Request) {
-	result, err := a.runner.Run(r.Context(), chi.URLParam(r, "slug"))
+func (a *App) runExample(req *ohm.Request) error {
+	result, err := a.runner.Run(req.Context(), req.Param("slug"))
 	if err != nil {
 		status := http.StatusInternalServerError
 		switch {
@@ -183,15 +198,22 @@ func (a *App) runExample(w http.ResponseWriter, r *http.Request) {
 		case errors.Is(err, runner.ErrExampleNotRunnable):
 			status = http.StatusConflict
 		}
-		a.writeJSON(w, status, map[string]string{"error": err.Error()})
-		return
+		req.JSON(status, map[string]string{"error": err.Error()})
+		return nil
 	}
 
-	a.writeJSON(w, http.StatusOK, map[string]any{"result": result})
+	req.JSON(http.StatusOK, map[string]any{"result": result})
+	return nil
 }
 
 func (a *App) notFound(w http.ResponseWriter, r *http.Request) {
-	a.render(w, r, http.StatusNotFound, viewData{
+	if err := a.renderNotFound(w, r); err != nil {
+		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+	}
+}
+
+func (a *App) renderNotFound(w http.ResponseWriter, r *http.Request) error {
+	return a.renderHTTP(w, r, http.StatusNotFound, viewData{
 		ContentTemplate: "not-found",
 		Page: page{
 			Title:       "Not Found",
@@ -207,31 +229,28 @@ func (a *App) notFound(w http.ResponseWriter, r *http.Request) {
 	})
 }
 
-func (a *App) writeJSON(w http.ResponseWriter, status int, payload any) {
-	w.Header().Set("Content-Type", "application/json; charset=utf-8")
-	w.WriteHeader(status)
-	_ = json.NewEncoder(w).Encode(payload)
+func (a *App) render(req *ohm.Request, status int, data viewData) error {
+	return a.renderHTTP(req.ResponseWriter(), req.HTTPRequest(), status, data)
 }
 
-func (a *App) render(w http.ResponseWriter, r *http.Request, status int, data viewData) {
+func (a *App) renderHTTP(w http.ResponseWriter, r *http.Request, status int, data viewData) error {
 	data.CacheBust = cacheBust
 	data.SiteBaseURL = siteBaseURL
 	data.CanonicalURL = siteBaseURL + r.URL.Path
-	var body bytes.Buffer
-	if err := a.templates.ExecuteTemplate(&body, data.ContentTemplate, data); err != nil {
-		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
-		return
-	}
+	return ohm.RenderHTML(w, r, status, ohm.HTMLFunc(func(ctx context.Context, w io.Writer) error {
+		if err := ctx.Err(); err != nil {
+			return err
+		}
 
-	data.Content = template.HTML(body.String())
+		var body bytes.Buffer
+		if err := a.templates.ExecuteTemplate(&body, data.ContentTemplate, data); err != nil {
+			return fmt.Errorf("execute content template %q: %w", data.ContentTemplate, err)
+		}
 
-	var page bytes.Buffer
-	if err := a.templates.ExecuteTemplate(&page, "layout", data); err != nil {
-		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
-		return
-	}
-
-	w.Header().Set("Content-Type", "text/html; charset=utf-8")
-	w.WriteHeader(status)
-	_, _ = page.WriteTo(w)
+		data.Content = template.HTML(body.String())
+		if err := a.templates.ExecuteTemplate(w, "layout", data); err != nil {
+			return fmt.Errorf("execute layout template: %w", err)
+		}
+		return nil
+	}))
 }
