@@ -1,10 +1,13 @@
 package site
 
 import (
+	"compress/gzip"
+	"io"
 	"net/http"
 	"net/http/httptest"
 	"strings"
 	"testing"
+	"time"
 
 	"github.com/mgomes/vibescript-lang.org/internal/catalog"
 	"github.com/mgomes/vibescript-lang.org/internal/runner"
@@ -142,6 +145,152 @@ func TestRunNonRunnableExample(t *testing.T) {
 	}
 }
 
+func TestStaticAsset(t *testing.T) {
+	app := newTestApp(t)
+
+	request := httptest.NewRequest(http.MethodGet, "/static/site.css", nil)
+	recorder := httptest.NewRecorder()
+
+	app.ServeHTTP(recorder, request)
+
+	if recorder.Code != http.StatusOK {
+		t.Fatalf("expected status 200, got %d", recorder.Code)
+	}
+
+	if !strings.Contains(recorder.Body.String(), "--font-display") {
+		t.Fatalf("expected stylesheet body, got %q", recorder.Body.String())
+	}
+}
+
+func TestGzipHomePage(t *testing.T) {
+	app := newTestApp(t)
+
+	request := httptest.NewRequest(http.MethodGet, "/", nil)
+	request.Header.Set("Accept-Encoding", "gzip")
+	recorder := httptest.NewRecorder()
+
+	app.ServeHTTP(recorder, request)
+
+	if recorder.Code != http.StatusOK {
+		t.Fatalf("expected status 200, got %d", recorder.Code)
+	}
+
+	if got := recorder.Header().Get("Content-Encoding"); got != "gzip" {
+		t.Fatalf("expected gzip content encoding, got %q", got)
+	}
+
+	body := readGzipBody(t, recorder)
+	if !strings.Contains(body, "An embeddable Ruby-like language for Go.") {
+		t.Fatalf("expected home page body, got %q", body)
+	}
+}
+
+func TestGzipStaticAsset(t *testing.T) {
+	app := newTestApp(t)
+
+	request := httptest.NewRequest(http.MethodGet, "/static/site.css", nil)
+	request.Header.Set("Accept-Encoding", "gzip")
+	recorder := httptest.NewRecorder()
+
+	app.ServeHTTP(recorder, request)
+
+	if recorder.Code != http.StatusOK {
+		t.Fatalf("expected status 200, got %d", recorder.Code)
+	}
+
+	if got := recorder.Header().Get("Content-Encoding"); got != "gzip" {
+		t.Fatalf("expected gzip content encoding, got %q", got)
+	}
+
+	if got := recorder.Header().Get("Accept-Ranges"); got != "" {
+		t.Fatalf("expected no accept-ranges header, got %q", got)
+	}
+
+	body := readGzipBody(t, recorder)
+	if !strings.Contains(body, "--font-display") {
+		t.Fatalf("expected stylesheet body, got %q", body)
+	}
+}
+
+func TestGzipHeadStaticAsset(t *testing.T) {
+	app := newTestApp(t)
+
+	request := httptest.NewRequest(http.MethodHead, "/static/site.css", nil)
+	request.Header.Set("Accept-Encoding", "gzip")
+	recorder := httptest.NewRecorder()
+
+	app.ServeHTTP(recorder, request)
+
+	if recorder.Code != http.StatusOK {
+		t.Fatalf("expected status 200, got %d", recorder.Code)
+	}
+
+	if got := recorder.Header().Get("Content-Encoding"); got != "gzip" {
+		t.Fatalf("expected gzip content encoding, got %q", got)
+	}
+
+	if got := recorder.Header().Get("Content-Length"); got != "" {
+		t.Fatalf("expected no content-length header, got %q", got)
+	}
+
+	if got := recorder.Body.String(); got != "" {
+		t.Fatalf("expected empty HEAD body, got %q", got)
+	}
+}
+
+func TestLegacyHostRedirect(t *testing.T) {
+	app := newTestApp(t)
+
+	request := httptest.NewRequest(http.MethodGet, "https://vibescript.mauriciogomes.com/examples?tag=arrays", nil)
+	recorder := httptest.NewRecorder()
+
+	app.ServeHTTP(recorder, request)
+
+	if recorder.Code != http.StatusMovedPermanently {
+		t.Fatalf("expected status 301, got %d", recorder.Code)
+	}
+
+	want := "https://vibescript-lang.org/examples?tag=arrays"
+	if got := recorder.Header().Get("Location"); got != want {
+		t.Fatalf("expected redirect %q, got %q", want, got)
+	}
+}
+
+func TestRequestTimeoutWritesGatewayTimeoutWhenDeadlineExpires(t *testing.T) {
+	handler := requestTimeout(time.Nanosecond)(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		<-r.Context().Done()
+	}))
+
+	request := httptest.NewRequest(http.MethodGet, "/", nil)
+	recorder := httptest.NewRecorder()
+
+	handler.ServeHTTP(recorder, request)
+
+	if recorder.Code != http.StatusGatewayTimeout {
+		t.Fatalf("expected status 504, got %d", recorder.Code)
+	}
+
+	if !strings.Contains(recorder.Body.String(), http.StatusText(http.StatusGatewayTimeout)) {
+		t.Fatalf("expected timeout body, got %q", recorder.Body.String())
+	}
+}
+
+func TestRequestTimeoutDoesNotOverwriteCommittedResponse(t *testing.T) {
+	handler := requestTimeout(time.Nanosecond)(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusAccepted)
+		<-r.Context().Done()
+	}))
+
+	request := httptest.NewRequest(http.MethodGet, "/", nil)
+	recorder := httptest.NewRecorder()
+
+	handler.ServeHTTP(recorder, request)
+
+	if recorder.Code != http.StatusAccepted {
+		t.Fatalf("expected status 202, got %d", recorder.Code)
+	}
+}
+
 func newTestApp(t *testing.T) http.Handler {
 	t.Helper()
 
@@ -161,6 +310,22 @@ func newTestApp(t *testing.T) http.Handler {
 	}
 
 	return app
+}
+
+func readGzipBody(t *testing.T, recorder *httptest.ResponseRecorder) string {
+	t.Helper()
+
+	reader, err := gzip.NewReader(recorder.Body)
+	if err != nil {
+		t.Fatalf("gzip.NewReader(response body) error = %v, want nil", err)
+	}
+	defer reader.Close()
+
+	body, err := io.ReadAll(reader)
+	if err != nil {
+		t.Fatalf("io.ReadAll(gzip response body) error = %v, want nil", err)
+	}
+	return string(body)
 }
 
 func firstNonRunnableSlug(t *testing.T) string {
