@@ -52,7 +52,7 @@
   {{if .Example.Tags}}
   <div class="detail-tags">
     {{range .Example.Tags}}
-    <span class="tag">{{.}}</span>
+    <a class="tag" href="/examples?tag={{.}}">{{.}}</a>
     {{end}}
   </div>
   {{end}}

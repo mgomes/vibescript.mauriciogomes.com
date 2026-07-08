@@ -952,6 +952,16 @@ h3 {
   color: var(--muted);
 }
 
+a.tag {
+  text-decoration: none;
+  transition: color 120ms ease, background 120ms ease;
+}
+
+a.tag:hover {
+  color: var(--ink);
+  background: var(--panel-hover, var(--panel-strong));
+}
+
 .card-category {
   align-self: flex-start;
 }
