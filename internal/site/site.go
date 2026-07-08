@@ -71,7 +71,14 @@ func New(store *catalog.Store, runService *runner.Service) (*ohm.App, error) {
 	}
 
 	application := ohm.New()
-	application.Use(ohm.Recoverer(nil), realIP, gzipResponse, requestTimeout(30*time.Second), redirectLegacyHosts)
+	application.Use(
+		ohm.Recoverer(nil),
+		realIP,
+		headCompressionMetadata,
+		ohm.Compress(5),
+		requestTimeout(30*time.Second),
+		redirectLegacyHosts,
+	)
 	application.Get("/", app.home)
 	application.Get("/healthz", app.healthz)
 	application.GetHTTP("/static/*", http.StripPrefix("/static/", app.static))
