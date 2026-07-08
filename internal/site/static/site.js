@@ -218,12 +218,18 @@
     });
 
     let activeCategory = null;
+    let activeTag = new URLSearchParams(window.location.search).get("tag");
+
+    function cardHasTag(card, tag) {
+      return (card.dataset.tags || "").trim().split(/\s+/).includes(tag);
+    }
 
     function render() {
       cards.forEach((card) => {
         const cat = card.dataset.category || "Other";
-        const show = !activeCategory || cat === activeCategory;
-        card.hidden = !show;
+        const categoryOk = !activeCategory || cat === activeCategory;
+        const tagOk = !activeTag || cardHasTag(card, activeTag);
+        card.hidden = !(categoryOk && tagOk);
       });
 
       nav.querySelectorAll(".catalog-nav-item").forEach((btn) => {
@@ -238,6 +244,17 @@
           pill.innerHTML = `${escapeHtml(activeCategory)} <span class="filter-x">&times;</span>`;
           pill.addEventListener("click", () => {
             activeCategory = null;
+            render();
+          });
+          filtersEl.appendChild(pill);
+        }
+        if (activeTag) {
+          const pill = document.createElement("button");
+          pill.className = "filter-pill";
+          pill.innerHTML = `tag: ${escapeHtml(activeTag)} <span class="filter-x">&times;</span>`;
+          pill.addEventListener("click", () => {
+            activeTag = null;
+            window.history.replaceState({}, "", window.location.pathname);
             render();
           });
           filtersEl.appendChild(pill);
@@ -266,6 +283,8 @@
       });
       nav.appendChild(btn);
     });
+
+    render();
   }
 
   function initExpandToggle() {
