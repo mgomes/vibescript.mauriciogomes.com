@@ -4,35 +4,20 @@
 # difficulty: Medium
 # summary: Find the first palindromic gapful numbers in a bounded decimal range.
 # tags: popular, numbers, search, divisibility
-# vibe: 0.2
-
-def digit_value(char)
-  "0123456789".index(char)
-end
-
-def reverse_text(text)
-  output = ""
-  index = text.length - 1
-
-  while index >= 0
-    output = output + text.slice(index)
-    index = index - 1
-  end
-
-  output
-end
+# vibe: 0.4
 
 def palindromic_gapful?(number)
-  text = "" + number
+  text = number.to_s
   if text.length < 3
     return false
   end
 
-  if text != reverse_text(text)
+  if text != text.reverse
     return false
   end
 
-  divisor = (digit_value(text.slice(0)) * 10) + digit_value(text.slice(text.length - 1))
+  digits = text.chars
+  divisor = (digits.first.to_i * 10) + digits.last.to_i
   number % divisor == 0
 end
 
@@ -45,7 +30,7 @@ def first_palindromic_gapful_numbers(count)
     while middle <= 9 && values.length < count
       candidate = (outer * 100) + (middle * 10) + outer
       if palindromic_gapful?(candidate)
-        values = values.push(candidate)
+        values << candidate
       end
       middle = middle + 1
     end
@@ -60,7 +45,7 @@ def first_palindromic_gapful_numbers(count)
       ones = inner % 10
       candidate = (outer * 1000) + (tens * 100) + (ones * 10) + outer
       if palindromic_gapful?(candidate)
-        values = values.push(candidate)
+        values << candidate
       end
       inner = inner + 1
     end

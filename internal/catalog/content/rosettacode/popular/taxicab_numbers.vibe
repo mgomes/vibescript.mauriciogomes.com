@@ -4,14 +4,10 @@
 # difficulty: Medium
 # summary: Search a small cube-sum table for numbers that can be written as two sums of two cubes.
 # tags: popular, math, search, cubes
-# vibe: 0.2
-
-def cube(value)
-  value * value * value
-end
+# vibe: 0.4
 
 def sum_key(left, right)
-  "" + (cube(left) + cube(right))
+  "#{left ** 3 + right ** 3}"
 end
 
 def taxicab_numbers(limit)
@@ -25,25 +21,19 @@ def taxicab_numbers(limit)
       key = sum_key(left, right)
       if groups[key] == nil
         groups[key] = []
-        order = order.push(key)
+        order << key
       end
-      groups[key] = groups[key].push([left, right])
+      groups[key] << [left, right]
       right = right + 1
     end
     left = left + 1
   end
 
   rows = []
-  index = 0
-  while index < order.length
-    key = order[index]
+  order.each do |key|
     if groups[key].length > 1
-      rows = rows.push({
-        value: key,
-        decompositions: groups[key]
-      })
+      rows << { value: key, decompositions: groups[key] }
     end
-    index = index + 1
   end
 
   rows

@@ -31,7 +31,7 @@ type Service struct {
 
 func New(store *catalog.Store) (*Service, error) {
 	engine, err := vibes.NewEngine(vibes.Config{
-		StepQuota:              20_000,
+		StepQuota:              250_000,
 		MemoryQuotaBytes:       256 << 10,
 		RecursionLimit:         32,
 		StrictEffects:          true,

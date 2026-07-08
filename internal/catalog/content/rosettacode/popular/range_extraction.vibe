@@ -4,7 +4,7 @@
 # difficulty: Medium
 # summary: Compress an ordered list of integers into Rosetta Code's comma-and-range string format.
 # tags: popular, strings, formatting, arrays
-# vibe: 0.2
+# vibe: 0.4
 
 def range_extraction(values)
   parts = []
@@ -20,12 +20,12 @@ def range_extraction(values)
     end
 
     if finish_value - start_value >= 2
-      parts = parts.push("" + start_value + "-" + finish_value)
+      parts << "#{start_value}-#{finish_value}"
     elsif finish_value - start_value == 1
-      parts = parts.push("" + start_value)
-      parts = parts.push("" + finish_value)
+      parts << start_value.to_s
+      parts << finish_value.to_s
     else
-      parts = parts.push("" + start_value)
+      parts << start_value.to_s
     end
 
     index = index + 1

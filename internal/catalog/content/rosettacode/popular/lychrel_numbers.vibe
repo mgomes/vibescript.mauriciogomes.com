@@ -2,41 +2,23 @@
 # source: https://rosettacode.org/wiki/Lychrel_numbers
 # category: Rosetta Code
 # difficulty: Intro
-# summary: Check sample numbers for palindrome formation under the reverse-and-add process.
-# tags: popular, numbers, iteration, palindromes
-# vibe: 0.2
-
-def reverse_text(text)
-  output = ""
-  index = text.length - 1
-
-  while index >= 0
-    output = output + text.slice(index)
-    index = index - 1
-  end
-
-  output
-end
-
-def digit_value(char)
-  "0123456789".index(char)
-end
-
-def to_int(text)
-  value = 0
-  index = 0
-
-  while index < text.length
-    value = (value * 10) + digit_value(text.slice(index))
-    index = index + 1
-  end
-
-  value
-end
+# summary: Check sample numbers for palindrome formation under 200 rounds of the reverse-and-add process, where sums grow far past 64 bits.
+# tags: popular, numbers, iteration, palindromes, bignum
+# vibe: 0.4
 
 def palindrome?(number)
-  text = "" + number
-  text == reverse_text(text)
+  text = number.to_s
+  text == text.reverse
+end
+
+def reverse_number(number)
+  reversed = 0
+  current = number
+  while current > 0
+    reversed = (reversed * 10) + (current % 10)
+    current = current / 10
+  end
+  reversed
 end
 
 def lychrel_candidate?(number, limit)
@@ -44,7 +26,7 @@ def lychrel_candidate?(number, limit)
   iteration = 0
 
   while iteration < limit
-    current = current + to_int(reverse_text("" + current))
+    current = current + reverse_number(current)
     if palindrome?(current)
       return false
     end
@@ -56,8 +38,8 @@ end
 
 def run
   [
-    { value: 56, lychrel_candidate: lychrel_candidate?(56, 30) },
-    { value: 57, lychrel_candidate: lychrel_candidate?(57, 30) },
-    { value: 196, lychrel_candidate: lychrel_candidate?(196, 30) }
+    { value: 56, lychrel_candidate: lychrel_candidate?(56, 200) },
+    { value: 57, lychrel_candidate: lychrel_candidate?(57, 200) },
+    { value: 196, lychrel_candidate: lychrel_candidate?(196, 200) }
   ]
 end

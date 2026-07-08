@@ -2,8 +2,8 @@
 # source: https://rosettacode.org/wiki/Greedy_algorithm_for_Egyptian_fractions
 # category: Rosetta Code
 # difficulty: Medium
-# summary: Decompose sample rational numbers into Egyptian fractions with the standard greedy method, using inputs whose denominators stay within 64-bit range.
-# tags: popular, math, fractions, greedy
+# summary: Decompose sample rational numbers into Egyptian fractions with the standard greedy method, including inputs whose unit-fraction denominators run to 25 digits.
+# tags: popular, math, fractions, greedy, bignum
 # vibe: 0.4
 
 def gcd(a, b)
@@ -44,6 +44,6 @@ def run
   {
     three_sevenths: egyptian_fraction(3, 7),
     eight_elevenths: egyptian_fraction(8, 11),
-    nine_twentieths: egyptian_fraction(9, 20)
+    five_one_hundred_twenty_firsts: egyptian_fraction(5, 121)
   }
 end

@@ -4,7 +4,7 @@
 # difficulty: Medium
 # summary: Search a small side-length range for Heronian triangles with integer area.
 # tags: popular, geometry, search, triangles
-# vibe: 0.2
+# vibe: 0.4
 
 def isqrt(value)
   if value < 2
@@ -46,10 +46,7 @@ def heronian_triangles(limit, count)
           if area_term > 0
             root = isqrt(area_term)
             if root * root == area_term && root % 4 == 0
-              values = values.push({
-                sides: [a, b, c],
-                area: root / 4
-              })
+              values << { sides: [a, b, c], area: root / 4 }
             end
           end
         end
@@ -70,10 +67,7 @@ def heronian_area(a, b, c)
 end
 
 def run
-  rows = []
-  rows = rows.push({ sides: [3, 4, 5], area: heronian_area(3, 4, 5) })
-  rows = rows.push({ sides: [5, 5, 6], area: heronian_area(5, 5, 6) })
-  rows = rows.push({ sides: [5, 12, 13], area: heronian_area(5, 12, 13) })
-  rows = rows.push({ sides: [8, 15, 17], area: heronian_area(8, 15, 17) })
-  rows
+  [[3, 4, 5], [5, 5, 6], [5, 12, 13], [8, 15, 17]].map do |sides|
+    { sides:, area: heronian_area(sides[0], sides[1], sides[2]) }
+  end
 end

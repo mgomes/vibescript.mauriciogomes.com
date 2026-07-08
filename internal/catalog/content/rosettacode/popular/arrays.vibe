@@ -4,30 +4,18 @@
 # difficulty: Intro
 # summary: Demonstrate basic array creation, indexing, appending, and aggregation in Vibescript.
 # tags: popular, arrays, basics, collections
-# vibe: 0.2
-
-def sum(values)
-  total = 0
-  index = 0
-
-  while index < values.size
-    total = total + values[index]
-    index = index + 1
-  end
-
-  total
-end
+# vibe: 0.4
 
 def run
   values = [3, 1, 4]
-  expanded = values.push(1).push(5).push(9)
+  expanded = values.dup.push(1, 5, 9)
 
   {
     original: values,
     expanded: expanded,
-    first: expanded[0],
-    last: expanded[expanded.size - 1],
+    first: expanded.first,
+    last: expanded.last,
     count: expanded.size,
-    total: sum(expanded)
+    total: expanded.sum
   }
 end
