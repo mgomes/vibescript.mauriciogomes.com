@@ -5,7 +5,7 @@ import (
 	"errors"
 	"testing"
 
-	"github.com/mgomes/vibescript.mauriciogomes.com/internal/catalog"
+	"github.com/mgomes/vibescript-lang.org/internal/catalog"
 )
 
 func TestRunRunnableExample(t *testing.T) {
