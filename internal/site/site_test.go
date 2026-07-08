@@ -1,6 +1,8 @@
 package site
 
 import (
+	"compress/gzip"
+	"io"
 	"net/http"
 	"net/http/httptest"
 	"strings"
@@ -159,6 +161,56 @@ func TestStaticAsset(t *testing.T) {
 	}
 }
 
+func TestGzipHomePage(t *testing.T) {
+	app := newTestApp(t)
+
+	request := httptest.NewRequest(http.MethodGet, "/", nil)
+	request.Header.Set("Accept-Encoding", "gzip")
+	recorder := httptest.NewRecorder()
+
+	app.ServeHTTP(recorder, request)
+
+	if recorder.Code != http.StatusOK {
+		t.Fatalf("expected status 200, got %d", recorder.Code)
+	}
+
+	if got := recorder.Header().Get("Content-Encoding"); got != "gzip" {
+		t.Fatalf("expected gzip content encoding, got %q", got)
+	}
+
+	body := readGzipBody(t, recorder)
+	if !strings.Contains(body, "An embeddable Ruby-like language for Go.") {
+		t.Fatalf("expected home page body, got %q", body)
+	}
+}
+
+func TestGzipStaticAsset(t *testing.T) {
+	app := newTestApp(t)
+
+	request := httptest.NewRequest(http.MethodGet, "/static/site.css", nil)
+	request.Header.Set("Accept-Encoding", "gzip")
+	recorder := httptest.NewRecorder()
+
+	app.ServeHTTP(recorder, request)
+
+	if recorder.Code != http.StatusOK {
+		t.Fatalf("expected status 200, got %d", recorder.Code)
+	}
+
+	if got := recorder.Header().Get("Content-Encoding"); got != "gzip" {
+		t.Fatalf("expected gzip content encoding, got %q", got)
+	}
+
+	if got := recorder.Header().Get("Accept-Ranges"); got != "" {
+		t.Fatalf("expected no accept-ranges header, got %q", got)
+	}
+
+	body := readGzipBody(t, recorder)
+	if !strings.Contains(body, "--font-display") {
+		t.Fatalf("expected stylesheet body, got %q", body)
+	}
+}
+
 func TestLegacyHostRedirect(t *testing.T) {
 	app := newTestApp(t)
 
@@ -196,6 +248,22 @@ func newTestApp(t *testing.T) http.Handler {
 	}
 
 	return app
+}
+
+func readGzipBody(t *testing.T, recorder *httptest.ResponseRecorder) string {
+	t.Helper()
+
+	reader, err := gzip.NewReader(recorder.Body)
+	if err != nil {
+		t.Fatalf("gzip.NewReader(response body) error = %v, want nil", err)
+	}
+	defer reader.Close()
+
+	body, err := io.ReadAll(reader)
+	if err != nil {
+		t.Fatalf("io.ReadAll(gzip response body) error = %v, want nil", err)
+	}
+	return string(body)
 }
 
 func firstNonRunnableSlug(t *testing.T) string {
