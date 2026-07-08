@@ -93,6 +93,14 @@ body {
   overflow-x: hidden;
 }
 
+/* The UA stylesheet's `code { font-family: monospace }` beats inheritance,
+   so without this floor the code inside styled <pre> panels renders in the
+   browser default instead of the site's mono face. */
+pre,
+code {
+  font-family: var(--font-mono);
+}
+
 /* Faint dot-grid paper texture */
 body::before {
   content: "";
