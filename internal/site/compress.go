@@ -12,12 +12,15 @@ const gzipCompressionLevel = 5
 
 func gzipResponse(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if !acceptsGzip(r.Header.Get("Accept-Encoding")) || r.Method == http.MethodHead || r.Header.Get("Range") != "" {
+		if !acceptsGzip(r.Header.Get("Accept-Encoding")) || r.Header.Get("Range") != "" {
 			next.ServeHTTP(w, r)
 			return
 		}
 
-		writer := &gzipResponseWriter{ResponseWriter: w}
+		writer := &gzipResponseWriter{
+			ResponseWriter: w,
+			head:           r.Method == http.MethodHead,
+		}
 		defer writer.Close()
 
 		next.ServeHTTP(writer, r)
@@ -27,6 +30,8 @@ func gzipResponse(next http.Handler) http.Handler {
 type gzipResponseWriter struct {
 	http.ResponseWriter
 	writer      *gzip.Writer
+	head        bool
+	compressed  bool
 	wroteHeader bool
 }
 
@@ -37,14 +42,24 @@ func (w *gzipResponseWriter) WriteHeader(status int) {
 	w.wroteHeader = true
 
 	if shouldGzip(status, w.Header()) {
-		writer, err := gzip.NewWriterLevel(w.ResponseWriter, gzipCompressionLevel)
-		if err == nil {
+		if w.head {
 			header := w.Header()
 			addVary(header, "Accept-Encoding")
 			header.Set("Content-Encoding", "gzip")
 			header.Del("Content-Length")
 			header.Del("Accept-Ranges")
-			w.writer = writer
+			w.compressed = true
+		} else {
+			writer, err := gzip.NewWriterLevel(w.ResponseWriter, gzipCompressionLevel)
+			if err == nil {
+				header := w.Header()
+				addVary(header, "Accept-Encoding")
+				header.Set("Content-Encoding", "gzip")
+				header.Del("Content-Length")
+				header.Del("Accept-Ranges")
+				w.compressed = true
+				w.writer = writer
+			}
 		}
 	}
 
@@ -61,6 +76,9 @@ func (w *gzipResponseWriter) Write(body []byte) (int, error) {
 
 	if w.writer != nil {
 		return w.writer.Write(body)
+	}
+	if w.compressed {
+		return len(body), nil
 	}
 	return w.ResponseWriter.Write(body)
 }

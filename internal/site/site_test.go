@@ -211,6 +211,32 @@ func TestGzipStaticAsset(t *testing.T) {
 	}
 }
 
+func TestGzipHeadStaticAsset(t *testing.T) {
+	app := newTestApp(t)
+
+	request := httptest.NewRequest(http.MethodHead, "/static/site.css", nil)
+	request.Header.Set("Accept-Encoding", "gzip")
+	recorder := httptest.NewRecorder()
+
+	app.ServeHTTP(recorder, request)
+
+	if recorder.Code != http.StatusOK {
+		t.Fatalf("expected status 200, got %d", recorder.Code)
+	}
+
+	if got := recorder.Header().Get("Content-Encoding"); got != "gzip" {
+		t.Fatalf("expected gzip content encoding, got %q", got)
+	}
+
+	if got := recorder.Header().Get("Content-Length"); got != "" {
+		t.Fatalf("expected no content-length header, got %q", got)
+	}
+
+	if got := recorder.Body.String(); got != "" {
+		t.Fatalf("expected empty HEAD body, got %q", got)
+	}
+}
+
 func TestLegacyHostRedirect(t *testing.T) {
 	app := newTestApp(t)
 
