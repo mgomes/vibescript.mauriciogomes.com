@@ -7,6 +7,7 @@ import (
 	"net/http/httptest"
 	"strings"
 	"testing"
+	"time"
 
 	"github.com/mgomes/vibescript-lang.org/internal/catalog"
 	"github.com/mgomes/vibescript-lang.org/internal/runner"
@@ -252,6 +253,41 @@ func TestLegacyHostRedirect(t *testing.T) {
 	want := "https://vibescript-lang.org/examples?tag=arrays"
 	if got := recorder.Header().Get("Location"); got != want {
 		t.Fatalf("expected redirect %q, got %q", want, got)
+	}
+}
+
+func TestRequestTimeoutWritesGatewayTimeoutWhenDeadlineExpires(t *testing.T) {
+	handler := requestTimeout(time.Nanosecond)(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		<-r.Context().Done()
+	}))
+
+	request := httptest.NewRequest(http.MethodGet, "/", nil)
+	recorder := httptest.NewRecorder()
+
+	handler.ServeHTTP(recorder, request)
+
+	if recorder.Code != http.StatusGatewayTimeout {
+		t.Fatalf("expected status 504, got %d", recorder.Code)
+	}
+
+	if !strings.Contains(recorder.Body.String(), http.StatusText(http.StatusGatewayTimeout)) {
+		t.Fatalf("expected timeout body, got %q", recorder.Body.String())
+	}
+}
+
+func TestRequestTimeoutDoesNotOverwriteCommittedResponse(t *testing.T) {
+	handler := requestTimeout(time.Nanosecond)(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusAccepted)
+		<-r.Context().Done()
+	}))
+
+	request := httptest.NewRequest(http.MethodGet, "/", nil)
+	recorder := httptest.NewRecorder()
+
+	handler.ServeHTTP(recorder, request)
+
+	if recorder.Code != http.StatusAccepted {
+		t.Fatalf("expected status 202, got %d", recorder.Code)
 	}
 }
 

@@ -71,7 +71,7 @@ func New(store *catalog.Store, runService *runner.Service) (*ohm.App, error) {
 	}
 
 	application := ohm.New()
-	application.Use(ohm.Recoverer(nil), realIP, requestTimeout(30*time.Second), gzipResponse, redirectLegacyHosts)
+	application.Use(ohm.Recoverer(nil), realIP, gzipResponse, requestTimeout(30*time.Second), redirectLegacyHosts)
 	application.Get("/", app.home)
 	application.Get("/healthz", app.healthz)
 	application.GetHTTP("/static/*", http.StripPrefix("/static/", app.static))
@@ -113,9 +113,38 @@ func requestTimeout(timeout time.Duration) ohm.Middleware {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			ctx, cancel := context.WithTimeout(r.Context(), timeout)
 			defer cancel()
-			next.ServeHTTP(w, r.WithContext(ctx))
+
+			writer := &timeoutResponseWriter{ResponseWriter: w}
+			next.ServeHTTP(writer, r.WithContext(ctx))
+			if ctx.Err() == context.DeadlineExceeded && !writer.wroteHeader {
+				http.Error(writer, http.StatusText(http.StatusGatewayTimeout), http.StatusGatewayTimeout)
+			}
 		})
 	}
+}
+
+type timeoutResponseWriter struct {
+	http.ResponseWriter
+	wroteHeader bool
+}
+
+func (w *timeoutResponseWriter) WriteHeader(status int) {
+	if w.wroteHeader {
+		return
+	}
+	w.wroteHeader = true
+	w.ResponseWriter.WriteHeader(status)
+}
+
+func (w *timeoutResponseWriter) Write(body []byte) (int, error) {
+	if !w.wroteHeader {
+		w.WriteHeader(http.StatusOK)
+	}
+	return w.ResponseWriter.Write(body)
+}
+
+func (w *timeoutResponseWriter) Unwrap() http.ResponseWriter {
+	return w.ResponseWriter
 }
 
 func (a *App) home(req *ohm.Request) error {
