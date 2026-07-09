@@ -1,5 +1,8 @@
 name = "vibescript"
 
+[build]
+dockerfile = "Dockerfile"
+
 [services.web]
 command = "/bin/app"
 port = 8080

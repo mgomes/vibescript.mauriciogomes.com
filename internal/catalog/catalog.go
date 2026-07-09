@@ -12,7 +12,7 @@ import (
 
 const (
 	UpstreamRepoURL = "https://github.com/mgomes/vibescript"
-	UpstreamVersion = "v1.0.0-rc2"
+	UpstreamVersion = "v1.0.0-rc3"
 )
 
 var featuredExamples = map[string]int{
