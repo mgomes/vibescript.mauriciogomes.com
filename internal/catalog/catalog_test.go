@@ -52,7 +52,7 @@ func TestLoad(t *testing.T) {
 	}
 }
 
-func TestAllImportedExamplesCompile(t *testing.T) {
+func TestAllExamplesCompileAndPassStaticChecks(t *testing.T) {
 	store, err := Load()
 	if err != nil {
 		t.Fatalf("load catalog: %v", err)
@@ -60,8 +60,24 @@ func TestAllImportedExamplesCompile(t *testing.T) {
 
 	engine := vibes.MustNewEngine(vibes.Config{})
 	for _, example := range store.All() {
-		if _, err := engine.Compile(example.Source); err != nil {
-			t.Fatalf("compile %s: %v", example.SourcePath, err)
-		}
+		t.Run(example.SourcePath, func(t *testing.T) {
+			script, err := engine.Compile(example.Source)
+			if err != nil {
+				t.Fatalf("Compile(%q) error = %v, want nil", example.SourcePath, err)
+			}
+
+			if !example.Runnable {
+				return
+			}
+
+			if warnings := script.CheckWarningsForFunction(example.RunFunction); len(warnings) > 0 {
+				t.Errorf(
+					"CheckWarningsForFunction(%q, %q) = %#v, want none",
+					example.SourcePath,
+					example.RunFunction,
+					warnings,
+				)
+			}
+		})
 	}
 }
