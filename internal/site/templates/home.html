@@ -1,12 +1,7 @@
 {{define "home"}}
 <section class="hero">
-  <div class="hero-decor" aria-hidden="true">
-    <svg class="spark s2"><use href="#spark"></use></svg>
-    <svg class="spark s3"><use href="#spark"></use></svg>
-    <svg class="spark s4"><use href="#spark"></use></svg>
-  </div>
-  <div class="hero-copy fade-in delay-1">
-    <p class="eyebrow"><svg class="spark"><use href="#spark"></use></svg> Open source &middot; MIT licensed</p>
+  <div class="hero-copy">
+    <p class="eyebrow">Open source &middot; MIT licensed</p>
     <h1>An embeddable Ruby-like language for Go. <span class="mark">Safe by default</span>, easy for AI to write.</h1>
     <p class="hero-lede">
       Vibescript is a small, readable scripting language that embeds in your Go app.
@@ -16,10 +11,10 @@
       <a class="button" href="/examples">Explore examples</a>
       <a class="button-secondary" href="/examples/showcase-workflows-release-readiness">Try a live example</a>
     </div>
-    <p class="hero-meta"><svg class="spark"><use href="#spark"></use></svg> {{.RunnableExamples}} examples run live in your browser</p>
+    <p class="hero-meta">{{.RunnableExamples}} examples run live in your browser</p>
   </div>
 
-  <div class="hero-panel fade-in delay-2">
+  <div class="hero-panel">
     <div class="code-window">
       <div class="code-window-header">
         <span class="code-window-title">late_fee.vibe</span>
@@ -38,15 +33,15 @@ end</code></pre>
   </div>
 </section>
 
-<section class="features fade-in delay-2">
+<section class="features band">
   <div class="section-intro">
-    <p class="eyebrow"><svg class="spark"><use href="#spark"></use></svg> Language</p>
+    <p class="eyebrow">Language</p>
     <h2>Small surface. Sharp primitives.</h2>
     <p class="section-sub">Everything in Vibescript is designed to be read at a glance — by your team, and by the models writing it.</p>
   </div>
   <dl class="feature-grid">
     <div class="feature">
-      <dt><svg class="spark"><use href="#spark"></use></svg> Gradual typing</dt>
+      <dt>Gradual typing</dt>
       <dd class="feature-desc">Optional annotations, nullable <code>?</code>, keyword and positional args, checked return types.</dd>
       <dd>
         <div class="code-window">
@@ -69,7 +64,7 @@ end</code></pre>
     </div>
 
     <div class="feature">
-      <dt><svg class="spark"><use href="#spark"></use></svg> Enums</dt>
+      <dt>Enums</dt>
       <dd class="feature-desc">First-class enums with member access, symbol comparison, and cross-enum equality.</dd>
       <dd>
         <div class="code-window">
@@ -96,7 +91,7 @@ end</code></pre>
     </div>
 
     <div class="feature">
-      <dt><svg class="spark"><use href="#spark"></use></svg> Duration &amp; money primitives</dt>
+      <dt>Duration &amp; money primitives</dt>
       <dd class="feature-desc">Built-in literals, arithmetic, comparisons, and formatting for time and currency.</dd>
       <dd>
         <div class="code-window">
@@ -123,7 +118,7 @@ end</code></pre>
     </div>
 
     <div class="feature">
-      <dt><svg class="spark"><use href="#spark"></use></svg> Ruby-like syntax</dt>
+      <dt>Ruby-like syntax</dt>
       <dd class="feature-desc">Blocks, ranges, zero-paren defs, yield, and symbol hashes — familiar and readable.</dd>
       <dd>
         <div class="code-window">
@@ -151,9 +146,9 @@ end</code></pre>
   </dl>
 </section>
 
-<section class="philosophy fade-in delay-2">
+<section class="philosophy">
   <div class="philosophy-copy">
-    <p class="eyebrow"><svg class="spark"><use href="#spark"></use></svg> Designed for AI</p>
+    <p class="eyebrow">Designed for AI</p>
     <h2>Easy to read. Easy for AI to <span class="mark">vibe code</span>.</h2>
     <p>
       As vibe coding spreads, most products need limits on what users can build. Instead of a blank canvas,
@@ -170,7 +165,7 @@ end</code></pre>
   </div>
 
   <aside class="guardrails" aria-labelledby="guardrails-title">
-    <h3 id="guardrails-title"><svg class="spark"><use href="#spark"></use></svg> Sandbox guardrails</h3>
+    <h3 id="guardrails-title">Sandbox guardrails</h3>
     <p>Defaults favor safety over throughput. Adjust per use case.</p>
     <dl class="guardrail-list">
       <div class="guardrail">
@@ -201,15 +196,9 @@ end</code></pre>
   </aside>
 </section>
 
-<div class="motif-divider" aria-hidden="true">
-  <svg class="spark"><use href="#spark"></use></svg>
-  <svg class="spark"><use href="#spark"></use></svg>
-  <svg class="spark"><use href="#spark"></use></svg>
-</div>
-
-<section class="featured fade-in delay-2">
+<section class="featured band">
   <div class="section-intro">
-    <p class="eyebrow"><svg class="spark"><use href="#spark"></use></svg> Featured</p>
+    <p class="eyebrow">Featured</p>
     <h2>See what idiomatic Vibescript looks like.</h2>
     <p class="section-sub">Handpicked examples that show off the language's native features. Each one runs in your browser.</p>
   </div>
