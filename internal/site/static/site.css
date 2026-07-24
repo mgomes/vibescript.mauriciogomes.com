@@ -1,9 +1,9 @@
 :root {
   color-scheme: dark;
-  --bg: #272b24;
-  --band: #20241e;
-  --panel: #2e332b;
-  --panel-strong: #394036;
+  --bg: #12160e;
+  --band: #0b0e08;
+  --panel: #1b2015;
+  --panel-strong: #252b1e;
   --ink: #f1efe2;
   --muted: rgba(241, 239, 226, 0.66);
   --faint: rgba(241, 239, 226, 0.42);
@@ -14,11 +14,11 @@
   --accent-ink: #0f2312;
   --accent-soft: rgba(86, 201, 110, 0.14);
   --accent-text: #7cd98f;
-  --code-bg: #1d211c;
+  --code-bg: #0d100a;
   --code-text: #d3d1c2;
   --code-header-bg: rgba(241, 239, 226, 0.04);
   --code-header-border: rgba(241, 239, 226, 0.08);
-  --footer-bg: #1a1d18;
+  --footer-bg: #070905;
   --footer-ink: #e8e6d8;
   --footer-muted: rgba(232, 230, 216, 0.6);
 
