@@ -260,13 +260,20 @@ button:focus-visible {
 /* Shared text */
 
 .eyebrow {
-  display: block;
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
   margin: 0 0 0.9rem;
   font-family: var(--font-mono);
   font-size: 0.75rem;
   font-weight: 600;
   letter-spacing: 0.02em;
   color: var(--accent-text);
+}
+
+.eyebrow .vee {
+  width: 0.8em;
+  height: 0.8em;
 }
 
 h1,
