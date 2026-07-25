@@ -167,58 +167,41 @@ button:focus-visible {
   margin-bottom: -1px;
 }
 
-/* Stats band */
+/* Wave: the signature-color moment, carrying no content. Two ribbons of the
+   same sine at opposite phase, so they read as depth rather than one shape. */
 
-.stats-band {
+.wave {
   position: relative;
   margin-inline: calc(50% - 50vw);
-  padding: 3rem calc(50vw - 50%) 3.5rem;
-  background: var(--accent);
-  color: var(--accent-ink);
+  line-height: 0;
+  padding-block: 1.5rem 2.5rem;
 }
 
-.stats {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 2rem 3rem;
-  margin: 0;
-  max-width: 62rem;
+/* Scoped to the wave graphic: a bare `.wave svg` would outrank the sparkle
+   size classes and stretch the decorative sparkles to full width. */
+.wave-lines {
+  display: block;
+  width: 100%;
+  height: clamp(58px, 8vw, 118px);
 }
 
-.stat {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
+.wave-front {
+  fill: var(--accent);
 }
 
-.stat dd {
-  margin: 0;
-  font-family: var(--font-display);
-  font-weight: 900;
-  font-size: clamp(2rem, 1.4rem + 2vw, 3rem);
-  letter-spacing: -0.02em;
-  line-height: 1;
-  font-variant-numeric: tabular-nums;
+.wave-back {
+  fill: var(--accent);
+  opacity: 0.3;
 }
 
-.stat dt {
-  font-family: var(--font-mono);
-  font-size: 0.75rem;
-  font-weight: 600;
-  line-height: 1.5;
-  letter-spacing: 0.02em;
-  opacity: 0.85;
-  max-width: 26ch;
-  text-wrap: pretty;
+.sparkle-wave-1 {
+  top: 0.25rem;
+  left: 26%;
 }
 
-/* Double class beats the later .sparkle base rule's accent fill */
-.sparkle.sparkle-band {
-  position: absolute;
-  top: 1.4rem;
-  right: clamp(1.25rem, 8vw, 6rem);
-  fill: var(--accent-ink);
-  opacity: 0.9;
+.sparkle-wave-2 {
+  bottom: 0.75rem;
+  right: 22%;
 }
 
 .brand-sprite {
@@ -1410,6 +1393,12 @@ a.tag:hover {
     display: none;
   }
 
+  /* These two sit inside the full-bleed wave, so they still have room */
+  .sparkle-wave-1,
+  .sparkle-wave-2 {
+    display: block;
+  }
+
   .pairs,
   .philosophy,
   .featured {
@@ -1424,15 +1413,6 @@ a.tag:hover {
   .pair:nth-of-type(even) {
     flex-direction: column;
     align-items: stretch;
-  }
-
-  .stats {
-    grid-template-columns: 1fr;
-    gap: 1.5rem;
-  }
-
-  .stat dt {
-    max-width: none;
   }
 
   .sparkle-bleed {
@@ -1497,6 +1477,10 @@ a.tag:hover {
 
   .divider svg {
     height: 18px;
+  }
+
+  .wave {
+    padding-block: 1rem 1.75rem;
   }
 
   .section-panel,

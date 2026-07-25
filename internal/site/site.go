@@ -42,7 +42,6 @@ type viewData struct {
 	Example          catalog.Example
 	HeroExample      catalog.Example
 	Guardrails       guardrails
-	LanguageStats    languageStats
 	UpstreamVersion  string
 	UpstreamRepoURL  string
 	Year             int
@@ -176,28 +175,6 @@ func guardrailValues() guardrails {
 	}
 }
 
-// embedDependencies is the number of external modules `go get`ting the vibes
-// package adds to a host's go.mod. Verify with:
-//
-//	go list -deps -f '{{if and .Module (not .Standard)}}{{.Module.Path}}{{end}}' ./vibes
-const embedDependencies = 1
-
-// languageStats are the headline numbers for the homepage band: properties of
-// the language itself, measured where possible rather than asserted.
-type languageStats struct {
-	Dependencies  string
-	MedianCompile string
-	StepCeiling   string
-}
-
-func languageStatsFrom(stats runner.Stats) languageStats {
-	return languageStats{
-		Dependencies:  fmt.Sprintf("%d", embedDependencies),
-		MedianCompile: fmt.Sprintf("%dµs", stats.MedianCompile.Microseconds()),
-		StepCeiling:   fmt.Sprintf("%dk", runner.EngineConfig.StepQuota/1000),
-	}
-}
-
 func (a *App) home(req *ohm.Request) error {
 	heroExample, _ := a.store.BySlug(heroExampleSlug)
 
@@ -212,7 +189,6 @@ func (a *App) home(req *ohm.Request) error {
 		Featured:         a.store.Featured(6),
 		HeroExample:      heroExample,
 		Guardrails:       guardrailValues(),
-		LanguageStats:    languageStatsFrom(a.runner.Stats()),
 		TotalExamples:    a.store.Count(),
 		RunnableExamples: a.store.RunnableCount(),
 		UpstreamVersion:  catalog.UpstreamVersion,
@@ -264,10 +240,13 @@ func (a *App) exampleDetail(req *ohm.Request) error {
 }
 
 func (a *App) healthz(req *ohm.Request) error {
+	stats := a.runner.Stats()
 	req.JSON(http.StatusOK, map[string]any{
-		"status":            "ok",
-		"examples":          a.store.Count(),
-		"runnable_examples": a.store.RunnableCount(),
+		"status":              "ok",
+		"examples":            a.store.Count(),
+		"runnable_examples":   a.store.RunnableCount(),
+		"median_compile_us":   stats.MedianCompile.Microseconds(),
+		"compiled_at_startup": stats.CompiledScripts,
 	})
 	return nil
 }

@@ -34,27 +34,14 @@
   </div>
 </section>
 
-<div class="divider divider-accent" aria-hidden="true">
-  <svg viewBox="0 0 1200 48" preserveAspectRatio="none" focusable="false"><path d="M0 20 L552 20 L600 48 L648 20 L1200 20 L1200 48 L0 48 Z"/></svg>
+<div class="wave" aria-hidden="true">
+  <svg class="wave-lines" viewBox="0 0 1200 150" preserveAspectRatio="none" focusable="false">
+    <path class="wave-back" d="M-40 60 c72 36 128 36 200 0 c72 -36 128 -36 200 0 c72 36 128 36 200 0 c72 -36 128 -36 200 0 c72 36 128 36 200 0 c72 -36 128 -36 200 0 c72 36 128 36 200 0 L1360 94 c-72 -36 -128 -36 -200 0 c-72 36 -128 36 -200 0 c-72 -36 -128 -36 -200 0 c-72 36 -128 36 -200 0 c-72 -36 -128 -36 -200 0 c-72 36 -128 36 -200 0 c-72 -36 -128 -36 -200 0 Z"/>
+    <path class="wave-front" d="M-40 45 c72 -36 128 -36 200 0 c72 36 128 36 200 0 c72 -36 128 -36 200 0 c72 36 128 36 200 0 c72 -36 128 -36 200 0 c72 36 128 36 200 0 c72 -36 128 -36 200 0 L1360 95 c-72 -36 -128 -36 -200 0 c-72 36 -128 36 -200 0 c-72 -36 -128 -36 -200 0 c-72 36 -128 36 -200 0 c-72 -36 -128 -36 -200 0 c-72 36 -128 36 -200 0 c-72 -36 -128 -36 -200 0 Z"/>
+  </svg>
+  <svg class="sparkle sparkle-md sparkle-keyword sparkle-float sparkle-wave-1" style="--tilt: -18deg" aria-hidden="true"><use href="#sparkle"></use></svg>
+  <svg class="sparkle sparkle-sm sparkle-constant sparkle-float sparkle-wave-2" style="--tilt: 12deg" aria-hidden="true"><use href="#sparkle"></use></svg>
 </div>
-
-<section class="stats-band">
-  <svg class="sparkle sparkle-md sparkle-band" style="--tilt: -12deg" aria-hidden="true"><use href="#sparkle"></use></svg>
-  <dl class="stats">
-    <div class="stat">
-      <dd>{{.LanguageStats.Dependencies}}</dd>
-      <dt>external dependency it adds to your go.mod</dt>
-    </div>
-    <div class="stat">
-      <dd>{{.LanguageStats.MedianCompile}}</dd>
-      <dt>median script compile, measured on this server at boot</dt>
-    </div>
-    <div class="stat">
-      <dd>{{.LanguageStats.StepCeiling}}</dd>
-      <dt>steps a script gets before the sandbox stops it</dt>
-    </div>
-  </dl>
-</section>
 
 <section class="pairs">
   <svg class="sparkle sparkle-md sparkle-type sparkle-float sparkle-pairs-1" style="--tilt: 22deg" aria-hidden="true"><use href="#sparkle"></use></svg>
