@@ -64,7 +64,7 @@
       output.classList.add("is-thinking");
       output.textContent = "Executing run() through the site runner...";
 
-      let cue = "success";
+      let cue = "ready";
       try {
         const response = await fetch(button.dataset.runUrl, {
           method: "POST",
