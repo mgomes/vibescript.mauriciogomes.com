@@ -17,6 +17,38 @@
     return `${result.kind} in ${dur}\n\n${String(result.value)}`;
   }
 
+  const SOUND_KEY = "sound";
+  let cuelume = null;
+
+  /** Resolves the vendored cuelume module, loading it on first use. */
+  async function loadCuelume() {
+    if (cuelume) return cuelume;
+    try {
+      cuelume = await import("/static/vendor/cuelume/index.js");
+      cuelume.setEnabled(soundEnabled());
+    } catch {
+      cuelume = { play() {}, setEnabled() {} };
+    }
+    return cuelume;
+  }
+
+  function soundEnabled() {
+    return localStorage.getItem(SOUND_KEY) !== "off";
+  }
+
+  async function playCue(name) {
+    if (!soundEnabled()) return;
+    const audio = await loadCuelume();
+    audio.play(name);
+  }
+
+  /** Restarts a CSS animation that may already have run on this element. */
+  function replay(element, className) {
+    element.classList.remove(className);
+    void element.offsetWidth;
+    element.classList.add(className);
+  }
+
   function attachRunner() {
     const button = document.querySelector("[data-run-button]");
     const output = document.querySelector("[data-run-output]");
@@ -28,8 +60,11 @@
       const originalLabel = button.textContent;
       button.disabled = true;
       button.textContent = "Running...";
+      output.classList.remove("bounce-in-down");
+      output.classList.add("is-thinking");
       output.textContent = "Executing run() through the site runner...";
 
+      let cue = "success";
       try {
         const response = await fetch(button.dataset.runUrl, {
           method: "POST",
@@ -39,16 +74,47 @@
         });
         const payload = await response.json();
         if (!response.ok) {
+          cue = "error";
           output.textContent = payload.error || "Execution failed.";
           return;
         }
 
         output.textContent = renderResult(payload.result);
       } catch (error) {
+        cue = "error";
         output.textContent = error instanceof Error ? error.message : "Execution failed.";
       } finally {
         button.disabled = false;
         button.textContent = originalLabel;
+        output.classList.remove("is-thinking");
+        replay(output, "bounce-in-down");
+        playCue(cue);
+      }
+    });
+  }
+
+  function initSoundToggle() {
+    const toggle = document.querySelector("[data-sound-toggle]");
+    if (!toggle) return;
+
+    const sync = () => {
+      const on = soundEnabled();
+      document.documentElement.setAttribute("data-sound", on ? "on" : "off");
+      toggle.setAttribute("aria-pressed", String(on));
+      toggle.setAttribute("aria-label", on ? "Mute sounds" : "Unmute sounds");
+    };
+
+    sync();
+    toggle.addEventListener("click", async () => {
+      const next = !soundEnabled();
+      localStorage.setItem(SOUND_KEY, next ? "on" : "off");
+      sync();
+      if (next) {
+        const audio = await loadCuelume();
+        audio.setEnabled(true);
+        audio.play("toggle");
+      } else if (cuelume) {
+        cuelume.setEnabled(false);
       }
     });
   }
@@ -307,6 +373,7 @@
     });
 
     initThemeToggle();
+    initSoundToggle();
     initCatalog();
   });
 })();

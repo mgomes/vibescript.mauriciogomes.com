@@ -390,6 +390,20 @@ button:focus-visible {
   display: block;
 }
 
+.sound-toggle .icon-sound-on,
+.sound-toggle .icon-sound-off {
+  display: none;
+}
+
+[data-sound="on"] .sound-toggle .icon-sound-on,
+[data-sound="off"] .sound-toggle .icon-sound-off {
+  display: block;
+}
+
+[data-sound="off"] .sound-toggle {
+  color: var(--faint);
+}
+
 /* Shared text */
 
 .eyebrow {
@@ -553,6 +567,62 @@ h3 {
 
 .hero-runner-output:empty {
   display: none;
+}
+
+/* bounceInDown keyframes from Animate.css (MIT, © Daniel Eden), with the
+   entry offset shortened: the original -3000px is built for full-page
+   entrances and just hides the panel behind the code window's overflow. */
+@keyframes bounce-in-down {
+  from,
+  60%,
+  75%,
+  90%,
+  to {
+    animation-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1);
+  }
+
+  from {
+    opacity: 0;
+    transform: translate3d(0, -220px, 0) scaleY(3);
+  }
+
+  60% {
+    opacity: 1;
+    transform: translate3d(0, 25px, 0) scaleY(0.9);
+  }
+
+  75% {
+    transform: translate3d(0, -10px, 0) scaleY(0.95);
+  }
+
+  90% {
+    transform: translate3d(0, 5px, 0) scaleY(0.985);
+  }
+
+  to {
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+.bounce-in-down {
+  animation: bounce-in-down 0.85s both;
+}
+
+/* The wait between click and result; the label already reads "Running..." */
+@keyframes thinking-pulse {
+  50% { opacity: 0.45; }
+}
+
+[data-run-output].is-thinking {
+  color: var(--muted);
+  animation: thinking-pulse 1.1s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bounce-in-down,
+  [data-run-output].is-thinking {
+    animation: none;
+  }
 }
 
 .hero-copy h1 {
