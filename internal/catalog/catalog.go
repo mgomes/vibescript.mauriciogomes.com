@@ -2,6 +2,7 @@ package catalog
 
 import (
 	"fmt"
+	"hash/fnv"
 	"io/fs"
 	"path"
 	"regexp"
@@ -32,6 +33,7 @@ type Example struct {
 	Category    string
 	Difficulty  string
 	Topic       string
+	Origin      string
 	Stage       string
 	Featured    bool
 	Runnable    bool
@@ -41,6 +43,17 @@ type Example struct {
 	SourceURL   string
 	RunFunction string
 	FeatureRank int
+}
+
+// AccentSlots is the number of syntax-token colors the site cycles chips through.
+const AccentSlots = 6
+
+// Accent maps a label to a stable slot in the syntax-token palette, so a given
+// category keeps the same chip color across pages and reloads.
+func Accent(label string) int {
+	hash := fnv.New32a()
+	hash.Write([]byte(label))
+	return int(hash.Sum32() % AccentSlots)
 }
 
 // SourceBody returns Source with the leading metadata comment block removed,
@@ -108,9 +121,14 @@ func Load() (*Store, error) {
 		}
 	}
 
+	// Hand-written showcase examples lead the catalog; the bulk imports follow.
+	// Alphabetical category order alone would bury them under 170 imports.
 	sort.Slice(examples, func(i, j int) bool {
 		left := examples[i]
 		right := examples[j]
+		if rank := originRank(left.Origin) - originRank(right.Origin); rank != 0 {
+			return rank < 0
+		}
 		if left.Category != right.Category {
 			return left.Category < right.Category
 		}
@@ -173,18 +191,11 @@ func loadUpstreamExample(relativePath string, source []byte) Example {
 	runnable := runEntryPointPattern.Match(source)
 
 	stage := "Imported"
-	summary := fmt.Sprintf(
-		"Imported from the upstream Vibescript examples at %s and ready for browser discovery.",
-		relativePath,
-	)
+	summary := fmt.Sprintf("Upstream reference example from %s.", relativePath)
 	description := "This example is synced from the upstream Vibescript repository and serves as part of the site's growing examples corpus."
 	runFunction := ""
 	if runnable {
 		stage = "Runnable"
-		summary = fmt.Sprintf(
-			"Imported from the upstream Vibescript examples at %s and runnable in the browser today.",
-			relativePath,
-		)
 		description = "This example defines a top-level run function, so the site can compile and execute it directly through the browser runner."
 		runFunction = "run"
 	}
@@ -202,6 +213,7 @@ func loadUpstreamExample(relativePath string, source []byte) Example {
 		Category:    titleize(categoryKey),
 		Difficulty:  "Reference",
 		Topic:       titleize(categoryKey),
+		Origin:      "Upstream",
 		Stage:       stage,
 		Featured:    isFeatured(relativePath),
 		Runnable:    runnable,
@@ -288,6 +300,7 @@ func loadRosettaCodeExample(relativePath string, source []byte) Example {
 		Category:    category,
 		Difficulty:  difficulty,
 		Topic:       category,
+		Origin:      "Rosetta Code",
 		Stage:       stage,
 		Featured:    featured,
 		Runnable:    runnable,
@@ -372,6 +385,7 @@ func loadShowcaseExample(relativePath string, source []byte) Example {
 		Category:    category,
 		Difficulty:  difficulty,
 		Topic:       topic,
+		Origin:      "Showcase",
 		Stage:       stage,
 		Featured:    featured,
 		Runnable:    runnable,
@@ -460,6 +474,17 @@ func (s *Store) TaggedCount(tag string) int {
 		}
 	}
 	return count
+}
+
+func originRank(origin string) int {
+	switch origin {
+	case "Showcase":
+		return 0
+	case "Upstream":
+		return 1
+	default:
+		return 2
+	}
 }
 
 func isFeatured(relativePath string) bool {
