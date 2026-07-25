@@ -20,6 +20,25 @@
   const SOUND_KEY = "sound";
   let cuelume = null;
 
+  /* Storage access throws outright when a browser denies it (private modes,
+     blocked cookies, sandboxed embeds), so every read and write is guarded.
+     A preference we cannot reach is simply the default. */
+  function readStored(key) {
+    try {
+      return localStorage.getItem(key);
+    } catch {
+      return null;
+    }
+  }
+
+  function writeStored(key, value) {
+    try {
+      localStorage.setItem(key, value);
+    } catch {
+      // Preference cannot be persisted; the session still honors it.
+    }
+  }
+
   /** Resolves the vendored cuelume module, loading it on first use. */
   async function loadCuelume() {
     if (cuelume) return cuelume;
@@ -32,8 +51,20 @@
     return cuelume;
   }
 
+  /* Held in memory so muting still works for the session when storage is
+     unavailable; storage only seeds this and persists it across visits. */
+  let soundPreference = null;
+
   function soundEnabled() {
-    return localStorage.getItem(SOUND_KEY) !== "off";
+    if (soundPreference === null) {
+      soundPreference = readStored(SOUND_KEY) !== "off";
+    }
+    return soundPreference;
+  }
+
+  function setSoundEnabled(on) {
+    soundPreference = on;
+    writeStored(SOUND_KEY, on ? "on" : "off");
   }
 
   async function playCue(name) {
@@ -107,7 +138,7 @@
     sync();
     toggle.addEventListener("click", async () => {
       const next = !soundEnabled();
-      localStorage.setItem(SOUND_KEY, next ? "on" : "off");
+      setSoundEnabled(next);
       sync();
       if (next) {
         const audio = await loadCuelume();
@@ -259,7 +290,7 @@
       const current = document.documentElement.getAttribute("data-theme");
       const next = current === "dark" ? "light" : "dark";
       document.documentElement.setAttribute("data-theme", next);
-      localStorage.setItem("theme", next);
+      writeStored("theme", next);
     });
   }
 
