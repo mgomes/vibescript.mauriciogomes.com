@@ -29,15 +29,20 @@ type Service struct {
 	compiled map[string]*vibes.Script
 }
 
+// EngineConfig is the sandbox configuration enforced by the browser runner.
+// The site renders these values on the homepage, so they must stay in sync
+// with what the engine actually enforces.
+var EngineConfig = vibes.Config{
+	StepQuota:              250_000,
+	MemoryQuotaBytes:       256 << 10,
+	RecursionLimit:         32,
+	StrictEffects:          true,
+	DefaultTaskConcurrency: 4,
+	MaxTaskConcurrency:     8,
+}
+
 func New(store *catalog.Store) (*Service, error) {
-	engine, err := vibes.NewEngine(vibes.Config{
-		StepQuota:              250_000,
-		MemoryQuotaBytes:       256 << 10,
-		RecursionLimit:         32,
-		StrictEffects:          true,
-		DefaultTaskConcurrency: 4,
-		MaxTaskConcurrency:     8,
-	})
+	engine, err := vibes.NewEngine(EngineConfig)
 	if err != nil {
 		return nil, fmt.Errorf("new vibes engine: %w", err)
 	}
