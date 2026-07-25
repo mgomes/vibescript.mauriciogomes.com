@@ -178,16 +178,17 @@ button:focus-visible {
 }
 
 .stats {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 2rem 3.5rem;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 2rem 3rem;
   margin: 0;
+  max-width: 62rem;
 }
 
 .stat {
   display: flex;
-  flex-direction: column-reverse;
-  gap: 0.4rem;
+  flex-direction: column;
+  gap: 0.5rem;
 }
 
 .stat dd {
@@ -204,8 +205,11 @@ button:focus-visible {
   font-family: var(--font-mono);
   font-size: 0.75rem;
   font-weight: 600;
+  line-height: 1.5;
   letter-spacing: 0.02em;
   opacity: 0.85;
+  max-width: 26ch;
+  text-wrap: pretty;
 }
 
 /* Double class beats the later .sparkle base rule's accent fill */
@@ -513,8 +517,8 @@ h3 {
 
 .hero-run-button {
   width: auto;
-  padding: 0.55rem 1.4rem;
-  font-size: 0.875rem;
+  padding: 0.8rem 2.25rem;
+  font-size: 1rem;
 }
 
 .hero-runner-link {
@@ -524,6 +528,7 @@ h3 {
   color: var(--muted);
 }
 
+/* Collapsed until the runner writes output — the button explains itself. */
 .hero-runner-output {
   margin: 0;
   padding: 0.9rem 1.25rem;
@@ -532,11 +537,14 @@ h3 {
   font-family: var(--font-mono);
   font-size: 0.75rem;
   line-height: 1.6;
-  color: var(--muted);
+  color: var(--code-text);
   white-space: pre-wrap;
-  min-height: 3rem;
   max-height: 13rem;
   overflow: auto;
+}
+
+.hero-runner-output:empty {
+  display: none;
 }
 
 .hero-copy h1 {
@@ -1357,7 +1365,12 @@ a.tag:hover {
   }
 
   .stats {
-    gap: 1.75rem 2.5rem;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .stat dt {
+    max-width: none;
   }
 
   .sparkle-bleed {

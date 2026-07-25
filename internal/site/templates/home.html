@@ -13,7 +13,7 @@
       <a class="button" href="/examples">Explore examples</a>
       <a class="button-secondary" href="{{.UpstreamRepoURL}}">Read the source</a>
     </div>
-    <p class="hero-meta">{{.RunnableExamples}} examples run live in your browser &mdash; including this one &rarr;</p>
+    <p class="hero-meta">{{.RunnableExamples}} examples run live in your browser</p>
   </div>
 
   <div class="hero-panel">
@@ -28,7 +28,7 @@
         <button class="button run-button hero-run-button" type="button" data-run-button data-run-url="/api/examples/{{.HeroExample.Slug}}/run">Run it</button>
         <a class="hero-runner-link" href="/examples/{{.HeroExample.Slug}}">view in catalog &rarr;</a>
       </div>
-      <pre class="hero-runner-output" data-run-output>Press Run &mdash; this executes on the real interpreter, inside the sandbox.</pre>
+      <pre class="hero-runner-output" data-run-output></pre>
       {{end}}
     </div>
   </div>
@@ -42,20 +42,16 @@
   <svg class="sparkle sparkle-md sparkle-band" style="--tilt: -12deg" aria-hidden="true"><use href="#sparkle"></use></svg>
   <dl class="stats">
     <div class="stat">
-      <dt>examples in the catalog</dt>
-      <dd>{{.TotalExamples}}</dd>
+      <dd>{{.LanguageStats.Dependencies}}</dd>
+      <dt>external dependency it adds to your go.mod</dt>
     </div>
     <div class="stat">
-      <dt>run live in your browser</dt>
-      <dd>{{.RunnableExamples}}</dd>
+      <dd>{{.LanguageStats.MedianCompile}}</dd>
+      <dt>median script compile, measured on this server at boot</dt>
     </div>
     <div class="stat">
-      <dt>current interpreter</dt>
-      <dd>{{.UpstreamVersion}}</dd>
-    </div>
-    <div class="stat">
-      <dt>license, forever</dt>
-      <dd>MIT</dd>
+      <dd>{{.LanguageStats.StepCeiling}}</dd>
+      <dt>steps a script gets before the sandbox stops it</dt>
     </div>
   </dl>
 </section>
