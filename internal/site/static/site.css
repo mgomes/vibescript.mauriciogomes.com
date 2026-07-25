@@ -18,6 +18,7 @@
   --code-text: #d3d1c2;
   --code-header-bg: rgba(241, 239, 226, 0.04);
   --code-header-border: rgba(241, 239, 226, 0.08);
+  --term-err: #e0837a;
   --footer-bg: #050504;
   --footer-ink: #e8e6d8;
   --footer-muted: rgba(232, 230, 216, 0.6);
@@ -60,6 +61,7 @@
   --code-text: #262a22;
   --code-header-bg: #eae8da;
   --code-header-border: rgba(35, 39, 31, 0.1);
+  --term-err: #b3382e;
 
   --tok-keyword: #a63d74;
   --tok-string: #8f6a12;
@@ -137,6 +139,84 @@ button:focus-visible {
   border-block: 1px solid var(--line);
 }
 
+/* Dividers: angular vee-profile transitions between section backgrounds.
+   The path is filled with the destination section's color and overlaps it
+   by 1px so fractional zoom can't open a seam. */
+.divider {
+  margin-inline: calc(50% - 50vw);
+  line-height: 0;
+}
+
+.divider svg {
+  display: block;
+  width: 100%;
+  height: clamp(22px, 4vw, 48px);
+}
+
+.divider path {
+  fill: currentColor;
+}
+
+.divider-accent {
+  color: var(--accent);
+  margin-bottom: -1px;
+}
+
+.divider-band {
+  color: var(--band);
+  margin-bottom: -1px;
+}
+
+/* Stats band */
+
+.stats-band {
+  position: relative;
+  margin-inline: calc(50% - 50vw);
+  padding: 3rem calc(50vw - 50%) 3.5rem;
+  background: var(--accent);
+  color: var(--accent-ink);
+}
+
+.stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem 3.5rem;
+  margin: 0;
+}
+
+.stat {
+  display: flex;
+  flex-direction: column-reverse;
+  gap: 0.4rem;
+}
+
+.stat dd {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: clamp(2rem, 1.4rem + 2vw, 3rem);
+  letter-spacing: -0.02em;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+.stat dt {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  opacity: 0.85;
+}
+
+/* Double class beats the later .sparkle base rule's accent fill */
+.sparkle.sparkle-band {
+  position: absolute;
+  top: 1.4rem;
+  right: clamp(1.25rem, 8vw, 6rem);
+  fill: var(--accent-ink);
+  opacity: 0.9;
+}
+
 .brand-sprite {
   position: absolute;
 }
@@ -147,6 +227,47 @@ button:focus-visible {
   height: 0.78em;
   fill: var(--accent);
   flex-shrink: 0;
+}
+
+/* Decorative sparkles: the four-point star lifted from the wordmark.
+   Each placement sets its own --tilt; the idle heartbeat composes with it
+   so hand-placed rotations survive the animation. */
+.sparkle {
+  fill: var(--accent);
+  transform: rotate(var(--tilt, 0deg));
+  animation: sparkle-beat 7s ease-in-out infinite;
+}
+
+.sparkle:nth-of-type(2n) {
+  animation-delay: 2.3s;
+}
+
+.sparkle-sm {
+  width: 18px;
+  height: 18px;
+}
+
+.sparkle-md {
+  width: 30px;
+  height: 30px;
+}
+
+@keyframes sparkle-beat {
+  0%, 86%, 100% {
+    transform: rotate(var(--tilt, 0deg)) scale(1);
+  }
+  90% {
+    transform: rotate(calc(var(--tilt, 0deg) + 6deg)) scale(1.14);
+  }
+  95% {
+    transform: rotate(calc(var(--tilt, 0deg) - 2deg)) scale(0.97);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sparkle {
+    animation: none;
+  }
 }
 
 /* Header */
@@ -339,11 +460,83 @@ h3 {
 /* Hero */
 
 .hero {
+  position: relative;
   display: grid;
   grid-template-columns: minmax(0, 6fr) minmax(0, 5fr);
   gap: var(--gap);
   align-items: center;
   padding: 2rem 0 5.5rem;
+}
+
+.hero-sparkle-1 {
+  position: absolute;
+  top: 0.5rem;
+  left: 47%;
+}
+
+.hero-sparkle-2 {
+  position: absolute;
+  top: 2.75rem;
+  right: -2.5rem;
+}
+
+.underlined {
+  position: relative;
+  white-space: nowrap;
+  isolation: isolate;
+}
+
+/* Tucked behind the glyph baselines: the tight h1 line-height leaves no
+   room below the line, so the swash overlaps the text like a marker stroke. */
+.underline-swash {
+  position: absolute;
+  left: -1.5%;
+  bottom: 0.02em;
+  width: 103%;
+  height: 0.2em;
+  overflow: visible;
+  z-index: -1;
+}
+
+.underline-swash path {
+  fill: var(--accent);
+}
+
+.hero-runner-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.8rem 1rem;
+  border-top: 1px solid var(--code-header-border);
+}
+
+.hero-run-button {
+  width: auto;
+  padding: 0.55rem 1.4rem;
+  font-size: 0.875rem;
+}
+
+.hero-runner-link {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.hero-runner-output {
+  margin: 0;
+  padding: 0.9rem 1.25rem;
+  border-top: 1px solid var(--code-header-border);
+  background: var(--code-header-bg);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  line-height: 1.6;
+  color: var(--muted);
+  white-space: pre-wrap;
+  min-height: 3rem;
+  max-height: 13rem;
+  overflow: auto;
 }
 
 .hero-copy h1 {
@@ -428,6 +621,64 @@ h3 {
   color: var(--code-text);
 }
 
+/* Terminal windows: transcript panels with pre-tokenized spans. They share
+   the code-window chrome but are never touched by the syntax highlighter. */
+.term-window {
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  background: var(--code-bg);
+  overflow: hidden;
+}
+
+.term-header {
+  display: flex;
+  align-items: center;
+  padding: 0.6rem 1rem;
+  border-bottom: 1px solid var(--code-header-border);
+  background: var(--code-header-bg);
+}
+
+.term-title {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.term-body {
+  margin: 0;
+  padding: 1.25rem;
+  overflow-x: auto;
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  line-height: 1.7;
+  color: var(--code-text);
+}
+
+.term-prompt {
+  color: var(--accent-text);
+  font-weight: 700;
+}
+
+.term-cmd {
+  color: var(--ink);
+  font-weight: 600;
+}
+
+.term-out {
+  color: var(--muted);
+}
+
+.term-err {
+  color: var(--term-err);
+  font-weight: 600;
+}
+
+.term-ok {
+  color: var(--accent-text);
+  font-weight: 600;
+}
+
 /* Section intros */
 
 .section-intro {
@@ -435,7 +686,8 @@ h3 {
 }
 
 .section-intro h2,
-.section-header h2 {
+.section-header h2,
+.closing-copy h2 {
   margin: 0 0 0.875rem;
   font-size: clamp(1.9rem, 1.3rem + 1.9vw, 2.8rem);
   font-weight: 800;
@@ -455,61 +707,54 @@ h3 {
   max-width: 56ch;
 }
 
-/* Features */
+/* Zig-zag pairs */
 
-.features {
-  padding-block: 5rem;
+.pairs {
+  display: flex;
+  flex-direction: column;
+  gap: 4.5rem;
+  padding-block: 5rem 5.5rem;
 }
 
-.feature-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 3rem var(--gap);
-  margin: 0;
+.pairs .section-intro {
+  margin-bottom: 0.25rem;
 }
 
-.feature dt {
-  font-family: var(--font-display);
-  font-size: 1.1875rem;
+.pair {
+  display: flex;
+  align-items: center;
+  gap: clamp(2rem, 5vw, 4.5rem);
+}
+
+/* The section intro is a <header>, so div-counting starts at the first pair */
+.pair:nth-of-type(even) {
+  flex-direction: row-reverse;
+}
+
+.pair-copy,
+.pair-panel {
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+.pair-copy h3 {
+  margin: 0 0 0.9rem;
+  font-size: clamp(1.45rem, 1.05rem + 1.3vw, 2rem);
   font-weight: 800;
-  letter-spacing: -0.015em;
-  margin-bottom: 0.45rem;
+  letter-spacing: -0.025em;
+  line-height: 1.15;
+  text-wrap: balance;
 }
 
-.feature {
-  display: flex;
-  flex-direction: column;
-}
-
-.feature dd {
+.pair-copy p {
   margin: 0;
-}
-
-/* Stretch the code panel so side-by-side features match height */
-.feature dd:last-child {
-  flex: 1;
-  display: flex;
-}
-
-.feature dd:last-child .code-window {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-}
-
-.feature dd:last-child .code-window pre {
-  flex: 1;
-}
-
-.feature .feature-desc {
-  color: var(--muted);
-  font-size: 0.9375rem;
+  font-size: 1.25rem;
   line-height: 1.6;
+  color: var(--muted);
   text-wrap: pretty;
-  margin: 0 0 1.1rem;
 }
 
-.feature-desc code {
+.pair-copy code {
   font-family: var(--font-mono);
   font-size: 0.85em;
   background: var(--panel-strong);
@@ -631,7 +876,14 @@ h3 {
 }
 
 .featured .card-grid {
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.card-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.4rem;
 }
 
 .card-grid {
@@ -720,6 +972,29 @@ a.tag:hover {
 
 .link-subtle {
   color: var(--muted);
+}
+
+/* Closing */
+
+.closing {
+  position: relative;
+  margin-inline: calc(50% - 50vw);
+  padding: 4.5rem calc(50vw - 50%) 5.5rem;
+  background: var(--band);
+  overflow: hidden;
+}
+
+.closing-copy .section-sub {
+  margin-bottom: 0.5rem;
+}
+
+.sparkle-bleed {
+  position: absolute;
+  top: 14%;
+  right: -60px;
+  width: 230px;
+  height: 230px;
+  opacity: 0.9;
 }
 
 /* Section panel (404) */
@@ -1045,27 +1320,50 @@ a.tag:hover {
 
 @media (max-width: 960px) {
   .hero,
-  .feature-grid,
   .philosophy,
-  .featured .card-grid,
   .card-grid,
   .detail-grid,
   .catalog {
     grid-template-columns: 1fr;
   }
 
+  .featured .card-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
   .hero {
     padding: 0.5rem 0 4rem;
   }
 
-  .features,
+  .hero-sparkle-1,
+  .hero-sparkle-2 {
+    display: none;
+  }
+
+  .pairs,
   .philosophy,
   .featured {
     padding-block: 4rem;
   }
 
-  .feature-grid {
-    gap: 2.5rem;
+  .pairs {
+    gap: 3.5rem;
+  }
+
+  .pair,
+  .pair:nth-of-type(even) {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .stats {
+    gap: 1.75rem 2.5rem;
+  }
+
+  .sparkle-bleed {
+    width: 150px;
+    height: 150px;
+    right: -45px;
   }
 
   .detail-header {
@@ -1105,10 +1403,25 @@ a.tag:hover {
     max-width: none;
   }
 
+  .featured .card-grid {
+    grid-template-columns: 1fr;
+  }
+
   .example-card p,
-  .feature .feature-desc,
   .guardrail dd {
     font-size: 1rem;
+  }
+
+  .pair-copy p {
+    font-size: 1.0625rem;
+  }
+
+  .hero-runner-bar {
+    flex-wrap: wrap;
+  }
+
+  .divider svg {
+    height: 18px;
   }
 
   .section-panel,
