@@ -242,8 +242,13 @@ button:focus-visible {
   animation: sparkle-beat 7s ease-in-out infinite;
 }
 
-.sparkle:nth-of-type(2n) {
+/* Stagger so they never pulse in unison */
+.sparkle:nth-of-type(3n) {
   animation-delay: 2.3s;
+}
+
+.sparkle:nth-of-type(3n + 1) {
+  animation-delay: 4.6s;
 }
 
 .sparkle-sm {
@@ -254,6 +259,26 @@ button:focus-visible {
 .sparkle-md {
   width: 30px;
   height: 30px;
+}
+
+.sparkle-lg {
+  width: 46px;
+  height: 46px;
+}
+
+/* Sparkles borrow the syntax palette, so the decoration is literally the same
+   set of colors as the code samples — and follows the theme for free. */
+.sparkle-keyword { fill: var(--tok-keyword); }
+.sparkle-string { fill: var(--tok-string); }
+.sparkle-number { fill: var(--tok-number); }
+.sparkle-constant { fill: var(--tok-constant); }
+.sparkle-type { fill: var(--tok-type); }
+
+/* Absolutely placed decoration; each site sets its own --tilt inline. */
+.sparkle-float {
+  position: absolute;
+  z-index: 0;
+  pointer-events: none;
 }
 
 @keyframes sparkle-beat {
@@ -718,10 +743,26 @@ h3 {
 /* Zig-zag pairs */
 
 .pairs {
+  position: relative;
   display: flex;
   flex-direction: column;
   gap: 4.5rem;
   padding-block: 5rem 5.5rem;
+}
+
+.sparkle-pairs-1 {
+  top: 4.5rem;
+  right: -2.75rem;
+}
+
+.sparkle-pairs-2 {
+  top: 46%;
+  left: -3.25rem;
+}
+
+.sparkle-pairs-3 {
+  bottom: 6rem;
+  right: -3.5rem;
 }
 
 .pairs .section-intro {
@@ -773,11 +814,19 @@ h3 {
 /* Philosophy + guardrails */
 
 .philosophy {
+  position: relative;
   display: grid;
   grid-template-columns: minmax(0, 6fr) minmax(0, 5fr);
   gap: var(--gap);
   align-items: start;
   padding-block: 5rem;
+}
+
+/* Full-bleed section: its box is the viewport, so offsets are positive and
+   sit in the gutter beside the content column. */
+.sparkle-philosophy {
+  top: 3.25rem;
+  left: clamp(0.75rem, calc(50vw - 33rem), 6rem);
 }
 
 .philosophy-copy h2 {
@@ -880,7 +929,13 @@ h3 {
 /* Featured examples + shared cards */
 
 .featured {
+  position: relative;
   padding-block: 5rem;
+}
+
+.sparkle-featured {
+  top: 4rem;
+  right: -3rem;
 }
 
 .featured .card-grid {
@@ -1003,6 +1058,11 @@ a.tag:hover {
   width: 230px;
   height: 230px;
   opacity: 0.9;
+}
+
+.sparkle-closing {
+  bottom: 3.5rem;
+  left: clamp(0.75rem, calc(50vw - 33rem), 6rem);
 }
 
 /* Section panel (404) */
@@ -1343,8 +1403,10 @@ a.tag:hover {
     padding: 0.5rem 0 4rem;
   }
 
+  /* The gutter decoration has no room to sit outside the content column */
   .hero-sparkle-1,
-  .hero-sparkle-2 {
+  .hero-sparkle-2,
+  .sparkle-float {
     display: none;
   }
 
