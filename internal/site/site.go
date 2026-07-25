@@ -55,7 +55,9 @@ const siteBaseURL = "https://vibescript-lang.org"
 var cacheBust = fmt.Sprintf("%d", time.Now().UnixMilli())
 
 func New(store *catalog.Store, runService *runner.Service) (*ohm.App, error) {
-	templates, err := template.ParseFS(assets, "templates/*.html")
+	templates, err := template.New("site").Funcs(template.FuncMap{
+		"accent": catalog.Accent,
+	}).ParseFS(assets, "templates/*.html")
 	if err != nil {
 		return nil, err
 	}

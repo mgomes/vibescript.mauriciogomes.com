@@ -237,7 +237,8 @@ end</code></pre>
     {{range .Featured}}
     <a href="/examples/{{.Slug}}" class="example-card">
       <div class="card-meta">
-        <span class="card-category">{{.Topic}}</span>
+        <span class="card-category" data-accent="{{accent .Topic}}">{{.Topic}}</span>
+        {{if .Runnable}}<span class="card-runnable">runnable</span>{{end}}
       </div>
       <h3>{{.Title}}</h3>
       <p>{{.Summary}}</p>

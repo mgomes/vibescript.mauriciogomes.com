@@ -1065,6 +1065,50 @@ a.tag:hover {
   align-self: flex-start;
 }
 
+/* Category chips borrow the syntax palette. The slot is hashed from the
+   category name in Go, so a category keeps its color everywhere. */
+[data-accent="0"] { --chip: var(--tok-keyword); }
+[data-accent="1"] { --chip: var(--tok-type); }
+[data-accent="2"] { --chip: var(--tok-string); }
+[data-accent="3"] { --chip: var(--tok-constant); }
+[data-accent="4"] { --chip: var(--tok-number); }
+[data-accent="5"] { --chip: var(--tok-function); }
+
+.card-category[data-accent] {
+  color: var(--chip);
+  background: color-mix(in srgb, var(--chip) 14%, transparent);
+}
+
+.card-runnable {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  margin-left: auto;
+  font-family: var(--font-mono);
+  font-size: 0.625rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--accent-text);
+  white-space: nowrap;
+}
+
+.card-runnable::before {
+  content: "";
+  width: 0.4rem;
+  height: 0.4rem;
+  border-radius: 50%;
+  background: var(--accent);
+}
+
+/* Cards pick up their category hue on hover instead of a uniform green */
+.example-card[data-accent]:hover {
+  border-color: color-mix(in srgb, var(--chip) 55%, transparent);
+}
+
+.example-card[data-accent]:hover h3 {
+  color: var(--chip);
+}
+
 .link-subtle {
   color: var(--muted);
 }
@@ -1133,7 +1177,32 @@ a.tag:hover {
 }
 
 .catalog-sidebar-header {
+  position: relative;
   margin-bottom: 1.5rem;
+}
+
+/* Kept inside the header box: the sidebar scrolls, so a negative offset
+   would be clipped by its overflow. */
+.sparkle-catalog {
+  position: absolute;
+  top: 0.15rem;
+  right: 0.5rem;
+}
+
+/* The catalog is a dense wall of cards, so keep summaries to a fixed depth:
+   titles stay the scan target and rows line up. */
+.catalog .example-card p {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  font-size: 0.875rem;
+  color: var(--faint);
+}
+
+.catalog .example-card h3 {
+  font-size: 1.05rem;
 }
 
 .catalog-sidebar-header h2 {
@@ -1154,6 +1223,32 @@ a.tag:hover {
   display: flex;
   flex-direction: column;
   gap: 0.15rem;
+}
+
+.catalog-nav-dot {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+  background: var(--chip, var(--line-strong));
+  flex-shrink: 0;
+  transition: transform 140ms ease;
+}
+
+.catalog-nav-dot-all {
+  background: var(--accent);
+}
+
+.catalog-nav-item:hover .catalog-nav-dot,
+.catalog-nav-item.is-active .catalog-nav-dot {
+  transform: scale(1.35);
+}
+
+.catalog-nav-item > span:nth-child(2) {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .catalog-nav-item {
@@ -1183,6 +1278,11 @@ a.tag:hover {
   background: var(--accent-soft);
   color: var(--accent-text);
   font-weight: 700;
+}
+
+.catalog-nav-item[data-accent].is-active {
+  background: color-mix(in srgb, var(--chip) 14%, transparent);
+  color: var(--chip);
 }
 
 .catalog-nav-count {

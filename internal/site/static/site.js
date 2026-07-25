@@ -331,7 +331,7 @@
     const allBtn = document.createElement("button");
     allBtn.className = "catalog-nav-item is-active";
     allBtn.dataset.cat = "__all__";
-    allBtn.innerHTML = `<span>All</span><span class="catalog-nav-count">${cards.length}</span>`;
+    allBtn.innerHTML = `<span class="catalog-nav-dot catalog-nav-dot-all"></span><span>All</span><span class="catalog-nav-count">${cards.length}</span>`;
     allBtn.addEventListener("click", () => {
       activeCategory = null;
       render();
@@ -342,7 +342,9 @@
       const btn = document.createElement("button");
       btn.className = "catalog-nav-item";
       btn.dataset.cat = cat;
-      btn.innerHTML = `<span>${escapeHtml(cat)}</span><span class="catalog-nav-count">${categories[cat].length}</span>`;
+      // Reuse the palette slot Go already assigned to this category's cards.
+      btn.dataset.accent = categories[cat][0].dataset.accent || "0";
+      btn.innerHTML = `<span class="catalog-nav-dot"></span><span>${escapeHtml(cat)}</span><span class="catalog-nav-count">${categories[cat].length}</span>`;
       btn.addEventListener("click", () => {
         activeCategory = cat;
         render();
