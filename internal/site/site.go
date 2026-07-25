@@ -42,6 +42,7 @@ type viewData struct {
 	Example          catalog.Example
 	HeroExample      catalog.Example
 	Guardrails       guardrails
+	HasRunner        bool
 	UpstreamVersion  string
 	UpstreamRepoURL  string
 	Year             int
@@ -191,6 +192,7 @@ func (a *App) home(req *ohm.Request) error {
 		Featured:         a.store.Featured(6),
 		HeroExample:      heroExample,
 		Guardrails:       guardrailValues(),
+		HasRunner:        heroExample.Runnable,
 		TotalExamples:    a.store.Count(),
 		RunnableExamples: a.store.RunnableCount(),
 		UpstreamVersion:  catalog.UpstreamVersion,
@@ -233,6 +235,7 @@ func (a *App) exampleDetail(req *ohm.Request) error {
 		},
 		ShowcaseExamples: a.store.TaggedCount("showcase"),
 		Example:          example,
+		HasRunner:        example.Runnable,
 		TotalExamples:    a.store.Count(),
 		RunnableExamples: a.store.RunnableCount(),
 		UpstreamVersion:  catalog.UpstreamVersion,

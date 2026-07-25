@@ -37,6 +37,7 @@
     <link rel="preload" href="/static/fonts/woff2/0-MonoLisaCode-normal.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="stylesheet" href="/static/fonts/monolisa.css?v={{.CacheBust}}">
     <link rel="stylesheet" href="/static/site.css?v={{.CacheBust}}">
+    {{if .HasRunner}}<link rel="modulepreload" href="/static/vendor/cuelume/index.js">{{end}}
     <script src="/static/site.js?v={{.CacheBust}}" defer></script>
   </head>
   <body>

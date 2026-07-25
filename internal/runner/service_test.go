@@ -2,7 +2,6 @@ package runner
 
 import (
 	"context"
-	"errors"
 	"testing"
 
 	"github.com/mgomes/vibescript-lang.org/internal/catalog"
@@ -76,24 +75,6 @@ func TestRunArraysExtrasExample(t *testing.T) {
 	}
 }
 
-func TestRunNonRunnableExample(t *testing.T) {
-	store, err := catalog.Load()
-	if err != nil {
-		t.Fatalf("load catalog: %v", err)
-	}
-
-	service, err := New(store)
-	if err != nil {
-		t.Fatalf("new service: %v", err)
-	}
-
-	slug := firstNonRunnableSlug(t, store)
-	_, err = service.Run(context.Background(), slug)
-	if !errors.Is(err, ErrExampleNotRunnable) {
-		t.Fatalf("Run(%q) error = %v, want ErrExampleNotRunnable", slug, err)
-	}
-}
-
 func TestRunAllRunnableExamples(t *testing.T) {
 	store, err := catalog.Load()
 	if err != nil {
@@ -130,17 +111,4 @@ func numericValueEquals(value any, expected int) bool {
 	default:
 		return false
 	}
-}
-
-func firstNonRunnableSlug(t *testing.T, store *catalog.Store) string {
-	t.Helper()
-
-	for _, example := range store.All() {
-		if !example.Runnable {
-			return example.Slug
-		}
-	}
-
-	t.Skip("catalog has no non-runnable examples")
-	return ""
 }

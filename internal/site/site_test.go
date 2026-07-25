@@ -169,19 +169,6 @@ func TestRunExample(t *testing.T) {
 	}
 }
 
-func TestRunNonRunnableExample(t *testing.T) {
-	app := newTestApp(t)
-
-	request := httptest.NewRequest(http.MethodPost, "/api/examples/"+firstNonRunnableSlug(t)+"/run", nil)
-	recorder := httptest.NewRecorder()
-
-	app.ServeHTTP(recorder, request)
-
-	if recorder.Code != http.StatusConflict {
-		t.Fatalf("expected status 409, got %d", recorder.Code)
-	}
-}
-
 func TestStaticAsset(t *testing.T) {
 	app := newTestApp(t)
 
@@ -363,22 +350,4 @@ func readGzipBody(t *testing.T, recorder *httptest.ResponseRecorder) string {
 		t.Fatalf("io.ReadAll(gzip response body) error = %v, want nil", err)
 	}
 	return string(body)
-}
-
-func firstNonRunnableSlug(t *testing.T) string {
-	t.Helper()
-
-	store, err := catalog.Load()
-	if err != nil {
-		t.Fatalf("load catalog: %v", err)
-	}
-
-	for _, example := range store.All() {
-		if !example.Runnable {
-			return example.Slug
-		}
-	}
-
-	t.Skip("catalog has no non-runnable examples")
-	return ""
 }

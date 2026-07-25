@@ -81,3 +81,23 @@ func TestAllExamplesCompileAndPassStaticChecks(t *testing.T) {
 		})
 	}
 }
+
+// The site promises every catalog example runs in the browser, and the runner
+// silently skips any example without a top-level run entry point. Assert the
+// invariant so an import can never quietly reintroduce a dead example.
+func TestEveryExampleIsRunnable(t *testing.T) {
+	store, err := Load()
+	if err != nil {
+		t.Fatalf("load catalog: %v", err)
+	}
+
+	for _, example := range store.All() {
+		if !example.Runnable {
+			t.Errorf("%s (%s) defines no top-level `def run`", example.Slug, example.SourcePath)
+		}
+	}
+
+	if store.RunnableCount() != store.Count() {
+		t.Fatalf("runnable count = %d, want all %d examples", store.RunnableCount(), store.Count())
+	}
+}
