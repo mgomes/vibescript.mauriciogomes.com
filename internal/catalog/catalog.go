@@ -31,6 +31,7 @@ type Example struct {
 	Description string
 	Category    string
 	Difficulty  string
+	Topic       string
 	Stage       string
 	Featured    bool
 	Runnable    bool
@@ -40,6 +41,22 @@ type Example struct {
 	SourceURL   string
 	RunFunction string
 	FeatureRank int
+}
+
+// SourceBody returns Source with the leading metadata comment block removed,
+// mirroring the lines parseMetadata consumes.
+func (e Example) SourceBody() string {
+	lines := strings.Split(e.Source, "\n")
+	body := 0
+	for body < len(lines) {
+		trimmed := strings.TrimSpace(lines[body])
+		if trimmed == "" || (strings.HasPrefix(trimmed, "# ") && strings.Contains(trimmed, ":")) {
+			body++
+			continue
+		}
+		break
+	}
+	return strings.TrimRight(strings.Join(lines[body:], "\n"), "\n")
 }
 
 type Store struct {
@@ -184,6 +201,7 @@ func loadUpstreamExample(relativePath string, source []byte) Example {
 		Description: description,
 		Category:    titleize(categoryKey),
 		Difficulty:  "Reference",
+		Topic:       titleize(categoryKey),
 		Stage:       stage,
 		Featured:    isFeatured(relativePath),
 		Runnable:    runnable,
@@ -269,6 +287,7 @@ func loadRosettaCodeExample(relativePath string, source []byte) Example {
 		Description: description,
 		Category:    category,
 		Difficulty:  difficulty,
+		Topic:       category,
 		Stage:       stage,
 		Featured:    featured,
 		Runnable:    runnable,
@@ -338,6 +357,13 @@ func loadShowcaseExample(relativePath string, source []byte) Example {
 		featureRank = parseFeatureRank(metadata["feature_rank"], 0)
 	}
 
+	// The showcase corpus shares one category, so the topic comes from the
+	// subdirectory (finance, workflows, ...) to give cards a meaningful chip.
+	topic := category
+	if dir := path.Dir(relativePath); dir != "." {
+		topic = titleize(dir)
+	}
+
 	return Example{
 		Slug:        "showcase-" + slugPart(strings.TrimSuffix(relativePath, ".vibe")),
 		Title:       title,
@@ -345,6 +371,7 @@ func loadShowcaseExample(relativePath string, source []byte) Example {
 		Description: description,
 		Category:    category,
 		Difficulty:  difficulty,
+		Topic:       topic,
 		Stage:       stage,
 		Featured:    featured,
 		Runnable:    runnable,
