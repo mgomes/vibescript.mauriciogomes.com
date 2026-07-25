@@ -1,59 +1,73 @@
 {{define "home"}}
 <section class="hero">
-  <div class="hero-decor" aria-hidden="true">
-    <svg class="spark s2"><use href="#spark"></use></svg>
-    <svg class="spark s3"><use href="#spark"></use></svg>
-    <svg class="spark s4"><use href="#spark"></use></svg>
-  </div>
-  <div class="hero-copy fade-in delay-1">
-    <p class="eyebrow"><svg class="spark"><use href="#spark"></use></svg> Open source &middot; MIT licensed</p>
-    <h1>An embeddable Ruby-like language for Go. <span class="mark">Safe by default</span>, easy for AI to write.</h1>
+  <svg class="sparkle sparkle-sm sparkle-keyword hero-sparkle-1" style="--tilt: 14deg" aria-hidden="true"><use href="#sparkle"></use></svg>
+  <svg class="sparkle sparkle-md hero-sparkle-2" style="--tilt: -9deg" aria-hidden="true"><use href="#sparkle"></use></svg>
+  <div class="hero-copy">
+    <p class="eyebrow"><svg class="vee" aria-hidden="true"><use href="#vee"></use></svg> Open source &middot; MIT licensed</p>
+    <h1>An embeddable Ruby-like language for Go. <span class="underlined">Safe by default<svg class="underline-swash" viewBox="0 0 200 12" preserveAspectRatio="none" aria-hidden="true"><path d="M2 9C48 4 118 2 197 5C150 7.5 70 9 6 11.5Z"/></svg></span>, easy for AI to write.</h1>
     <p class="hero-lede">
       Vibescript is a small, readable scripting language that embeds in your Go app.
       Users and AI agents write the scripts; the host decides exactly what they can touch.
     </p>
     <div class="hero-actions">
       <a class="button" href="/examples">Explore examples</a>
-      <a class="button-secondary" href="/examples/showcase-workflows-release-readiness">Try a live example</a>
+      <a class="button-secondary" href="{{.UpstreamRepoURL}}">Read the source</a>
     </div>
-    <p class="hero-meta"><svg class="spark"><use href="#spark"></use></svg> {{.RunnableExamples}} examples run live in your browser</p>
+    <p class="hero-meta">{{.RunnableExamples}} examples run live in your browser</p>
   </div>
 
-  <div class="hero-panel fade-in delay-2">
-    <div class="code-window">
+  <div class="hero-panel">
+    <div class="code-window hero-runner">
       <div class="code-window-header">
         <span class="code-window-title">late_fee.vibe</span>
         <span class="code-window-version">{{.UpstreamVersion}}</span>
       </div>
-      <pre><code class="language-vibescript">def late_fee(overdue: duration) -> money
-  if overdue <= 3.days
-    money("0.00 USD")
-  elsif overdue <= 14.days
-    money("5.00 USD")
-  else
-    money("15.00 USD")
-  end
-end</code></pre>
+      <pre><code class="language-vibescript">{{.HeroExample.SourceBody}}</code></pre>
+      {{if .HeroExample.Runnable}}
+      <div class="hero-runner-bar">
+        <button class="button run-button hero-run-button" type="button" data-run-button data-run-url="/api/examples/{{.HeroExample.Slug}}/run">Run it</button>
+        <a class="hero-runner-link" href="/examples/{{.HeroExample.Slug}}">view in catalog &rarr;</a>
+      </div>
+      <pre class="hero-runner-output" data-run-output></pre>
+      {{end}}
     </div>
   </div>
 </section>
 
-<section class="features fade-in delay-2">
-  <div class="section-intro">
-    <p class="eyebrow"><svg class="spark"><use href="#spark"></use></svg> Language</p>
+<div class="wave" aria-hidden="true">
+  <svg class="wave-lines" viewBox="0 0 1200 150" preserveAspectRatio="none" focusable="false">
+    <path class="wave-back" d="M-40 60 c72 36 128 36 200 0 c72 -36 128 -36 200 0 c72 36 128 36 200 0 c72 -36 128 -36 200 0 c72 36 128 36 200 0 c72 -36 128 -36 200 0 c72 36 128 36 200 0 L1360 94 c-72 -36 -128 -36 -200 0 c-72 36 -128 36 -200 0 c-72 -36 -128 -36 -200 0 c-72 36 -128 36 -200 0 c-72 -36 -128 -36 -200 0 c-72 36 -128 36 -200 0 c-72 -36 -128 -36 -200 0 Z"/>
+    <path class="wave-front" d="M-40 45 c72 -36 128 -36 200 0 c72 36 128 36 200 0 c72 -36 128 -36 200 0 c72 36 128 36 200 0 c72 -36 128 -36 200 0 c72 36 128 36 200 0 c72 -36 128 -36 200 0 L1360 95 c-72 -36 -128 -36 -200 0 c-72 36 -128 36 -200 0 c-72 -36 -128 -36 -200 0 c-72 36 -128 36 -200 0 c-72 -36 -128 -36 -200 0 c-72 36 -128 36 -200 0 c-72 -36 -128 -36 -200 0 Z"/>
+  </svg>
+  <svg class="sparkle sparkle-md sparkle-keyword sparkle-float sparkle-wave-1" style="--tilt: -18deg" aria-hidden="true"><use href="#sparkle"></use></svg>
+  <svg class="sparkle sparkle-sm sparkle-constant sparkle-float sparkle-wave-2" style="--tilt: 12deg" aria-hidden="true"><use href="#sparkle"></use></svg>
+</div>
+
+<section class="pairs">
+  <svg class="sparkle sparkle-md sparkle-type sparkle-float sparkle-pairs-1" style="--tilt: 22deg" aria-hidden="true"><use href="#sparkle"></use></svg>
+  <svg class="sparkle sparkle-sm sparkle-string sparkle-float sparkle-pairs-2" style="--tilt: -16deg" aria-hidden="true"><use href="#sparkle"></use></svg>
+  <svg class="sparkle sparkle-md sparkle-number sparkle-float sparkle-pairs-3" style="--tilt: 9deg" aria-hidden="true"><use href="#sparkle"></use></svg>
+  <header class="section-intro">
+    <p class="eyebrow"><svg class="vee" aria-hidden="true"><use href="#vee"></use></svg> Language</p>
     <h2>Small surface. Sharp primitives.</h2>
-    <p class="section-sub">Everything in Vibescript is designed to be read at a glance — by your team, and by the models writing it.</p>
-  </div>
-  <dl class="feature-grid">
-    <div class="feature">
-      <dt><svg class="spark"><use href="#spark"></use></svg> Gradual typing</dt>
-      <dd class="feature-desc">Optional annotations, nullable <code>?</code>, keyword and positional args, checked return types.</dd>
-      <dd>
-        <div class="code-window">
-          <div class="code-window-header">
-            <span class="code-window-title">typing.vibe</span>
-          </div>
-          <pre><code class="language-vibescript">def shipping_quote(speed, subtotal: money) -> hash
+    <p class="section-sub">Everything in Vibescript is designed to be read at a glance &mdash; by your team, and by the models writing it.</p>
+  </header>
+
+  <div class="pair">
+    <div class="pair-copy">
+      <h3>Reads like Ruby. Types when it matters.</h3>
+      <p>
+        Blocks, ranges, zero-paren defs, symbol hashes &mdash; syntax your team and every
+        language model already know. Annotations are optional, but signatures are checked
+        when you write them, and nullables are always explicit.
+      </p>
+    </div>
+    <div class="pair-panel">
+      <div class="code-window">
+        <div class="code-window-header">
+          <span class="code-window-title">typing.vibe</span>
+        </div>
+        <pre><code class="language-vibescript">def shipping_quote(speed, subtotal: money) -> hash
   fee = shipping_fee(speed, subtotal)
   transit = transit_time(speed)
 
@@ -64,96 +78,107 @@ end</code></pre>
     transit: transit.iso8601
   }
 end</code></pre>
-        </div>
-      </dd>
+      </div>
     </div>
+  </div>
 
-    <div class="feature">
-      <dt><svg class="spark"><use href="#spark"></use></svg> Enums</dt>
-      <dd class="feature-desc">First-class enums with member access, symbol comparison, and cross-enum equality.</dd>
-      <dd>
-        <div class="code-window">
-          <div class="code-window-header">
-            <span class="code-window-title">enums.vibe</span>
-          </div>
-          <pre><code class="language-vibescript">enum AccountStanding
-  Current
-  Grace
-  Delinquent
+  <div class="pair">
+    <div class="pair-copy">
+      <h3>Drops into your Go app in an afternoon.</h3>
+      <p>
+        One <code>go get</code>, three calls: build an engine, compile the script, call a
+        function. Scripts expose functions to the host; the host exposes exactly the
+        capabilities it chooses back.
+      </p>
+    </div>
+    <div class="pair-panel">
+      <div class="code-window">
+        <div class="code-window-header">
+          <span class="code-window-title">main.go</span>
+          <span class="code-window-version">host side</span>
+        </div>
+        <pre><code><span class="tok-function">engine</span>, _ := vibes.<span class="tok-type">NewEngine</span>(vibes.<span class="tok-type">Config</span>{
+  StepQuota: <span class="tok-number">250_000</span>,
+})
+
+<span class="tok-function">script</span>, _ := engine.<span class="tok-type">Compile</span>(userScript)
+
+fee, _ := script.<span class="tok-type">Call</span>(ctx, <span class="tok-string">"late_fee"</span>, args, opts)
+fee.<span class="tok-type">String</span>() <span class="tok-comment">// "5.00 USD"</span></code></pre>
+      </div>
+    </div>
+  </div>
+
+  <div class="pair">
+    <div class="pair-copy">
+      <h3>The sandbox says no.</h3>
+      <p>
+        A runaway loop, a hostile script, an AI hallucination with a while-true in it &mdash;
+        the engine stops it at the step quota and hands your Go app a clean error.
+        No goroutine leak, no OOM, no incident channel.
+      </p>
+    </div>
+    <div class="pair-panel">
+      <div class="term-window">
+        <div class="term-header">
+          <span class="term-title">untrusted.vibe &mdash; sandboxed</span>
+        </div>
+        <pre class="term-body"><span class="term-prompt">$</span> <span class="term-cmd">cat untrusted.vibe</span>
+<span class="term-out">def run
+  balance = 0
+  while true
+    balance = balance + 1
+  end
+end</span>
+
+<span class="term-prompt">$</span> <span class="term-cmd"># host calls script.Call(ctx, "run", ...)</span>
+<span class="term-err">RuntimeError: step quota exceeded</span>
+<span class="term-ok">&#10003; stopped at {{.Guardrails.StepQuota}} &mdash; host unharmed</span></pre>
+      </div>
+    </div>
+  </div>
+
+  <div class="pair">
+    <div class="pair-copy">
+      <h3>Money is money. Time is time.</h3>
+      <p>
+        <code>3.days</code> is a duration, not an integer with a comment. Money never
+        loses a cent to float rounding. Enums are first-class values, not strings you
+        promise to spell consistently.
+      </p>
+    </div>
+    <div class="pair-panel">
+      <div class="code-window">
+        <div class="code-window-header">
+          <span class="code-window-title">primitives.vibe</span>
+        </div>
+        <pre><code class="language-vibescript">enum ShippingSpeed
+  Economy
+  Priority
+  Overnight
 end
 
-def standing_for(overdue: duration) -> AccountStanding
-  if overdue <= 3.days
-    AccountStanding::Current
-  elsif overdue <= 15.days
-    AccountStanding::Grace
-  else
-    AccountStanding::Delinquent
-  end
-end</code></pre>
-        </div>
-      </dd>
-    </div>
-
-    <div class="feature">
-      <dt><svg class="spark"><use href="#spark"></use></svg> Duration &amp; money primitives</dt>
-      <dd class="feature-desc">Built-in literals, arithmetic, comparisons, and formatting for time and currency.</dd>
-      <dd>
-        <div class="code-window">
-          <div class="code-window-header">
-            <span class="code-window-title">primitives.vibe</span>
-          </div>
-          <pre><code class="language-vibescript">def transit_time(speed: ShippingSpeed) -> duration
-  if speed == ShippingSpeed::Economy
-    5.days
-  elsif speed == ShippingSpeed::Priority
-    2.days
-  else
+def transit_time(speed: ShippingSpeed) -> duration
+  if speed == ShippingSpeed::Overnight
     6.hours
+  else
+    5.days
   end
 end
 
 def net_after_fee(cents)
   gross = money_cents(cents, "USD")
-  fee = money("1.75 USD")
-  gross - fee
+  gross - money("1.75 USD")
 end</code></pre>
-        </div>
-      </dd>
+      </div>
     </div>
-
-    <div class="feature">
-      <dt><svg class="spark"><use href="#spark"></use></svg> Ruby-like syntax</dt>
-      <dd class="feature-desc">Blocks, ranges, zero-paren defs, yield, and symbol hashes — familiar and readable.</dd>
-      <dd>
-        <div class="code-window">
-          <div class="code-window-header">
-            <span class="code-window-title">blocks.vibe</span>
-          </div>
-          <pre><code class="language-vibescript">def benchmark
-  start = Time.now
-  result = yield
-  elapsed = Time.now - start
-  { result: result, elapsed: elapsed }
-end
-
-def transform_keys(hash)
-  result = {}
-  hash.keys.each do |key|
-    new_key = yield(key)
-    result[new_key] = hash[key]
-  end
-  result
-end</code></pre>
-        </div>
-      </dd>
-    </div>
-  </dl>
+  </div>
 </section>
 
-<section class="philosophy fade-in delay-2">
+<section class="philosophy band">
+  <svg class="sparkle sparkle-lg sparkle-constant sparkle-float sparkle-philosophy" style="--tilt: -24deg" aria-hidden="true"><use href="#sparkle"></use></svg>
   <div class="philosophy-copy">
-    <p class="eyebrow"><svg class="spark"><use href="#spark"></use></svg> Designed for AI</p>
+    <p class="eyebrow"><svg class="vee" aria-hidden="true"><use href="#vee"></use></svg> Designed for AI</p>
     <h2>Easy to read. Easy for AI to <span class="mark">vibe code</span>.</h2>
     <p>
       As vibe coding spreads, most products need limits on what users can build. Instead of a blank canvas,
@@ -170,23 +195,23 @@ end</code></pre>
   </div>
 
   <aside class="guardrails" aria-labelledby="guardrails-title">
-    <h3 id="guardrails-title"><svg class="spark"><use href="#spark"></use></svg> Sandbox guardrails</h3>
+    <h3 id="guardrails-title">Sandbox guardrails</h3>
     <p>Defaults favor safety over throughput. Adjust per use case.</p>
     <dl class="guardrail-list">
       <div class="guardrail">
-        <dt><svg class="vee"><use href="#vee"></use></svg> Step quota <span class="guardrail-default">50k steps</span></dt>
+        <dt><svg class="vee"><use href="#vee"></use></svg> Step quota <span class="guardrail-default">{{.Guardrails.StepQuota}}</span></dt>
         <dd>Caps execution steps to prevent unbounded loops.</dd>
       </div>
       <div class="guardrail">
-        <dt><svg class="vee"><use href="#vee"></use></svg> Recursion limit <span class="guardrail-default">depth 64</span></dt>
+        <dt><svg class="vee"><use href="#vee"></use></svg> Recursion limit <span class="guardrail-default">{{.Guardrails.RecursionLimit}}</span></dt>
         <dd>Bounds call depth to prevent stack blowups.</dd>
       </div>
       <div class="guardrail">
-        <dt><svg class="vee"><use href="#vee"></use></svg> Memory quota <span class="guardrail-default">64 KiB</span></dt>
+        <dt><svg class="vee"><use href="#vee"></use></svg> Memory quota <span class="guardrail-default">{{.Guardrails.MemoryQuota}}</span></dt>
         <dd>Limits allocations so scripts fail cleanly instead of OOMing the host.</dd>
       </div>
       <div class="guardrail">
-        <dt><svg class="vee"><use href="#vee"></use></svg> Effects control <span class="guardrail-default">opt-in</span></dt>
+        <dt><svg class="vee"><use href="#vee"></use></svg> Effects control <span class="guardrail-default">strict</span></dt>
         <dd>Side-effecting operations require explicit capabilities.</dd>
       </div>
       <div class="guardrail">
@@ -201,25 +226,45 @@ end</code></pre>
   </aside>
 </section>
 
-<div class="motif-divider" aria-hidden="true">
-  <svg class="spark"><use href="#spark"></use></svg>
-  <svg class="spark"><use href="#spark"></use></svg>
-  <svg class="spark"><use href="#spark"></use></svg>
-</div>
-
-<section class="featured fade-in delay-2">
+<section class="featured">
+  <svg class="sparkle sparkle-md sparkle-string sparkle-float sparkle-featured" style="--tilt: 17deg" aria-hidden="true"><use href="#sparkle"></use></svg>
   <div class="section-intro">
-    <p class="eyebrow"><svg class="spark"><use href="#spark"></use></svg> Featured</p>
+    <p class="eyebrow"><svg class="vee" aria-hidden="true"><use href="#vee"></use></svg> Featured</p>
     <h2>See what idiomatic Vibescript looks like.</h2>
     <p class="section-sub">Handpicked examples that show off the language's native features. Each one runs in your browser.</p>
   </div>
   <div class="card-grid">
     {{range .Featured}}
     <a href="/examples/{{.Slug}}" class="example-card">
+      <div class="card-meta">
+        <span class="card-category" data-accent="{{accent .Topic}}">{{.Topic}}</span>
+        {{if .Runnable}}<span class="card-runnable">runnable</span>{{end}}
+      </div>
       <h3>{{.Title}}</h3>
       <p>{{.Summary}}</p>
     </a>
     {{end}}
+  </div>
+</section>
+
+<div class="divider divider-band" aria-hidden="true">
+  <svg viewBox="0 0 1200 48" preserveAspectRatio="none" focusable="false"><path d="M0 20 L552 20 L600 48 L648 20 L1200 20 L1200 48 L0 48 Z"/></svg>
+</div>
+
+<section class="closing">
+  <svg class="sparkle sparkle-bleed" style="--tilt: 18deg" aria-hidden="true"><use href="#sparkle"></use></svg>
+  <svg class="sparkle sparkle-md sparkle-keyword sparkle-float sparkle-closing" style="--tilt: -13deg" aria-hidden="true"><use href="#sparkle"></use></svg>
+  <div class="closing-copy">
+    <p class="eyebrow"><svg class="vee" aria-hidden="true"><use href="#vee"></use></svg> You're still here?</p>
+    <h2>Good &mdash; the examples are the fun part.</h2>
+    <p class="section-sub">
+      {{.RunnableExamples}} programs, every one compiled against the real interpreter
+      at startup and a click away from running. No install, no setup, no excuses.
+    </p>
+    <div class="hero-actions">
+      <a class="button" href="/examples">Browse all {{.TotalExamples}} examples</a>
+      <a class="button-secondary" href="{{.UpstreamRepoURL}}">Star it on GitHub</a>
+    </div>
   </div>
 </section>
 {{end}}

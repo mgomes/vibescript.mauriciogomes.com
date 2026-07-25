@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"slices"
 	"sort"
 	"time"
 
@@ -27,38 +28,78 @@ type Result struct {
 type Service struct {
 	store    *catalog.Store
 	compiled map[string]*vibes.Script
+	stats    Stats
+}
+
+// Stats describes the startup compile pass. The site renders these numbers,
+// so they are measured on the machine serving the page rather than quoted.
+type Stats struct {
+	CompiledScripts int
+	MedianCompile   time.Duration
+}
+
+// EngineConfig is the sandbox configuration enforced by the browser runner.
+// The site renders these values on the homepage, so they must stay in sync
+// with what the engine actually enforces.
+var EngineConfig = vibes.Config{
+	StepQuota:              250_000,
+	MemoryQuotaBytes:       256 << 10,
+	RecursionLimit:         32,
+	StrictEffects:          true,
+	DefaultTaskConcurrency: 4,
+	MaxTaskConcurrency:     8,
 }
 
 func New(store *catalog.Store) (*Service, error) {
-	engine, err := vibes.NewEngine(vibes.Config{
-		StepQuota:              250_000,
-		MemoryQuotaBytes:       256 << 10,
-		RecursionLimit:         32,
-		StrictEffects:          true,
-		DefaultTaskConcurrency: 4,
-		MaxTaskConcurrency:     8,
-	})
+	engine, err := vibes.NewEngine(EngineConfig)
 	if err != nil {
 		return nil, fmt.Errorf("new vibes engine: %w", err)
 	}
 
 	compiled := make(map[string]*vibes.Script, store.Count())
+	elapsed := make([]time.Duration, 0, store.RunnableCount())
 	for _, example := range store.All() {
 		if !example.Runnable {
 			continue
 		}
 
+		started := time.Now()
 		script, err := engine.Compile(example.Source)
 		if err != nil {
 			return nil, fmt.Errorf("compile %s: %w", example.SourcePath, err)
 		}
+		elapsed = append(elapsed, time.Since(started))
 		compiled[example.Slug] = script
 	}
 
 	return &Service{
 		store:    store,
 		compiled: compiled,
+		stats: Stats{
+			CompiledScripts: len(compiled),
+			MedianCompile:   median(elapsed),
+		},
 	}, nil
+}
+
+// Stats reports what the startup compile pass measured.
+func (s *Service) Stats() Stats {
+	return s.stats
+}
+
+func median(values []time.Duration) time.Duration {
+	if len(values) == 0 {
+		return 0
+	}
+
+	sorted := slices.Clone(values)
+	slices.Sort(sorted)
+
+	mid := len(sorted) / 2
+	if len(sorted)%2 == 1 {
+		return sorted[mid]
+	}
+	return (sorted[mid-1] + sorted[mid]) / 2
 }
 
 func (s *Service) Run(ctx context.Context, slug string) (Result, error) {

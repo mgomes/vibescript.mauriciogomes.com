@@ -30,3 +30,15 @@ def prepare_pair(first, second)
     return [left_result, right_result]
   end
 end
+
+def run
+  users = [
+    { id: "u1", score: 10, weight: 2 },
+    { id: "u2", score: 7, weight: 3 }
+  ]
+
+  {
+    summary: summarize_users(users),
+    prepared: prepare_pair(users[0], users[1])
+  }
+end

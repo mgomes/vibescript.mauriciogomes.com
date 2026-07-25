@@ -2,8 +2,8 @@ package runner
 
 import (
 	"context"
-	"errors"
 	"testing"
+	"time"
 
 	"github.com/mgomes/vibescript-lang.org/internal/catalog"
 )
@@ -76,24 +76,6 @@ func TestRunArraysExtrasExample(t *testing.T) {
 	}
 }
 
-func TestRunNonRunnableExample(t *testing.T) {
-	store, err := catalog.Load()
-	if err != nil {
-		t.Fatalf("load catalog: %v", err)
-	}
-
-	service, err := New(store)
-	if err != nil {
-		t.Fatalf("new service: %v", err)
-	}
-
-	slug := firstNonRunnableSlug(t, store)
-	_, err = service.Run(context.Background(), slug)
-	if !errors.Is(err, ErrExampleNotRunnable) {
-		t.Fatalf("Run(%q) error = %v, want ErrExampleNotRunnable", slug, err)
-	}
-}
-
 func TestRunAllRunnableExamples(t *testing.T) {
 	store, err := catalog.Load()
 	if err != nil {
@@ -132,15 +114,24 @@ func numericValueEquals(value any, expected int) bool {
 	}
 }
 
-func firstNonRunnableSlug(t *testing.T, store *catalog.Store) string {
-	t.Helper()
-
-	for _, example := range store.All() {
-		if !example.Runnable {
-			return example.Slug
-		}
+func TestMedian(t *testing.T) {
+	cases := []struct {
+		name   string
+		values []time.Duration
+		want   time.Duration
+	}{
+		{"empty", nil, 0},
+		{"single", []time.Duration{10}, 10},
+		{"odd length takes the middle", []time.Duration{30, 10, 20}, 20},
+		{"even length averages the middle pair", []time.Duration{40, 10, 30, 20}, 25},
+		{"unsorted input", []time.Duration{5, 100, 1, 50}, 27},
 	}
 
-	t.Skip("catalog has no non-runnable examples")
-	return ""
+	for _, tc := range cases {
+		t.Run(tc.name, func(t *testing.T) {
+			if got := median(tc.values); got != tc.want {
+				t.Fatalf("median(%v) = %v, want %v", tc.values, got, tc.want)
+			}
+		})
+	}
 }

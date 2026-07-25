@@ -40,6 +40,9 @@ type viewData struct {
 	Featured         []catalog.Example
 	Examples         []catalog.Example
 	Example          catalog.Example
+	HeroExample      catalog.Example
+	Guardrails       guardrails
+	HasRunner        bool
 	UpstreamVersion  string
 	UpstreamRepoURL  string
 	Year             int
@@ -53,7 +56,9 @@ const siteBaseURL = "https://vibescript-lang.org"
 var cacheBust = fmt.Sprintf("%d", time.Now().UnixMilli())
 
 func New(store *catalog.Store, runService *runner.Service) (*ohm.App, error) {
-	templates, err := template.ParseFS(assets, "templates/*.html")
+	templates, err := template.New("site").Funcs(template.FuncMap{
+		"accent": catalog.Accent,
+	}).ParseFS(assets, "templates/*.html")
 	if err != nil {
 		return nil, err
 	}
@@ -154,7 +159,28 @@ func (w *timeoutResponseWriter) Unwrap() http.ResponseWriter {
 	return w.ResponseWriter
 }
 
+const heroExampleSlug = "showcase-finance-late-fee"
+
+// guardrails holds the display strings for the sandbox limits, derived from
+// the real runner configuration so the homepage can never drift from it.
+type guardrails struct {
+	StepQuota      string
+	MemoryQuota    string
+	RecursionLimit string
+}
+
+func guardrailValues() guardrails {
+	cfg := runner.EngineConfig
+	return guardrails{
+		StepQuota:      fmt.Sprintf("%dk steps", cfg.StepQuota/1000),
+		MemoryQuota:    fmt.Sprintf("%d KiB", cfg.MemoryQuotaBytes>>10),
+		RecursionLimit: fmt.Sprintf("depth %d", cfg.RecursionLimit),
+	}
+}
+
 func (a *App) home(req *ohm.Request) error {
+	heroExample, _ := a.store.BySlug(heroExampleSlug)
+
 	return a.render(req, http.StatusOK, viewData{
 		ContentTemplate: "home",
 		Page: page{
@@ -163,8 +189,10 @@ func (a *App) home(req *ohm.Request) error {
 			Section:     "home",
 		},
 		ShowcaseExamples: a.store.TaggedCount("showcase"),
-		Featured:         a.store.Featured(4),
-		Examples:         a.store.All(),
+		Featured:         a.store.Featured(6),
+		HeroExample:      heroExample,
+		Guardrails:       guardrailValues(),
+		HasRunner:        heroExample.Runnable,
 		TotalExamples:    a.store.Count(),
 		RunnableExamples: a.store.RunnableCount(),
 		UpstreamVersion:  catalog.UpstreamVersion,
@@ -207,6 +235,7 @@ func (a *App) exampleDetail(req *ohm.Request) error {
 		},
 		ShowcaseExamples: a.store.TaggedCount("showcase"),
 		Example:          example,
+		HasRunner:        example.Runnable,
 		TotalExamples:    a.store.Count(),
 		RunnableExamples: a.store.RunnableCount(),
 		UpstreamVersion:  catalog.UpstreamVersion,
@@ -216,10 +245,13 @@ func (a *App) exampleDetail(req *ohm.Request) error {
 }
 
 func (a *App) healthz(req *ohm.Request) error {
+	stats := a.runner.Stats()
 	req.JSON(http.StatusOK, map[string]any{
-		"status":            "ok",
-		"examples":          a.store.Count(),
-		"runnable_examples": a.store.RunnableCount(),
+		"status":              "ok",
+		"examples":            a.store.Count(),
+		"runnable_examples":   a.store.RunnableCount(),
+		"median_compile_us":   stats.MedianCompile.Microseconds(),
+		"compiled_at_startup": stats.CompiledScripts,
 	})
 	return nil
 }

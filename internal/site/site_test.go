@@ -34,6 +34,43 @@ func TestHomePageRendersFeaturedExamples(t *testing.T) {
 	if !strings.Contains(body, "Release readiness") {
 		t.Fatalf("expected featured example title, got %q", body)
 	}
+
+	if !strings.Contains(body, "/api/examples/showcase-finance-late-fee/run") {
+		t.Fatalf("expected hero runner wiring, got %q", body)
+	}
+}
+
+func TestHomePageRendersRealGuardrailValues(t *testing.T) {
+	app := newTestApp(t)
+
+	request := httptest.NewRequest(http.MethodGet, "/", nil)
+	recorder := httptest.NewRecorder()
+
+	app.ServeHTTP(recorder, request)
+
+	body := recorder.Body.String()
+	for _, value := range []string{"250k steps", "256 KiB", "depth 32"} {
+		if !strings.Contains(body, value) {
+			t.Fatalf("expected guardrail value %q from runner.EngineConfig, got %q", value, body)
+		}
+	}
+}
+
+func TestRunHeroExample(t *testing.T) {
+	app := newTestApp(t)
+
+	request := httptest.NewRequest(http.MethodPost, "/api/examples/showcase-finance-late-fee/run", nil)
+	recorder := httptest.NewRecorder()
+
+	app.ServeHTTP(recorder, request)
+
+	if recorder.Code != http.StatusOK {
+		t.Fatalf("expected status 200, got %d", recorder.Code)
+	}
+
+	if body := recorder.Body.String(); !strings.Contains(body, "15.00 USD") {
+		t.Fatalf("expected hero example output, got %q", body)
+	}
 }
 
 func TestExamplesPageRendersCatalog(t *testing.T) {
@@ -129,19 +166,6 @@ func TestRunExample(t *testing.T) {
 
 	if !strings.Contains(body, `"perfect"`) {
 		t.Fatalf("expected runnable output, got %q", body)
-	}
-}
-
-func TestRunNonRunnableExample(t *testing.T) {
-	app := newTestApp(t)
-
-	request := httptest.NewRequest(http.MethodPost, "/api/examples/"+firstNonRunnableSlug(t)+"/run", nil)
-	recorder := httptest.NewRecorder()
-
-	app.ServeHTTP(recorder, request)
-
-	if recorder.Code != http.StatusConflict {
-		t.Fatalf("expected status 409, got %d", recorder.Code)
 	}
 }
 
@@ -326,22 +350,4 @@ func readGzipBody(t *testing.T, recorder *httptest.ResponseRecorder) string {
 		t.Fatalf("io.ReadAll(gzip response body) error = %v, want nil", err)
 	}
 	return string(body)
-}
-
-func firstNonRunnableSlug(t *testing.T) string {
-	t.Helper()
-
-	store, err := catalog.Load()
-	if err != nil {
-		t.Fatalf("load catalog: %v", err)
-	}
-
-	for _, example := range store.All() {
-		if !example.Runnable {
-			return example.Slug
-		}
-	}
-
-	t.Skip("catalog has no non-runnable examples")
-	return ""
 }

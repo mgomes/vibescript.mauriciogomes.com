@@ -17,6 +17,85 @@
     return `${result.kind} in ${dur}\n\n${String(result.value)}`;
   }
 
+  const SOUND_KEY = "sound";
+  let cuelume = null;
+
+  /* Storage access throws outright when a browser denies it (private modes,
+     blocked cookies, sandboxed embeds), so every read and write is guarded.
+     A preference we cannot reach is simply the default. */
+  function readStored(key) {
+    try {
+      return localStorage.getItem(key);
+    } catch {
+      return null;
+    }
+  }
+
+  function writeStored(key, value) {
+    try {
+      localStorage.setItem(key, value);
+    } catch {
+      // Preference cannot be persisted; the session still honors it.
+    }
+  }
+
+  /** Resolves the vendored cuelume module, loading it on first use. */
+  async function loadCuelume() {
+    if (cuelume) return cuelume;
+    try {
+      cuelume = await import("/static/vendor/cuelume/index.js");
+      cuelume.setEnabled(soundEnabled());
+    } catch {
+      cuelume = { play() {}, setEnabled() {} };
+    }
+    return cuelume;
+  }
+
+  /* Held in memory so muting still works for the session when storage is
+     unavailable; storage only seeds this and persists it across visits. */
+  let soundPreference = null;
+
+  function soundEnabled() {
+    if (soundPreference === null) {
+      soundPreference = readStored(SOUND_KEY) !== "off";
+    }
+    return soundPreference;
+  }
+
+  function setSoundEnabled(on) {
+    soundPreference = on;
+    writeStored(SOUND_KEY, on ? "on" : "off");
+  }
+
+  async function playCue(name) {
+    if (!soundEnabled()) return;
+    const audio = await loadCuelume();
+    audio.play(name);
+  }
+
+  /* Safari only lets an AudioContext start inside a user gesture, and the
+     result cue plays after an await, by which point the activation may have
+     expired. Playing a cue synchronously on click opens the context while the
+     gesture is live, so later cues are audible. Needs the module already
+     resolved, hence the preload. */
+  function unlockAudioDuringGesture() {
+    if (!cuelume || !soundEnabled()) return;
+    cuelume.play("press");
+  }
+
+  function preloadAudio() {
+    if (!document.querySelector("[data-run-button]")) return;
+    if (!soundEnabled()) return;
+    loadCuelume();
+  }
+
+  /** Restarts a CSS animation that may already have run on this element. */
+  function replay(element, className) {
+    element.classList.remove(className);
+    void element.offsetWidth;
+    element.classList.add(className);
+  }
+
   function attachRunner() {
     const button = document.querySelector("[data-run-button]");
     const output = document.querySelector("[data-run-output]");
@@ -25,11 +104,16 @@
     }
 
     button.addEventListener("click", async () => {
+      unlockAudioDuringGesture();
+
       const originalLabel = button.textContent;
       button.disabled = true;
       button.textContent = "Running...";
+      output.classList.remove("slide-in-down");
+      output.classList.add("is-thinking");
       output.textContent = "Executing run() through the site runner...";
 
+      let cue = "ready";
       try {
         const response = await fetch(button.dataset.runUrl, {
           method: "POST",
@@ -39,16 +123,48 @@
         });
         const payload = await response.json();
         if (!response.ok) {
+          cue = "error";
           output.textContent = payload.error || "Execution failed.";
           return;
         }
 
         output.textContent = renderResult(payload.result);
       } catch (error) {
+        cue = "error";
         output.textContent = error instanceof Error ? error.message : "Execution failed.";
       } finally {
         button.disabled = false;
         button.textContent = originalLabel;
+        output.classList.remove("is-thinking");
+        replay(output, "slide-in-down");
+        playCue(cue);
+      }
+    });
+  }
+
+  function initSoundToggle() {
+    const toggle = document.querySelector("[data-sound-toggle]");
+    if (!toggle) return;
+
+    // Stable label naming the control, with aria-pressed carrying the state:
+    // an action label plus aria-pressed announces the state inverted.
+    const sync = () => {
+      const on = soundEnabled();
+      document.documentElement.setAttribute("data-sound", on ? "on" : "off");
+      toggle.setAttribute("aria-pressed", String(on));
+    };
+
+    sync();
+    toggle.addEventListener("click", async () => {
+      const next = !soundEnabled();
+      setSoundEnabled(next);
+      sync();
+      if (next) {
+        const audio = await loadCuelume();
+        audio.setEnabled(true);
+        audio.play("toggle");
+      } else if (cuelume) {
+        cuelume.setEnabled(false);
       }
     });
   }
@@ -193,7 +309,7 @@
       const current = document.documentElement.getAttribute("data-theme");
       const next = current === "dark" ? "light" : "dark";
       document.documentElement.setAttribute("data-theme", next);
-      localStorage.setItem("theme", next);
+      writeStored("theme", next);
     });
   }
 
@@ -265,7 +381,7 @@
     const allBtn = document.createElement("button");
     allBtn.className = "catalog-nav-item is-active";
     allBtn.dataset.cat = "__all__";
-    allBtn.innerHTML = `<span>All</span><span class="catalog-nav-count">${cards.length}</span>`;
+    allBtn.innerHTML = `<span class="catalog-nav-dot catalog-nav-dot-all"></span><span>All</span><span class="catalog-nav-count">${cards.length}</span>`;
     allBtn.addEventListener("click", () => {
       activeCategory = null;
       render();
@@ -276,7 +392,9 @@
       const btn = document.createElement("button");
       btn.className = "catalog-nav-item";
       btn.dataset.cat = cat;
-      btn.innerHTML = `<span>${escapeHtml(cat)}</span><span class="catalog-nav-count">${categories[cat].length}</span>`;
+      // Reuse the palette slot Go already assigned to this category's cards.
+      btn.dataset.accent = categories[cat][0].dataset.accent || "0";
+      btn.innerHTML = `<span class="catalog-nav-dot"></span><span>${escapeHtml(cat)}</span><span class="catalog-nav-count">${categories[cat].length}</span>`;
       btn.addEventListener("click", () => {
         activeCategory = cat;
         render();
@@ -307,6 +425,8 @@
     });
 
     initThemeToggle();
+    initSoundToggle();
+    preloadAudio();
     initCatalog();
   });
 })();
