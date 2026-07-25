@@ -60,7 +60,7 @@
       const originalLabel = button.textContent;
       button.disabled = true;
       button.textContent = "Running...";
-      output.classList.remove("bounce-in-down");
+      output.classList.remove("slide-in-down");
       output.classList.add("is-thinking");
       output.textContent = "Executing run() through the site runner...";
 
@@ -87,7 +87,7 @@
         button.disabled = false;
         button.textContent = originalLabel;
         output.classList.remove("is-thinking");
-        replay(output, "bounce-in-down");
+        replay(output, "slide-in-down");
         playCue(cue);
       }
     });

@@ -569,34 +569,13 @@ h3 {
   display: none;
 }
 
-/* bounceInDown keyframes from Animate.css (MIT, © Daniel Eden), with the
-   entry offset shortened: the original -3000px is built for full-page
-   entrances and just hides the panel behind the code window's overflow. */
-@keyframes bounce-in-down {
-  from,
-  60%,
-  75%,
-  90%,
-  to {
-    animation-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1);
-  }
-
+/* slideInDown keyframes from Animate.css (MIT, © Daniel Eden). The code
+   window's overflow clips the start position, so the panel reads as sliding
+   out from under the runner bar. */
+@keyframes slide-in-down {
   from {
-    opacity: 0;
-    transform: translate3d(0, -220px, 0) scaleY(3);
-  }
-
-  60% {
-    opacity: 1;
-    transform: translate3d(0, 25px, 0) scaleY(0.9);
-  }
-
-  75% {
-    transform: translate3d(0, -10px, 0) scaleY(0.95);
-  }
-
-  90% {
-    transform: translate3d(0, 5px, 0) scaleY(0.985);
+    transform: translate3d(0, -100%, 0);
+    visibility: visible;
   }
 
   to {
@@ -604,8 +583,8 @@ h3 {
   }
 }
 
-.bounce-in-down {
-  animation: bounce-in-down 0.85s both;
+.slide-in-down {
+  animation: slide-in-down 280ms cubic-bezier(0.22, 0.61, 0.36, 1) both;
 }
 
 /* The wait between click and result; the label already reads "Running..." */
@@ -619,7 +598,7 @@ h3 {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .bounce-in-down,
+  .slide-in-down,
   [data-run-output].is-thinking {
     animation: none;
   }
