@@ -73,6 +73,22 @@
     audio.play(name);
   }
 
+  /* Safari only lets an AudioContext start inside a user gesture, and the
+     result cue plays after an await, by which point the activation may have
+     expired. Playing a cue synchronously on click opens the context while the
+     gesture is live, so later cues are audible. Needs the module already
+     resolved, hence the preload. */
+  function unlockAudioDuringGesture() {
+    if (!cuelume || !soundEnabled()) return;
+    cuelume.play("press");
+  }
+
+  function preloadAudio() {
+    if (!document.querySelector("[data-run-button]")) return;
+    if (!soundEnabled()) return;
+    loadCuelume();
+  }
+
   /** Restarts a CSS animation that may already have run on this element. */
   function replay(element, className) {
     element.classList.remove(className);
@@ -88,6 +104,8 @@
     }
 
     button.addEventListener("click", async () => {
+      unlockAudioDuringGesture();
+
       const originalLabel = button.textContent;
       button.disabled = true;
       button.textContent = "Running...";
@@ -128,11 +146,12 @@
     const toggle = document.querySelector("[data-sound-toggle]");
     if (!toggle) return;
 
+    // Stable label naming the control, with aria-pressed carrying the state:
+    // an action label plus aria-pressed announces the state inverted.
     const sync = () => {
       const on = soundEnabled();
       document.documentElement.setAttribute("data-sound", on ? "on" : "off");
       toggle.setAttribute("aria-pressed", String(on));
-      toggle.setAttribute("aria-label", on ? "Mute sounds" : "Unmute sounds");
     };
 
     sync();
@@ -407,6 +426,7 @@
 
     initThemeToggle();
     initSoundToggle();
+    preloadAudio();
     initCatalog();
   });
 })();
