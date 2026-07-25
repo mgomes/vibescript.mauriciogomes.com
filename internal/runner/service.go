@@ -94,7 +94,12 @@ func median(values []time.Duration) time.Duration {
 
 	sorted := slices.Clone(values)
 	slices.Sort(sorted)
-	return sorted[len(sorted)/2]
+
+	mid := len(sorted) / 2
+	if len(sorted)%2 == 1 {
+		return sorted[mid]
+	}
+	return (sorted[mid-1] + sorted[mid]) / 2
 }
 
 func (s *Service) Run(ctx context.Context, slug string) (Result, error) {

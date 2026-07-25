@@ -3,6 +3,7 @@ package runner
 import (
 	"context"
 	"testing"
+	"time"
 
 	"github.com/mgomes/vibescript-lang.org/internal/catalog"
 )
@@ -110,5 +111,27 @@ func numericValueEquals(value any, expected int) bool {
 		return typed == float64(expected)
 	default:
 		return false
+	}
+}
+
+func TestMedian(t *testing.T) {
+	cases := []struct {
+		name   string
+		values []time.Duration
+		want   time.Duration
+	}{
+		{"empty", nil, 0},
+		{"single", []time.Duration{10}, 10},
+		{"odd length takes the middle", []time.Duration{30, 10, 20}, 20},
+		{"even length averages the middle pair", []time.Duration{40, 10, 30, 20}, 25},
+		{"unsorted input", []time.Duration{5, 100, 1, 50}, 27},
+	}
+
+	for _, tc := range cases {
+		t.Run(tc.name, func(t *testing.T) {
+			if got := median(tc.values); got != tc.want {
+				t.Fatalf("median(%v) = %v, want %v", tc.values, got, tc.want)
+			}
+		})
 	}
 }
