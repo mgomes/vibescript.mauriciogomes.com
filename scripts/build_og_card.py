@@ -11,12 +11,15 @@ Usage:
     python3 scripts/build_og_card.py            # writes internal/site/static/og-card.png
     python3 scripts/build_og_card.py --html-only
 
-Requires Google Chrome (headless) for rendering.
+Rendering needs Chrome or Chromium. The binary is resolved from PATH, then the
+usual macOS bundle locations; override with --chrome or the CHROME env var.
 """
 
 import argparse
 import base64
+import os
 import pathlib
+import shutil
 import subprocess
 import sys
 import tempfile
@@ -27,7 +30,39 @@ FONT = STATIC / "fonts" / "woff2" / "0-MonoLisaText-normal.woff2"
 LOGO = STATIC / "logo-dark.svg"
 OUT = STATIC / "og-card.png"
 
-CHROME = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
+CHROME_BUNDLES = (
+    "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+    "/Applications/Chromium.app/Contents/MacOS/Chromium",
+)
+CHROME_COMMANDS = (
+    "google-chrome",
+    "google-chrome-stable",
+    "chromium",
+    "chromium-browser",
+    "chrome",
+)
+
+
+def find_chrome(explicit: str | None = None) -> str:
+    """Resolve a Chrome/Chromium binary across macOS bundles, PATH, and Linux."""
+    if explicit:
+        resolved = shutil.which(explicit) or (explicit if pathlib.Path(explicit).exists() else None)
+        if not resolved:
+            sys.exit(f"chrome not found at {explicit}")
+        return resolved
+
+    for command in CHROME_COMMANDS:
+        found = shutil.which(command)
+        if found:
+            return found
+    for bundle in CHROME_BUNDLES:
+        if pathlib.Path(bundle).exists():
+            return bundle
+
+    sys.exit(
+        "could not find Chrome or Chromium. Install one, or pass --chrome /path/to/binary "
+        "(or set CHROME=/path/to/binary)."
+    )
 
 WIDTH, HEIGHT = 1200, 630
 
@@ -143,6 +178,11 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--html-only", action="store_true")
     parser.add_argument("--out", default=str(OUT))
+    parser.add_argument(
+        "--chrome",
+        default=os.environ.get("CHROME"),
+        help="path to a Chrome/Chromium binary (default: search PATH, then macOS bundles)",
+    )
     args = parser.parse_args()
 
     html = build_html()
@@ -162,7 +202,7 @@ def main():
             # so bound it and judge success by the file rather than the code.
             subprocess.run(
                 [
-                    CHROME,
+                    find_chrome(args.chrome),
                     "--headless=new",
                     f"--user-data-dir={tmp}/profile",
                     "--force-device-scale-factor=1",
