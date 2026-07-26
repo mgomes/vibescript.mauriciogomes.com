@@ -87,6 +87,11 @@ func New(store *catalog.Store, runService *runner.Service) (*ohm.App, error) {
 	application.Get("/", app.home)
 	application.Get("/healthz", app.healthz)
 	application.GetHTTP("/static/*", http.StripPrefix("/static/", app.static))
+	// Browsers request this at the root regardless of the <link rel="icon"> tags.
+	application.GetHTTP("/favicon.ico", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		r.URL.Path = "/favicon.ico"
+		app.static.ServeHTTP(w, r)
+	}))
 	application.Post("/api/examples/{slug}/run", app.runExample)
 	application.Get("/examples", app.examplesIndex)
 	application.Get("/examples/", app.examplesIndex)
