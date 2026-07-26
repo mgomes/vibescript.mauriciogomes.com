@@ -207,6 +207,13 @@ def main():
 
     html = build_html()
 
+    # --html-only needs no renderer, so it returns before any tool lookup.
+    if args.html_only:
+        keep = ROOT / "og-card-preview.html"
+        keep.write_text(html)
+        print(f"wrote {keep}")
+        return
+
     # Preflight both tools so a missing one fails before rendering, not after.
     chrome = find_chrome(args.chrome)
     converter = find_converter()
@@ -220,11 +227,6 @@ def main():
     with tempfile.TemporaryDirectory() as tmp:
         page = pathlib.Path(tmp) / "card.html"
         page.write_text(html)
-        if args.html_only:
-            keep = ROOT / "og-card-preview.html"
-            keep.write_text(html)
-            print(f"wrote {keep}")
-            return
 
         raw = pathlib.Path(tmp) / "raw.png"
         try:
