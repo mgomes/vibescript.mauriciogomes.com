@@ -29,6 +29,9 @@ STATIC = ROOT / "internal" / "site" / "static"
 FONT = STATIC / "fonts" / "woff2" / "0-MonoLisaText-normal.woff2"
 LOGO = STATIC / "logo-dark.svg"
 OUT = STATIC / "og-card.png"
+# The URL every page advertised before the refresh. Links already cached against
+# it must keep resolving to the current art, so a default run rewrites it too.
+LEGACY_OUT = STATIC / "og-image.png"
 
 CHROME_BUNDLES = (
     "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
@@ -227,8 +230,13 @@ def main():
             check=True,
         )
 
-    size = pathlib.Path(args.out).stat().st_size
-    print(f"wrote {args.out} ({size:,} bytes)")
+    out_path = pathlib.Path(args.out)
+    print(f"wrote {out_path} ({out_path.stat().st_size:,} bytes)")
+
+    # Only mirror for a default run; an explicit --out stays single-target.
+    if out_path.resolve() == OUT.resolve():
+        LEGACY_OUT.write_bytes(out_path.read_bytes())
+        print(f"synced {LEGACY_OUT} (legacy URL)")
 
 
 if __name__ == "__main__":
