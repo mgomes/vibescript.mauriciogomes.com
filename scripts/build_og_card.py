@@ -13,7 +13,13 @@ Usage:
 
 Rendering needs Chrome or Chromium. The binary is resolved from PATH, then the
 usual macOS bundle locations; override with --chrome or the CHROME env var.
+
+ImageMagick (`magick` or `convert`) is optional. When present the screenshot is
+reduced to an 8-bit palette, which roughly halves the file; without it the raw
+screenshot is written instead.
 """
+
+from __future__ import annotations
 
 import argparse
 import base64
@@ -44,6 +50,17 @@ CHROME_COMMANDS = (
     "chromium-browser",
     "chrome",
 )
+# ImageMagick 7 ships `magick`, 6 ships `convert`. Optional: it only shrinks the
+# screenshot to an 8-bit palette.
+CONVERT_COMMANDS = ("magick", "convert")
+
+
+def find_converter() -> str | None:
+    for command in CONVERT_COMMANDS:
+        found = shutil.which(command)
+        if found:
+            return found
+    return None
 
 
 def find_chrome(explicit: str | None = None) -> str:
@@ -190,6 +207,16 @@ def main():
 
     html = build_html()
 
+    # Preflight both tools so a missing one fails before rendering, not after.
+    chrome = find_chrome(args.chrome)
+    converter = find_converter()
+    if converter is None:
+        print(
+            "note: ImageMagick not found; writing the raw screenshot without "
+            "8-bit optimization (install imagemagick for a smaller file)",
+            file=sys.stderr,
+        )
+
     with tempfile.TemporaryDirectory() as tmp:
         page = pathlib.Path(tmp) / "card.html"
         page.write_text(html)
@@ -205,7 +232,7 @@ def main():
             # so bound it and judge success by the file rather than the code.
             subprocess.run(
                 [
-                    find_chrome(args.chrome),
+                    chrome,
                     "--headless=new",
                     f"--user-data-dir={tmp}/profile",
                     "--force-device-scale-factor=1",
@@ -224,11 +251,23 @@ def main():
         if not raw.exists():
             sys.exit("chrome did not produce a screenshot")
 
-        # 8-bit palette keeps the file small; the card is flat color.
-        subprocess.run(
-            ["magick", str(raw), "-strip", "-depth", "8", "-define", "png:color-type=2", args.out],
-            check=True,
-        )
+        if converter:
+            # 8-bit palette keeps the file small; the card is flat color.
+            subprocess.run(
+                [
+                    converter,
+                    str(raw),
+                    "-strip",
+                    "-depth",
+                    "8",
+                    "-define",
+                    "png:color-type=2",
+                    args.out,
+                ],
+                check=True,
+            )
+        else:
+            shutil.copyfile(raw, args.out)
 
     out_path = pathlib.Path(args.out)
     print(f"wrote {out_path} ({out_path.stat().st_size:,} bytes)")
