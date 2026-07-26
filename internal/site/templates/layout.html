@@ -4,7 +4,10 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{{.Page.Title}} | Vibescript</title>
+    <title>{{if eq .Page.Title "Vibescript"}}Vibescript{{else}}{{.Page.Title}} | Vibescript{{end}}</title>
+    <link rel="icon" href="/static/favicon.svg" type="image/svg+xml">
+    <link rel="icon" href="/static/favicon-32.png" sizes="32x32" type="image/png">
+    <link rel="apple-touch-icon" href="/static/apple-touch-icon.png">
     <meta name="description" content="{{.Page.Description}}">
     <link rel="canonical" href="{{.CanonicalURL}}">
 
@@ -13,7 +16,7 @@
     <meta property="og:title" content="{{.Page.Title}}">
     <meta property="og:description" content="{{.Page.Description}}">
     <meta property="og:url" content="{{.CanonicalURL}}">
-    <meta property="og:image" content="{{.SiteBaseURL}}/static/og-image.png">
+    <meta property="og:image" content="{{.SiteBaseURL}}/static/og-card.png">
     <meta property="og:image:type" content="image/png">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
@@ -22,7 +25,8 @@
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="{{.Page.Title}}">
     <meta name="twitter:description" content="{{.Page.Description}}">
-    <meta name="twitter:image" content="{{.SiteBaseURL}}/static/og-image.png">
+    <meta name="twitter:image" content="{{.SiteBaseURL}}/static/og-card.png">
+    <meta name="twitter:image:alt" content="Vibescript — an embeddable Ruby-like language for Go">
 
     <script>
       (function() {
