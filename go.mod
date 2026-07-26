@@ -4,7 +4,7 @@ go 1.26.5
 
 require (
 	github.com/mgomes/ohm v0.13.0
-	github.com/mgomes/vibescript v1.0.0-rc4
+	github.com/mgomes/vibescript v1.0.0-rc8
 )
 
 require (
@@ -17,5 +17,5 @@ require (
 	go.opentelemetry.io/otel v1.44.0 // indirect
 	go.opentelemetry.io/otel/metric v1.44.0 // indirect
 	go.opentelemetry.io/otel/trace v1.44.0 // indirect
-	golang.org/x/text v0.37.0 // indirect
+	golang.org/x/text v0.40.0 // indirect
 )
