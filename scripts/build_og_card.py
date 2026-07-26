@@ -1,0 +1,195 @@
+#!/usr/bin/env python3
+"""Render the Open Graph card as a PNG.
+
+The card is built from the site's own brand tokens, wordmark, and webfont so it
+stays in step with the design instead of drifting into a third set of greens.
+
+Text is restricted to ASCII: the inlined MonoLisaText subset covers U+0020-007E,
+so an em dash or curly quote would silently render as tofu.
+
+Usage:
+    python3 scripts/build_og_card.py            # writes internal/site/static/og-card.png
+    python3 scripts/build_og_card.py --html-only
+
+Requires Google Chrome (headless) for rendering.
+"""
+
+import argparse
+import base64
+import pathlib
+import subprocess
+import sys
+import tempfile
+
+ROOT = pathlib.Path(__file__).resolve().parent.parent
+STATIC = ROOT / "internal" / "site" / "static"
+FONT = STATIC / "fonts" / "woff2" / "0-MonoLisaText-normal.woff2"
+LOGO = STATIC / "logo-dark.svg"
+OUT = STATIC / "og-card.png"
+
+CHROME = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
+
+WIDTH, HEIGHT = 1200, 630
+
+# Dark theme tokens, mirroring :root in site.css
+BG = "#0c0d0a"
+INK = "#f1efe2"
+MUTED = "rgba(241, 239, 226, 0.66)"
+ACCENT = "#56c96e"
+TOK_KEYWORD = "#dd93b7"
+TOK_CONSTANT = "#96bfe3"
+TOK_STRING = "#dcbe78"
+
+HEADLINE = "An embeddable Ruby-like language for Go."
+SUBLINE = "Safe by default. Easy for AI to write."
+
+SPARKLE = (
+    "M17.5 0C17.5 9.665 25.335 17.5 35 17.5C25.335 17.5 17.5 25.335 17.5 35"
+    "C17.5 25.335 9.665 17.5 0 17.5C9.665 17.5 17.5 9.665 17.5 0Z"
+)
+
+# Same sine as the homepage wave, but filled to the bottom edge rather than
+# drawn as a ribbon: a wavy lower edge would let the background show through at
+# the card's bottom corners.
+def wave_path(crest: int) -> str:
+    segments = "".join(
+        f" c72 {-36 if i % 2 == 0 else 36} 128 {-36 if i % 2 == 0 else 36} 200 0"
+        for i in range(7)
+    )
+    return f"M-40 {crest}{segments} L1360 150 L-40 150 Z"
+
+
+def sparkle(x, y, size, color, tilt):
+    return (
+        f'<svg class="sp" style="left:{x}px;top:{y}px;width:{size}px;height:{size}px;'
+        f'fill:{color};transform:rotate({tilt}deg)" viewBox="0 0 35 35">'
+        f'<path d="{SPARKLE}"/></svg>'
+    )
+
+
+def build_html() -> str:
+    for path in (FONT, LOGO):
+        if not path.exists():
+            sys.exit(f"missing required asset: {path}")
+
+    font_b64 = base64.b64encode(FONT.read_bytes()).decode()
+    logo = LOGO.read_text()
+    # Scale the wordmark by height; its viewBox is 682x139.
+    logo = logo.replace("<svg", '<svg class="wordmark"', 1)
+
+    non_ascii = [c for c in HEADLINE + SUBLINE if ord(c) > 0x7E]
+    if non_ascii:
+        sys.exit(f"card text must stay ASCII, found: {non_ascii!r}")
+
+    return f"""<!doctype html>
+<html><head><meta charset="utf-8">
+<style>
+  @font-face {{
+    font-family: "MonoLisaText";
+    src: url(data:font/woff2;base64,{font_b64}) format("woff2");
+    font-weight: 1 900;
+    font-display: block;
+  }}
+  * {{ box-sizing: border-box; margin: 0; padding: 0; }}
+  html, body {{ width: {WIDTH}px; height: {HEIGHT}px; }}
+  body {{
+    background: {BG};
+    color: {INK};
+    font-family: "MonoLisaText";
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 0 78px;
+  }}
+  .wordmark {{ height: 52px; width: auto; display: block; align-self: flex-start; margin-bottom: 42px; }}
+  h1 {{
+    font-size: 62px;
+    font-weight: 900;
+    line-height: 1.06;
+    letter-spacing: -0.035em;
+    max-width: 940px;
+  }}
+  p {{
+    margin-top: 26px;
+    font-size: 27px;
+    font-weight: 500;
+    color: {MUTED};
+    letter-spacing: -0.01em;
+  }}
+  .wave {{ position: absolute; left: 0; right: 0; bottom: 0; line-height: 0; }}
+  .wave svg {{ width: 100%; height: 126px; display: block; }}
+  .sp {{ position: absolute; }}
+</style></head>
+<body>
+  {sparkle(1052, 92, 34, TOK_KEYWORD, -14)}
+  {sparkle(1120, 168, 20, TOK_CONSTANT, 18)}
+  {sparkle(92, 96, 16, TOK_STRING, 24)}
+  {logo}
+  <h1>{HEADLINE}</h1>
+  <p>{SUBLINE}</p>
+  <div class="wave">
+    <svg viewBox="0 0 1200 150" preserveAspectRatio="none">
+      <path d="{wave_path(38)}" fill="{ACCENT}" opacity="0.3"/>
+      <path d="{wave_path(74)}" fill="{ACCENT}"/>
+    </svg>
+  </div>
+</body></html>
+"""
+
+
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--html-only", action="store_true")
+    parser.add_argument("--out", default=str(OUT))
+    args = parser.parse_args()
+
+    html = build_html()
+
+    with tempfile.TemporaryDirectory() as tmp:
+        page = pathlib.Path(tmp) / "card.html"
+        page.write_text(html)
+        if args.html_only:
+            keep = ROOT / "og-card-preview.html"
+            keep.write_text(html)
+            print(f"wrote {keep}")
+            return
+
+        raw = pathlib.Path(tmp) / "raw.png"
+        try:
+            # Headless Chrome writes the screenshot but does not always exit,
+            # so bound it and judge success by the file rather than the code.
+            subprocess.run(
+                [
+                    CHROME,
+                    "--headless=new",
+                    f"--user-data-dir={tmp}/profile",
+                    "--force-device-scale-factor=1",
+                    f"--window-size={WIDTH},{HEIGHT}",
+                    "--hide-scrollbars",
+                    "--virtual-time-budget=3000",
+                    f"--screenshot={raw}",
+                    page.as_uri(),
+                ],
+                timeout=45,
+                capture_output=True,
+            )
+        except subprocess.TimeoutExpired:
+            pass
+
+        if not raw.exists():
+            sys.exit("chrome did not produce a screenshot")
+
+        # 8-bit palette keeps the file small; the card is flat color.
+        subprocess.run(
+            ["magick", str(raw), "-strip", "-depth", "8", "-define", "png:color-type=2", args.out],
+            check=True,
+        )
+
+    size = pathlib.Path(args.out).stat().st_size
+    print(f"wrote {args.out} ({size:,} bytes)")
+
+
+if __name__ == "__main__":
+    main()
