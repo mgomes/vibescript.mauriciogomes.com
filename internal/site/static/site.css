@@ -617,7 +617,7 @@ h3 {
 .hero-lede {
   margin: 0;
   color: var(--muted);
-  font-size: 1.0625rem;
+  font-size: 1.125rem;
   line-height: 1.65;
   text-wrap: pretty;
   max-width: 52ch;
@@ -766,7 +766,7 @@ h3 {
 .section-header p {
   margin: 0;
   color: var(--muted);
-  font-size: 1.0625rem;
+  font-size: 1.125rem;
   line-height: 1.65;
   text-wrap: pretty;
   max-width: 56ch;
@@ -829,8 +829,8 @@ h3 {
 
 .pair-copy p {
   margin: 0;
-  font-size: 1.25rem;
-  line-height: 1.6;
+  font-size: 1.125rem;
+  line-height: 1.65;
   color: var(--muted);
   text-wrap: pretty;
 }
@@ -874,7 +874,7 @@ h3 {
 .philosophy-copy p {
   margin: 0 0 1rem;
   color: var(--muted);
-  font-size: 1.0625rem;
+  font-size: 1.125rem;
   line-height: 1.65;
   text-wrap: pretty;
   max-width: 54ch;
@@ -1828,10 +1828,6 @@ a.tag:hover {
   .example-card p,
   .guardrail dd {
     font-size: 1rem;
-  }
-
-  .pair-copy p {
-    font-size: 1.0625rem;
   }
 
   .hero-runner-bar {
