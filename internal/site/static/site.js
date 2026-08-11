@@ -301,6 +301,106 @@
     return result.join("\n");
   }
 
+  /* Minimal Go tokenizer for the host-configuration snippets on the
+     reference page. Same token classes as the Vibescript highlighter, so
+     both languages share the palette. Capitalized words are only typed when
+     they open a composite literal; Go struct fields stay plain ink. */
+  function highlightGo(source) {
+    const lines = source.split("\n");
+    const result = [];
+
+    const keywords = new Set([
+      "func", "var", "const", "type", "struct", "interface", "map", "chan",
+      "if", "else", "for", "range", "return", "go", "defer", "package",
+      "import", "select", "switch", "case", "break", "continue",
+      "string", "int", "int64", "bool", "byte", "error", "any",
+    ]);
+    const constants = new Set(["true", "false", "nil", "iota"]);
+
+    for (const line of lines) {
+      const tokens = [];
+      let i = 0;
+
+      while (i < line.length) {
+        if (line[i] === "/" && line[i + 1] === "/") {
+          tokens.push(`<span class="tok-comment">${escapeHtml(line.slice(i))}</span>`);
+          i = line.length;
+          continue;
+        }
+
+        if (line[i] === '"' || line[i] === "`") {
+          const quote = line[i];
+          let j = i + 1;
+          while (j < line.length && line[j] !== quote) {
+            if (quote === '"' && line[j] === "\\") j++;
+            j++;
+          }
+          j = Math.min(j + 1, line.length);
+          tokens.push(`<span class="tok-string">${escapeHtml(line.slice(i, j))}</span>`);
+          i = j;
+          continue;
+        }
+
+        if (/\d/.test(line[i]) && (i === 0 || /[^a-zA-Z_]/.test(line[i - 1]))) {
+          let j = i;
+          while (j < line.length && /[\d._]/.test(line[j])) j++;
+          if (j > i && !/[a-zA-Z]/.test(line[j] || "")) {
+            tokens.push(`<span class="tok-number">${line.slice(i, j)}</span>`);
+            i = j;
+            continue;
+          }
+        }
+
+        if (/[a-zA-Z_]/.test(line[i])) {
+          let j = i;
+          while (j < line.length && /[a-zA-Z0-9_]/.test(line[j])) j++;
+          const word = line.slice(i, j);
+          let k = j;
+          while (k < line.length && line[k] === " ") k++;
+
+          if (constants.has(word)) {
+            tokens.push(`<span class="tok-constant">${word}</span>`);
+          } else if (keywords.has(word)) {
+            tokens.push(`<span class="tok-keyword">${word}</span>`);
+          } else if (line[j] === "(") {
+            tokens.push(`<span class="tok-function">${escapeHtml(word)}</span>`);
+          } else if (/^[A-Z]/.test(word) && line[k] === "{") {
+            tokens.push(`<span class="tok-type">${escapeHtml(word)}</span>`);
+          } else {
+            tokens.push(escapeHtml(word));
+          }
+          i = j;
+          continue;
+        }
+
+        const threeChar = line.slice(i, i + 3);
+        const twoChar = line.slice(i, i + 2);
+        if (["<<=", ">>=", "..."].includes(threeChar)) {
+          tokens.push(`<span class="tok-operator">${escapeHtml(threeChar)}</span>`);
+          i += 3;
+          continue;
+        }
+        if ([":=", "<<", ">>", "==", "!=", "<=", ">=", "&&", "||", "->"].includes(twoChar)) {
+          tokens.push(`<span class="tok-operator">${escapeHtml(twoChar)}</span>`);
+          i += 2;
+          continue;
+        }
+        if ("=+-*/%<>!&|".includes(line[i])) {
+          tokens.push(`<span class="tok-operator">${escapeHtml(line[i])}</span>`);
+          i++;
+          continue;
+        }
+
+        tokens.push(escapeHtml(line[i]));
+        i++;
+      }
+
+      result.push(tokens.join(""));
+    }
+
+    return result.join("\n");
+  }
+
   function initThemeToggle() {
     const toggle = document.querySelector("[data-theme-toggle]");
     if (!toggle) return;
@@ -465,6 +565,10 @@
 
     document.querySelectorAll("code.language-vibescript, code.language-vibe").forEach((el) => {
       el.innerHTML = highlightVibescript(el.textContent);
+    });
+
+    document.querySelectorAll("code.language-go").forEach((el) => {
+      el.innerHTML = highlightGo(el.textContent);
     });
 
     initReferenceNav();
