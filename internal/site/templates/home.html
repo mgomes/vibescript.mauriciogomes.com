@@ -7,9 +7,8 @@
     <h1>An embeddable Ruby-like language for Go. <span class="underlined">Safe by default<svg class="underline-swash" viewBox="0 0 200 12" preserveAspectRatio="none" aria-hidden="true"><path d="M2 9C48 4 118 2 197 5C150 7.5 70 9 6 11.5Z"/></svg></span>, easy for AI to write.</h1>
     <p class="hero-lede">
       Vibescript is a small, readable scripting language that embeds in your Go app.
-      It gives users and AI agents a safe way to add custom functionality to existing
-      apps; the host decides exactly what they can touch, from quotas to capabilities
-      to concurrency.
+      It gives users and AI agents a safe way to add custom functionality.
+      The host decides exactly what they can touch.
     </p>
     <div class="hero-actions">
       <a class="button" href="/examples">Explore examples</a>
@@ -52,14 +51,14 @@
   <header class="section-intro">
     <p class="eyebrow"><svg class="vee" aria-hidden="true"><use href="#vee"></use></svg> Language</p>
     <h2>Small surface. Sharp primitives.</h2>
-    <p class="section-sub">Everything in Vibescript is designed to be read at a glance &mdash; by your team, and by the models writing it.</p>
+    <p class="section-sub">Everything in Vibescript is designed to be read at a glance, by your team and by the models writing it.</p>
   </header>
 
   <div class="pair">
     <div class="pair-copy">
       <h3>Reads like Ruby. Types when it matters.</h3>
       <p>
-        Blocks, ranges, zero-paren defs, symbol hashes &mdash; syntax your team and every
+        Blocks, ranges, zero-paren defs, symbol hashes: syntax your team and every
         language model already know. Annotations are optional, but signatures are checked
         when you write them, and nullables are always explicit.
       </p>
@@ -115,7 +114,7 @@ fee.<span class="tok-type">String</span>() <span class="tok-comment">// "5.00 US
     <div class="pair-copy">
       <h3>The sandbox says no.</h3>
       <p>
-        A runaway loop, a hostile script, an AI hallucination with a while-true in it &mdash;
+        A runaway loop, a hostile script, an AI hallucination with a while-true in it:
         the engine stops it at the step quota and hands your Go app a clean error.
         No goroutine leak, no OOM, no incident channel.
       </p>
@@ -123,7 +122,7 @@ fee.<span class="tok-type">String</span>() <span class="tok-comment">// "5.00 US
     <div class="pair-panel">
       <div class="term-window">
         <div class="term-header">
-          <span class="term-title">untrusted.vibe &mdash; sandboxed</span>
+          <span class="term-title">untrusted.vibe &middot; sandboxed</span>
         </div>
         <pre class="term-body"><span class="term-prompt">$</span> <span class="term-cmd">cat untrusted.vibe</span>
 <span class="term-out">def run
@@ -135,7 +134,7 @@ end</span>
 
 <span class="term-prompt">$</span> <span class="term-cmd"># host calls script.Call(ctx, "run", ...)</span>
 <span class="term-err">RuntimeError: step quota exceeded</span>
-<span class="term-ok">&#10003; stopped at {{.Guardrails.StepQuota}} &mdash; host unharmed</span></pre>
+<span class="term-ok">&#10003; stopped at {{.Guardrails.StepQuota}}, host unharmed</span></pre>
       </div>
     </div>
   </div>
@@ -258,7 +257,7 @@ end</code></pre>
   <svg class="sparkle sparkle-md sparkle-keyword sparkle-float sparkle-closing" style="--tilt: -13deg" aria-hidden="true"><use href="#sparkle"></use></svg>
   <div class="closing-copy">
     <p class="eyebrow"><svg class="vee" aria-hidden="true"><use href="#vee"></use></svg> You're still here?</p>
-    <h2>Good &mdash; the examples are the fun part.</h2>
+    <h2>Good. The examples are the fun part.</h2>
     <p class="section-sub">
       {{.RunnableExamples}} programs, every one compiled against the real interpreter
       at startup and a click away from running. No install, no setup, no excuses.
