@@ -1,8 +1,8 @@
 # title: Task error propagation
 # category: Vibescript Showcase
 # difficulty: Showcase
-# summary: A failing task propagates out of its Tasks.run scope; wrap the scope in begin/rescue to recover a structured outcome.
-# description: When a spawned task raises, the failure propagates out of the structured scope — at handle.value and again when the scope exits. Wrapping the whole Tasks.run in begin/rescue catches that propagation, letting the caller turn a task error into structured data instead of crashing the run.
+# summary: Catch a task error by wrapping Tasks.run in begin and rescue.
+# description: A task error appears when handle.value is read and again when the block exits. rescue turns that error into a regular return value.
 # tags: concurrency, tasks, structured-concurrency, errors
 # vibe: 0.4
 

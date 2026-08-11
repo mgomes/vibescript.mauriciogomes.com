@@ -1,8 +1,8 @@
 # title: Word and symbol arrays
 # category: Vibescript Showcase
 # difficulty: Showcase
-# summary: Build string and symbol arrays with %w, %i, and their interpolating %W and %I companions.
-# description: Percent-literal arrays keep lists of tags, flags, and states terse; the uppercase forms interpolate so environment-specific lists stay a one-liner.
+# summary: Build string and symbol arrays with %w, %i, %W, and %I.
+# description: Lowercase forms create fixed arrays. Uppercase forms allow interpolation.
 # tags: strings, symbols, literals
 # vibe: 0.4
 

@@ -1,8 +1,8 @@
 # title: Text toolkit
 # category: Vibescript Showcase
 # difficulty: Showcase
-# summary: Slice and align text with Ruby-style partition, center, chars, and start_with? helpers.
-# description: The 1.0 string library fills out the Ruby-compatible surface, so parsing and formatting stay declarative instead of hand-rolled index math.
+# summary: Split, align, and inspect text with Ruby-style string helpers.
+# description: partition, center, chars, and start_with? handle common parsing and formatting without manual indexes.
 # tags: strings, text, formatting
 # vibe: 0.4
 

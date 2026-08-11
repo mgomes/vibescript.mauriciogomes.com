@@ -1,8 +1,8 @@
 # title: Maintenance window
 # category: Vibescript Showcase
 # difficulty: Showcase
-# summary: Plan maintenance windows with typed environment enums, freeze notices, and Duration arithmetic.
-# description: This example models a real operations workflow where start times, freeze windows, and environment-specific rules need to remain obvious.
+# summary: Plan a maintenance window with environment rules, freeze notices, and durations.
+# description: Start times, freeze periods, and rules for each environment are kept in one place.
 # tags: automation, durations, enums, operations
 # vibe: 0.2
 

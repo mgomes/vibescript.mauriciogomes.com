@@ -2,7 +2,7 @@
 # source: https://rosettacode.org/wiki/Bitwise_operations
 # category: Rosetta Code
 # difficulty: Medium
-# summary: Demonstrate common bitwise operations with a manual 8-bit model so the results stay runnable in plain Vibescript.
+# summary: Run common bitwise operations with a hand-built 8-bit model.
 # tags: popular, math, bits, arrays
 # vibe: 0.2
 

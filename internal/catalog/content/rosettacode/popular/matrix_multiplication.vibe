@@ -2,7 +2,7 @@
 # source: https://rosettacode.org/wiki/Matrix_multiplication
 # category: Rosetta Code
 # difficulty: Medium
-# summary: Multiply two small matrices and return the deterministic product matrix.
+# summary: Multiply two small matrices.
 # tags: popular, math, arrays, nested-loops
 # vibe: 0.2
 

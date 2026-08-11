@@ -1,8 +1,8 @@
 # title: Approval chain
 # category: Vibescript Showcase
 # difficulty: Showcase
-# summary: Express release approvals with typed states, Duration-based deadlines, and structured review steps.
-# description: This example is workflow code rather than puzzle code: state transitions are explicit, deadlines are semantic, and the output is shaped for downstream systems.
+# summary: Build a release approval process with states and deadlines.
+# description: Enums name each state, durations set deadlines, and the result lists each review step.
 # tags: workflows, durations, enums, approvals
 # vibe: 0.2
 

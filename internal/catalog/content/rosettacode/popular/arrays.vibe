@@ -2,7 +2,7 @@
 # source: https://rosettacode.org/wiki/Arrays
 # category: Rosetta Code
 # difficulty: Intro
-# summary: Demonstrate basic array creation, indexing, appending, and aggregation in Vibescript.
+# summary: Create, index, append to, and total arrays.
 # tags: popular, arrays, basics, collections
 # vibe: 0.4
 

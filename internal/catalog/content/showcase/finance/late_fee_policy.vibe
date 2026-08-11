@@ -1,8 +1,8 @@
 # title: Late fee policy
 # category: Vibescript Showcase
 # difficulty: Showcase
-# summary: Apply late-fee policy with money values, Duration aging buckets, and typed standing enums.
-# description: This example shows how financial policy code stays readable when overdue windows and fee amounts remain semantic all the way through.
+# summary: Choose a late fee from the account standing and days overdue.
+# description: Enums name each account standing. Money and durations keep the amounts and time windows clear.
 # tags: finance, money, durations, enums
 # vibe: 0.2
 

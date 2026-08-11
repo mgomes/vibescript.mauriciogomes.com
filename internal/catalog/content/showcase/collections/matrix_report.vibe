@@ -1,8 +1,8 @@
 # title: Matrix report
 # category: Vibescript Showcase
 # difficulty: Showcase
-# summary: Pivot a grid of daily metrics into per-metric totals with transpose and zip.
-# description: transpose swaps rows and columns so column math reads as a single map; zip re-labels the results, keeping tabular reporting free of index arithmetic.
+# summary: Turn rows of daily metrics into totals for each metric.
+# description: transpose swaps rows and columns. zip pairs each total with its label.
 # tags: collections, arrays, matrix
 # vibe: 0.4
 

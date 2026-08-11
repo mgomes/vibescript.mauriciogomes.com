@@ -2,7 +2,7 @@
 # source: https://rosettacode.org/wiki/Temperature_conversion
 # category: Rosetta Code
 # difficulty: Intro
-# summary: Convert fixed Celsius and Fahrenheit values with straightforward formulae.
+# summary: Convert values between Celsius and Fahrenheit.
 # tags: popular, math, conversion, basics
 # vibe: 0.2
 

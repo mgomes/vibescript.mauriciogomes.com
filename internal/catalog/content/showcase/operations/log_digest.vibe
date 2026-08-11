@@ -1,8 +1,8 @@
 # title: Log digest
 # category: Vibescript Showcase
 # difficulty: Showcase
-# summary: Turn a raw log blob into a leveled digest with each_line, partition, group_by, and select.
-# description: A small pipeline shows the 1.0 string and collection helpers working together: split lines, partition each into level and message, then group and count without manual parsing state.
+# summary: Parse log lines, group them by level, and count each group.
+# description: each_line splits the log. partition, group_by, and select turn the lines into a short report.
 # tags: operations, strings, collections, logs
 # vibe: 0.4
 

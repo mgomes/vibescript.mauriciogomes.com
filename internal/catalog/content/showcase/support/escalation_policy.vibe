@@ -1,8 +1,8 @@
 # title: Escalation policy
 # category: Vibescript Showcase
 # difficulty: Showcase
-# summary: Build support SLAs with typed severity enums, Duration windows, and structured routing output.
-# description: This example keeps operational policy logic explicit by modeling severity, deadlines, and escalation targets directly in the language.
+# summary: Route support tickets from their severity and response deadline.
+# description: An enum names each severity. Durations set response times, and the function returns the next support team.
 # tags: support, durations, enums, sla
 # vibe: 0.2
 

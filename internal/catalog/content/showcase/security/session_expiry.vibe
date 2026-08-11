@@ -1,8 +1,8 @@
 # title: Session expiry
 # category: Vibescript Showcase
 # difficulty: Showcase
-# summary: Model session expiry with typed risk enums, Duration-based TTLs, and deterministic timestamps.
-# description: This example shows how security policy code gets easier to read when risk levels, TTLs, and refresh logic use domain types instead of anonymous numbers.
+# summary: Set a session expiry time from its risk level.
+# description: An enum names the risk level. Durations set the time to live and refresh window.
 # tags: security, durations, enums, sessions
 # vibe: 0.4
 

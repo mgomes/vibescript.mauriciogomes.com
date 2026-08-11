@@ -1,8 +1,8 @@
 # title: Hash projection
 # category: Vibescript Showcase
 # difficulty: Showcase
-# summary: Shape a record for output with except, slice, merge, fetch_values, and values_at.
-# description: The 1.0 hash library makes redaction and projection first-class, so shaping a payload for an API response stays declarative and keeps required-field access honest.
+# summary: Remove, select, merge, and fetch fields from a hash.
+# description: except removes private fields, slice selects public fields, and fetch_values fails when a required field is missing.
 # tags: collections, hashes, projection
 # vibe: 0.4
 

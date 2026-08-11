@@ -1,8 +1,8 @@
 # title: Payout schedule
 # category: Vibescript Showcase
 # difficulty: Showcase
-# summary: Schedule merchant payouts with money totals, cadence enums, and Duration-based settlement delays.
-# description: This example demonstrates how billing flows benefit when payout timing and cash amounts stay explicit in the code.
+# summary: Schedule payouts from the amount, cadence, and settlement delay.
+# description: Money tracks the payout amount, while enums and durations set the timing.
 # tags: finance, money, durations, enums, payouts
 # vibe: 0.2
 

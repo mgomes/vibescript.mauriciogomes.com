@@ -617,7 +617,7 @@ h3 {
 .hero-lede {
   margin: 0;
   color: var(--muted);
-  font-size: 1.0625rem;
+  font-size: 1.125rem;
   line-height: 1.65;
   text-wrap: pretty;
   max-width: 52ch;
@@ -766,7 +766,7 @@ h3 {
 .section-header p {
   margin: 0;
   color: var(--muted);
-  font-size: 1.0625rem;
+  font-size: 1.125rem;
   line-height: 1.65;
   text-wrap: pretty;
   max-width: 56ch;
@@ -829,8 +829,8 @@ h3 {
 
 .pair-copy p {
   margin: 0;
-  font-size: 1.25rem;
-  line-height: 1.6;
+  font-size: 1.125rem;
+  line-height: 1.65;
   color: var(--muted);
   text-wrap: pretty;
 }
@@ -874,7 +874,7 @@ h3 {
 .philosophy-copy p {
   margin: 0 0 1rem;
   color: var(--muted);
-  font-size: 1.0625rem;
+  font-size: 1.125rem;
   line-height: 1.65;
   text-wrap: pretty;
   max-width: 54ch;
@@ -1465,6 +1465,202 @@ a.tag:hover {
   border-top: 1px solid var(--line);
 }
 
+/* Language reference */
+
+.reference {
+  display: grid;
+  grid-template-columns: 240px minmax(0, 1fr);
+  gap: var(--gap);
+  padding-bottom: 5rem;
+}
+
+.reference-sidebar {
+  position: sticky;
+  top: 2rem;
+  align-self: start;
+  max-height: calc(100vh - 4rem);
+  overflow-y: auto;
+  padding-right: 0.75rem;
+  scrollbar-width: thin;
+  scrollbar-color: var(--line-strong) transparent;
+}
+
+.reference-nav-group {
+  margin-bottom: 1.6rem;
+}
+
+.reference-nav-title {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--faint);
+  padding: 0.2rem 0.6rem;
+}
+
+.reference-nav-title:hover,
+.reference-nav-title.is-active {
+  color: var(--accent-text);
+}
+
+.reference-nav-group ul {
+  list-style: none;
+  margin: 0.35rem 0 0;
+  padding: 0;
+}
+
+.reference-nav-group li a {
+  display: block;
+  padding: 0.3rem 0.6rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.reference-nav-group li a:hover {
+  background: var(--panel);
+  color: var(--ink);
+}
+
+.reference-nav-group li a.is-active {
+  background: var(--accent-soft);
+  color: var(--accent-text);
+}
+
+.reference-prose {
+  min-width: 0;
+}
+
+.reference-header {
+  margin-bottom: 2.75rem;
+}
+
+.reference-header h1 {
+  margin: 0 0 0.75rem;
+  font-size: clamp(2rem, 1.4rem + 2vw, 2.9rem);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.08;
+}
+
+.reference-lede {
+  margin: 0;
+  color: var(--muted);
+  font-size: 1.0625rem;
+  line-height: 1.65;
+  text-wrap: pretty;
+  max-width: 58ch;
+}
+
+.reference-prose h2,
+.reference-prose h3 {
+  scroll-margin-top: 1.5rem;
+}
+
+.reference-prose h2 {
+  margin: 3.25rem 0 0.75rem;
+  padding-top: 2.5rem;
+  border-top: 1px solid var(--line);
+  font-size: clamp(1.45rem, 1.1rem + 1.1vw, 1.8rem);
+  font-weight: 800;
+  letter-spacing: -0.025em;
+  line-height: 1.15;
+}
+
+.reference-prose h3 {
+  margin: 2.25rem 0 0.6rem;
+  font-size: 1.2rem;
+  font-weight: 800;
+  letter-spacing: -0.015em;
+}
+
+.reference-prose p,
+.reference-prose li {
+  color: var(--muted);
+  font-size: 0.9375rem;
+  line-height: 1.7;
+  text-wrap: pretty;
+}
+
+.reference-prose p {
+  margin: 0.9rem 0;
+  max-width: 74ch;
+}
+
+.reference-prose strong {
+  color: var(--ink);
+}
+
+.reference-prose a {
+  color: var(--accent-text);
+}
+
+.reference-prose a:hover {
+  color: var(--accent);
+}
+
+.reference-prose ul {
+  margin: 0.9rem 0;
+  padding-left: 1.25rem;
+}
+
+.reference-prose li {
+  margin: 0.4rem 0;
+}
+
+.reference-prose code {
+  font-family: var(--font-mono);
+  font-size: 0.85em;
+  background: var(--panel-strong);
+  padding: 0.1em 0.35em;
+  border-radius: 0.25rem;
+}
+
+.reference-prose pre {
+  margin: 1.15rem 0;
+  padding: 1.1rem 1.25rem;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  background: var(--code-bg);
+  color: var(--code-text);
+  overflow-x: auto;
+  font-size: 0.8125rem;
+  line-height: 1.7;
+}
+
+.reference-prose pre code {
+  background: none;
+  padding: 0;
+  font-size: inherit;
+}
+
+.reference-prose table {
+  margin: 1.25rem 0;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+}
+
+.reference-prose th {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  text-align: left;
+  color: var(--faint);
+  padding: 0.5rem 0.85rem 0.5rem 0;
+  border-bottom: 1px solid var(--line-strong);
+}
+
+.reference-prose td {
+  padding: 0.55rem 0.85rem 0.55rem 0;
+  border-bottom: 1px solid var(--line);
+  color: var(--muted);
+}
+
 /* Footer */
 
 .site-footer {
@@ -1523,8 +1719,26 @@ a.tag:hover {
   .philosophy,
   .card-grid,
   .detail-grid,
-  .catalog {
+  .catalog,
+  .reference {
     grid-template-columns: 1fr;
+  }
+
+  /* A bare 1fr track is floored by the widest code line; minmax(0, 1fr)
+     keeps the prose column at the viewport and lets pre blocks scroll. */
+  .reference {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  /* Like the catalog cards, the prose is the point on small screens; the
+     anchor nav would push it a full viewport down. */
+  .reference-sidebar {
+    display: none;
+  }
+
+  .reference-prose table {
+    display: block;
+    overflow-x: auto;
   }
 
   .featured .card-grid {
@@ -1614,10 +1828,6 @@ a.tag:hover {
   .example-card p,
   .guardrail dd {
     font-size: 1rem;
-  }
-
-  .pair-copy p {
-    font-size: 1.0625rem;
   }
 
   .hero-runner-bar {

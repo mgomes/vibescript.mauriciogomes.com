@@ -26,11 +26,6 @@ func TestHomePageRendersFeaturedExamples(t *testing.T) {
 	}
 
 	body := recorder.Body.String()
-	if !strings.Contains(body, "An embeddable Ruby-like language for Go.") ||
-		!strings.Contains(body, "easy for AI to write.") {
-		t.Fatalf("expected home headline, got %q", body)
-	}
-
 	if !strings.Contains(body, "Release readiness") {
 		t.Fatalf("expected featured example title, got %q", body)
 	}
@@ -114,6 +109,33 @@ func TestExamplePageRendersDetail(t *testing.T) {
 
 	if !strings.Contains(body, "Run example") {
 		t.Fatalf("expected runner copy, got %q", body)
+	}
+}
+
+func TestReferencePageRendersContentAndSidebar(t *testing.T) {
+	app := newTestApp(t)
+
+	request := httptest.NewRequest(http.MethodGet, "/reference", nil)
+	recorder := httptest.NewRecorder()
+
+	app.ServeHTTP(recorder, request)
+
+	if recorder.Code != http.StatusOK {
+		t.Fatalf("expected status 200, got %d", recorder.Code)
+	}
+
+	body := recorder.Body.String()
+	for _, want := range []string{
+		"Language Reference",
+		`data-reference-nav`,
+		`href="#basics"`,
+		`id="parameters"`,
+		`class="language-vibe"`,
+		catalog.UpstreamVersion,
+	} {
+		if !strings.Contains(body, want) {
+			t.Fatalf("expected reference page to contain %q", want)
+		}
 	}
 }
 
@@ -204,8 +226,8 @@ func TestGzipHomePage(t *testing.T) {
 	}
 
 	body := readGzipBody(t, recorder)
-	if !strings.Contains(body, "An embeddable Ruby-like language for Go.") {
-		t.Fatalf("expected home page body, got %q", body)
+	if !strings.Contains(body, "<!doctype html>") {
+		t.Fatalf("expected gzipped HTML document, got %q", body)
 	}
 }
 

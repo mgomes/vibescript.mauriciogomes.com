@@ -1,8 +1,8 @@
 # title: Resilient lookups
 # category: Vibescript Showcase
 # difficulty: Showcase
-# summary: Recover from raised errors with rescue modifiers and probe float edge cases with nan? and finite?.
-# description: 1.0 makes fetch raise on a miss and float division follow IEEE 754, so the rescue modifier and the float predicates are the idiomatic way to keep tolerant code readable.
+# summary: Recover from missing hash keys and check float edge cases.
+# description: rescue supplies a fallback when fetch fails. nan? and finite? identify special float values.
 # tags: reliability, errors, floats
 # vibe: 0.4
 

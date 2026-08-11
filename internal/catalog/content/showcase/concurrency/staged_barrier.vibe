@@ -1,8 +1,8 @@
 # title: Staged barrier
 # category: Vibescript Showcase
 # difficulty: Showcase
-# summary: Spawn a batch of tasks, hold at an explicit tasks.wait barrier, then aggregate the results in order.
-# description: tasks.wait is an explicit barrier inside a Tasks.run scope. Use it when later code in the same block must wait for all spawned work so far before continuing — here we wait for every segment, then read the handle values and total them.
+# summary: Start a batch of tasks, wait for all of them, then total the results.
+# description: tasks.wait pauses the current Tasks.run block until its active tasks finish.
 # tags: concurrency, tasks, structured-concurrency, barrier
 # vibe: 0.4
 

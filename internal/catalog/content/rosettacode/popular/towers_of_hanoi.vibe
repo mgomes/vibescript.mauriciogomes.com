@@ -2,7 +2,7 @@
 # source: https://rosettacode.org/wiki/Towers_of_Hanoi
 # category: Rosetta Code
 # difficulty: Medium
-# summary: Solve Towers of Hanoi recursively and return the ordered move list for a small deterministic puzzle.
+# summary: Solve Towers of Hanoi recursively and return each move in order.
 # tags: popular, recursion, classic-cs, puzzles
 # vibe: 0.2
 

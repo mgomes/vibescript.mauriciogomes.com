@@ -6,8 +6,9 @@
     <p class="eyebrow"><svg class="vee" aria-hidden="true"><use href="#vee"></use></svg> Open source &middot; MIT licensed</p>
     <h1>An embeddable Ruby-like language for Go. <span class="underlined">Safe by default<svg class="underline-swash" viewBox="0 0 200 12" preserveAspectRatio="none" aria-hidden="true"><path d="M2 9C48 4 118 2 197 5C150 7.5 70 9 6 11.5Z"/></svg></span>, easy for AI to write.</h1>
     <p class="hero-lede">
-      Vibescript is a small, readable scripting language that embeds in your Go app.
-      Users and AI agents write the scripts; the host decides exactly what they can touch.
+      Vibescript is a small Ruby-like language that runs inside your Go app. Users and
+      AI agents write scripts to add features. Your app decides exactly what each
+      script can touch.
     </p>
     <div class="hero-actions">
       <a class="button" href="/examples">Explore examples</a>
@@ -49,17 +50,17 @@
   <svg class="sparkle sparkle-md sparkle-number sparkle-float sparkle-pairs-3" style="--tilt: 9deg" aria-hidden="true"><use href="#sparkle"></use></svg>
   <header class="section-intro">
     <p class="eyebrow"><svg class="vee" aria-hidden="true"><use href="#vee"></use></svg> Language</p>
-    <h2>Small surface. Sharp primitives.</h2>
-    <p class="section-sub">Everything in Vibescript is designed to be read at a glance &mdash; by your team, and by the models writing it.</p>
+    <h2>A familiar language for app logic.</h2>
+    <p class="section-sub">Ruby-like syntax, optional types, and built-in money, duration, and enum values. Everything is designed to be read at a glance, by your team and by the models writing it.</p>
   </header>
 
   <div class="pair">
     <div class="pair-copy">
-      <h3>Reads like Ruby. Types when it matters.</h3>
+      <h3>Ruby-like syntax with optional types.</h3>
       <p>
-        Blocks, ranges, zero-paren defs, symbol hashes &mdash; syntax your team and every
-        language model already know. Annotations are optional, but signatures are checked
-        when you write them, and nullables are always explicit.
+        Blocks, ranges, calls without parentheses, and symbol-keyed hashes will look
+        familiar to Ruby users. Types are optional. When you use them, Vibescript checks
+        arguments and return values. Nullable types stay explicit.
       </p>
     </div>
     <div class="pair-panel">
@@ -84,11 +85,11 @@ end</code></pre>
 
   <div class="pair">
     <div class="pair-copy">
-      <h3>Drops into your Go app in an afternoon.</h3>
+      <h3>Embed it with three calls.</h3>
       <p>
-        One <code>go get</code>, three calls: build an engine, compile the script, call a
-        function. Scripts expose functions to the host; the host exposes exactly the
-        capabilities it chooses back.
+        One <code>go get</code>, then three calls: create an engine, compile the script,
+        call a function. The script exposes functions to your app. Your app exposes only
+        the capabilities it chooses to share back.
       </p>
     </div>
     <div class="pair-panel">
@@ -111,17 +112,17 @@ fee.<span class="tok-type">String</span>() <span class="tok-comment">// "5.00 US
 
   <div class="pair">
     <div class="pair-copy">
-      <h3>The sandbox says no.</h3>
+      <h3>Set hard limits for each script.</h3>
       <p>
-        A runaway loop, a hostile script, an AI hallucination with a while-true in it &mdash;
-        the engine stops it at the step quota and hands your Go app a clean error.
-        No goroutine leak, no OOM, no incident channel.
+        A runaway loop, a hostile script, an AI hallucination with a while-true in it.
+        The engine stops each one at the step, memory, or recursion limit and returns a
+        clean error to your Go app. No goroutine leak, no OOM, no incident channel.
       </p>
     </div>
     <div class="pair-panel">
       <div class="term-window">
         <div class="term-header">
-          <span class="term-title">untrusted.vibe &mdash; sandboxed</span>
+          <span class="term-title">untrusted.vibe &middot; sandboxed</span>
         </div>
         <pre class="term-body"><span class="term-prompt">$</span> <span class="term-cmd">cat untrusted.vibe</span>
 <span class="term-out">def run
@@ -133,18 +134,18 @@ end</span>
 
 <span class="term-prompt">$</span> <span class="term-cmd"># host calls script.Call(ctx, "run", ...)</span>
 <span class="term-err">RuntimeError: step quota exceeded</span>
-<span class="term-ok">&#10003; stopped at {{.Guardrails.StepQuota}} &mdash; host unharmed</span></pre>
+<span class="term-ok">&#10003; stopped at {{.Guardrails.StepQuota}}, Go app keeps running</span></pre>
       </div>
     </div>
   </div>
 
   <div class="pair">
     <div class="pair-copy">
-      <h3>Money is money. Time is time.</h3>
+      <h3>Built-in money, duration, and enum types.</h3>
       <p>
-        <code>3.days</code> is a duration, not an integer with a comment. Money never
-        loses a cent to float rounding. Enums are first-class values, not strings you
-        promise to spell consistently.
+        <code>3.days</code> is a duration, not an integer with a comment. Money uses exact
+        decimal values, so float rounding cannot lose a cent. Enums are real values, not
+        strings you promise to spell consistently.
       </p>
     </div>
     <div class="pair-panel">
@@ -178,25 +179,27 @@ end</code></pre>
 <section class="philosophy band">
   <svg class="sparkle sparkle-lg sparkle-constant sparkle-float sparkle-philosophy" style="--tilt: -24deg" aria-hidden="true"><use href="#sparkle"></use></svg>
   <div class="philosophy-copy">
-    <p class="eyebrow"><svg class="vee" aria-hidden="true"><use href="#vee"></use></svg> Designed for AI</p>
-    <h2>Easy to read. Easy for AI to <span class="mark">vibe code</span>.</h2>
+    <p class="eyebrow"><svg class="vee" aria-hidden="true"><use href="#vee"></use></svg> Extension model</p>
+    <h2>Your Go app stays in charge.</h2>
     <p>
-      As vibe coding spreads, most products need limits on what users can build. Instead of a blank canvas,
-      Vibescript hands them an opinionated set of primitives that combine into predictable, safe applications.
+      Lua is often embedded in games and tools so people can extend them with scripts.
+      Vibescript brings that model to Go apps.
     </p>
     <p>
-      Think of it less like traditional software development and more like HyperCard: flexible, but within bounds.
-      The Ruby-like syntax mirrors patterns familiar to language models, making it a natural target for AI-generated code.
+      Each Vibescript extension works through the functions, data, and services your app
+      exposes. The rest of the host stays out of reach.
     </p>
     <p>
-      Vibescript embeds directly into any Go application. Scripts expose functions callable from host code,
-      and the host controls exactly what capabilities each script can access.
+      Extending an app this way feels more like HyperCard than traditional software
+      development. Flexible, but within bounds. Scripts get an opinionated set of
+      primitives that combine into predictable features, not a blank slate that can
+      take your app down.
     </p>
   </div>
 
   <aside class="guardrails" aria-labelledby="guardrails-title">
-    <h3 id="guardrails-title">Sandbox guardrails</h3>
-    <p>Defaults favor safety over throughput. Adjust per use case.</p>
+    <h3 id="guardrails-title">Sandbox limits</h3>
+    <p>Safe defaults. Change them to fit your app.</p>
     <dl class="guardrail-list">
       <div class="guardrail">
         <dt><svg class="vee"><use href="#vee"></use></svg> Step quota <span class="guardrail-default">{{.Guardrails.StepQuota}}</span></dt>
@@ -230,8 +233,8 @@ end</code></pre>
   <svg class="sparkle sparkle-md sparkle-string sparkle-float sparkle-featured" style="--tilt: 17deg" aria-hidden="true"><use href="#sparkle"></use></svg>
   <div class="section-intro">
     <p class="eyebrow"><svg class="vee" aria-hidden="true"><use href="#vee"></use></svg> Featured</p>
-    <h2>See what idiomatic Vibescript looks like.</h2>
-    <p class="section-sub">Handpicked examples that show off the language's native features. Each one runs in your browser.</p>
+    <h2>See Vibescript in real programs.</h2>
+    <p class="section-sub">These examples use the language for common app logic. Each one runs in your browser.</p>
   </div>
   <div class="card-grid">
     {{range .Featured}}
@@ -255,11 +258,11 @@ end</code></pre>
   <svg class="sparkle sparkle-bleed" style="--tilt: 18deg" aria-hidden="true"><use href="#sparkle"></use></svg>
   <svg class="sparkle sparkle-md sparkle-keyword sparkle-float sparkle-closing" style="--tilt: -13deg" aria-hidden="true"><use href="#sparkle"></use></svg>
   <div class="closing-copy">
-    <p class="eyebrow"><svg class="vee" aria-hidden="true"><use href="#vee"></use></svg> You're still here?</p>
-    <h2>Good &mdash; the examples are the fun part.</h2>
+    <p class="eyebrow"><svg class="vee" aria-hidden="true"><use href="#vee"></use></svg> Try it</p>
+    <h2>Run a few examples.</h2>
     <p class="section-sub">
-      {{.RunnableExamples}} programs, every one compiled against the real interpreter
-      at startup and a click away from running. No install, no setup, no excuses.
+      {{.RunnableExamples}} programs are compiled against the real interpreter when the
+      site starts and run with one click. No install or setup needed.
     </p>
     <div class="hero-actions">
       <a class="button" href="/examples">Browse all {{.TotalExamples}} examples</a>

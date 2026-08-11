@@ -1,8 +1,8 @@
 # title: Digest schedule
 # category: Vibescript Showcase
 # difficulty: Showcase
-# summary: Schedule digest jobs with cadence enums, Duration windows, and template-driven subjects.
-# description: This example uses semantic cadence values and deterministic times to keep notification scheduling logic compact and legible.
+# summary: Schedule digest jobs from a cadence and a time window.
+# description: An enum names the cadence. Durations set the window, and timestamps set each run time.
 # tags: notifications, durations, enums, templates
 # vibe: 0.2
 

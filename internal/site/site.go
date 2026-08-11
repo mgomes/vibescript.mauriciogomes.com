@@ -14,12 +14,14 @@ import (
 
 	"github.com/mgomes/ohm"
 	"github.com/mgomes/vibescript-lang.org/internal/catalog"
+	"github.com/mgomes/vibescript-lang.org/internal/reference"
 	"github.com/mgomes/vibescript-lang.org/internal/runner"
 )
 
 type App struct {
 	store     *catalog.Store
 	runner    *runner.Service
+	reference *reference.Reference
 	templates *template.Template
 	static    http.Handler
 }
@@ -34,6 +36,7 @@ type viewData struct {
 	ContentTemplate  string
 	Content          template.HTML
 	Page             page
+	Reference        *reference.Reference
 	ShowcaseExamples int
 	TotalExamples    int
 	RunnableExamples int
@@ -68,9 +71,15 @@ func New(store *catalog.Store, runService *runner.Service) (*ohm.App, error) {
 		return nil, err
 	}
 
+	ref, err := reference.Load()
+	if err != nil {
+		return nil, fmt.Errorf("load reference: %w", err)
+	}
+
 	app := &App{
 		store:     store,
 		runner:    runService,
+		reference: ref,
 		templates: templates,
 		static:    http.FileServer(http.FS(staticFS)),
 	}
@@ -96,6 +105,8 @@ func New(store *catalog.Store, runService *runner.Service) (*ohm.App, error) {
 	application.Get("/examples", app.examplesIndex)
 	application.Get("/examples/", app.examplesIndex)
 	application.Get("/examples/{slug}", app.exampleDetail)
+	application.Get("/reference", app.referencePage)
+	application.Get("/reference/", app.referencePage)
 	application.NotFound(app.notFound)
 
 	return application, nil
@@ -190,7 +201,7 @@ func (a *App) home(req *ohm.Request) error {
 		ContentTemplate: "home",
 		Page: page{
 			Title:       "Vibescript",
-			Description: "An embeddable Ruby-like language for Go — safe by default and easy for AI to write. Explore examples and run them in the browser.",
+			Description: "A Ruby-like scripting language that lets agents extend Go apps within boundaries you set.",
 			Section:     "home",
 		},
 		ShowcaseExamples: a.store.TaggedCount("showcase"),
@@ -211,7 +222,7 @@ func (a *App) examplesIndex(req *ohm.Request) error {
 		ContentTemplate: "examples",
 		Page: page{
 			Title:       "Examples",
-			Description: "Browse Vibescript examples — from idiomatic showcases to upstream references — all compiled against the real interpreter.",
+			Description: "Browse Vibescript examples and run them in your browser with the real interpreter.",
 			Section:     "examples",
 		},
 		ShowcaseExamples: a.store.TaggedCount("showcase"),
@@ -241,6 +252,24 @@ func (a *App) exampleDetail(req *ohm.Request) error {
 		ShowcaseExamples: a.store.TaggedCount("showcase"),
 		Example:          example,
 		HasRunner:        example.Runnable,
+		TotalExamples:    a.store.Count(),
+		RunnableExamples: a.store.RunnableCount(),
+		UpstreamVersion:  catalog.UpstreamVersion,
+		UpstreamRepoURL:  catalog.UpstreamRepoURL,
+		Year:             time.Now().Year(),
+	})
+}
+
+func (a *App) referencePage(req *ohm.Request) error {
+	return a.render(req, http.StatusOK, viewData{
+		ContentTemplate: "reference",
+		Page: page{
+			Title:       "Language Reference",
+			Description: "Vibescript syntax and behavior, including functions, types, concurrency, sandbox limits, and host settings.",
+			Section:     "reference",
+		},
+		Reference:        a.reference,
+		ShowcaseExamples: a.store.TaggedCount("showcase"),
 		TotalExamples:    a.store.Count(),
 		RunnableExamples: a.store.RunnableCount(),
 		UpstreamVersion:  catalog.UpstreamVersion,
@@ -290,7 +319,7 @@ func (a *App) renderNotFound(w http.ResponseWriter, r *http.Request) error {
 		ContentTemplate: "not-found",
 		Page: page{
 			Title:       "Not Found",
-			Description: "The requested page does not exist.",
+			Description: "That page does not exist.",
 			Section:     "",
 		},
 		ShowcaseExamples: a.store.TaggedCount("showcase"),

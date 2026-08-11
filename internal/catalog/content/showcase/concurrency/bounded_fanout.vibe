@@ -1,8 +1,8 @@
 # title: Bounded fanout
 # category: Vibescript Showcase
 # difficulty: Showcase
-# summary: Cap concurrency with max: so a large batch never exceeds the configured task budget.
-# description: The max: keyword bounds how many tasks run at once. Requests above the host cap raise an error instead of being silently clamped, so the script's intended concurrency is always explicit and enforced.
+# summary: Limit how many tasks run at once with max:.
+# description: max: sets the task limit for this call. A value above the host limit returns an error.
 # tags: concurrency, tasks, structured-concurrency, fanout, max
 # vibe: 0.4
 

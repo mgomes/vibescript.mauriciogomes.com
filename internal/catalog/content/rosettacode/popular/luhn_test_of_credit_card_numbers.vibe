@@ -2,7 +2,7 @@
 # source: https://rosettacode.org/wiki/Luhn_test_of_credit_card_numbers
 # category: Rosetta Code
 # difficulty: Easy
-# summary: Validate a small deterministic set of account numbers with the Luhn checksum.
+# summary: Validate account numbers with the Luhn checksum.
 # tags: popular, checksum, strings, math
 # vibe: 0.2
 
