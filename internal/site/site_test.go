@@ -26,8 +26,8 @@ func TestHomePageRendersFeaturedExamples(t *testing.T) {
 	}
 
 	body := recorder.Body.String()
-	if !strings.Contains(body, "An embeddable Ruby-like language for Go.") ||
-		!strings.Contains(body, "easy for AI to write.") {
+	if !strings.Contains(body, "A Ruby-like scripting language for") ||
+		!strings.Contains(body, "Agents write scripts to add rules") {
 		t.Fatalf("expected home headline, got %q", body)
 	}
 
@@ -231,7 +231,7 @@ func TestGzipHomePage(t *testing.T) {
 	}
 
 	body := readGzipBody(t, recorder)
-	if !strings.Contains(body, "An embeddable Ruby-like language for Go.") {
+	if !strings.Contains(body, "A Ruby-like scripting language for") {
 		t.Fatalf("expected home page body, got %q", body)
 	}
 }

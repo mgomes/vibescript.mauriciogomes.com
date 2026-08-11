@@ -201,7 +201,7 @@ func (a *App) home(req *ohm.Request) error {
 		ContentTemplate: "home",
 		Page: page{
 			Title:       "Vibescript",
-			Description: "A Ruby-like scripting language for Go apps. Users and AI agents can add features within limits you control.",
+			Description: "A Ruby-like scripting language that lets agents extend Go apps within boundaries you set.",
 			Section:     "home",
 		},
 		ShowcaseExamples: a.store.TaggedCount("showcase"),

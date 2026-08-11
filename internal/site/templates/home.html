@@ -4,11 +4,10 @@
   <svg class="sparkle sparkle-md hero-sparkle-2" style="--tilt: -9deg" aria-hidden="true"><use href="#sparkle"></use></svg>
   <div class="hero-copy">
     <p class="eyebrow"><svg class="vee" aria-hidden="true"><use href="#vee"></use></svg> Open source &middot; MIT licensed</p>
-    <h1>An embeddable Ruby-like language for Go. <span class="underlined">Safe by default<svg class="underline-swash" viewBox="0 0 200 12" preserveAspectRatio="none" aria-hidden="true"><path d="M2 9C48 4 118 2 197 5C150 7.5 70 9 6 11.5Z"/></svg></span>, easy for AI to write.</h1>
+    <h1>A Ruby-like scripting language for <span class="underlined">extending Go apps<svg class="underline-swash" viewBox="0 0 200 12" preserveAspectRatio="none" aria-hidden="true"><path d="M2 9C48 4 118 2 197 5C150 7.5 70 9 6 11.5Z"/></svg></span>.</h1>
     <p class="hero-lede">
-      Vibescript is a small scripting language for Go apps.
-      Users and AI agents can add features with scripts.
-      You decide what each script can use.
+      Agents write scripts to add rules, workflows, and other app-specific behavior.
+      Your Go app sets the boundaries.
     </p>
     <div class="hero-actions">
       <a class="button" href="/examples">Explore examples</a>
@@ -50,8 +49,8 @@
   <svg class="sparkle sparkle-md sparkle-number sparkle-float sparkle-pairs-3" style="--tilt: 9deg" aria-hidden="true"><use href="#sparkle"></use></svg>
   <header class="section-intro">
     <p class="eyebrow"><svg class="vee" aria-hidden="true"><use href="#vee"></use></svg> Language</p>
-    <h2>A small language with useful built-ins.</h2>
-    <p class="section-sub">The syntax is familiar, the types cover common app logic, and scripts are easy to review.</p>
+    <h2>A familiar language for app logic.</h2>
+    <p class="section-sub">Use Ruby-like syntax, optional types, and built-in money, duration, and enum values.</p>
   </header>
 
   <div class="pair">
@@ -85,10 +84,10 @@ end</code></pre>
 
   <div class="pair">
     <div class="pair-copy">
-      <h3>Add it to your Go app with three calls.</h3>
+      <h3>Embed it with three calls.</h3>
       <p>
-        Create an engine, compile a script, and call a function. Go can call functions in
-        the script, and the script can only use APIs your app provides.
+        Create an engine, compile a script, and call a function. Pass app data in and get
+        a result back.
       </p>
     </div>
     <div class="pair-panel">
@@ -111,10 +110,10 @@ fee.<span class="tok-type">String</span>() <span class="tok-comment">// "5.00 US
 
   <div class="pair">
     <div class="pair-copy">
-      <h3>Stop runaway scripts.</h3>
+      <h3>Set hard limits for each script.</h3>
       <p>
-        The engine stops a loop when it reaches the step limit and returns an error to
-        your Go app. Memory and recursion limits stop other kinds of runaway scripts.
+        Set limits for steps, memory, and recursion. If a script crosses one, the engine
+        stops it and returns an error to your Go app.
       </p>
     </div>
     <div class="pair-panel">
@@ -177,24 +176,20 @@ end</code></pre>
 <section class="philosophy band">
   <svg class="sparkle sparkle-lg sparkle-constant sparkle-float sparkle-philosophy" style="--tilt: -24deg" aria-hidden="true"><use href="#sparkle"></use></svg>
   <div class="philosophy-copy">
-    <p class="eyebrow"><svg class="vee" aria-hidden="true"><use href="#vee"></use></svg> Built for AI-written scripts</p>
-    <h2>Give AI a <span class="mark">small, safe language</span> to work with.</h2>
+    <p class="eyebrow"><svg class="vee" aria-hidden="true"><use href="#vee"></use></svg> Extension model</p>
+    <h2>Your Go app stays in charge.</h2>
     <p>
-      Vibescript gives AI familiar syntax and a limited set of tools. That makes generated scripts easier
-      to read and control.
+      Lua is often embedded in games and tools so people can extend them with scripts.
+      Vibescript brings that model to Go apps.
     </p>
     <p>
-      Think of it like HyperCard: flexible within clear bounds. You choose the functions, data, and services
-      each script can use.
-    </p>
-    <p>
-      Vibescript runs inside your Go app. Go calls script functions, and scripts call only the capabilities
-      your app provides.
+      Each Vibescript extension works through the functions, data, and services your app
+      exposes. The rest of the host stays out of reach.
     </p>
   </div>
 
   <aside class="guardrails" aria-labelledby="guardrails-title">
-    <h3 id="guardrails-title">Sandbox guardrails</h3>
+    <h3 id="guardrails-title">Sandbox limits</h3>
     <p>Safe defaults. Change them to fit your app.</p>
     <dl class="guardrail-list">
       <div class="guardrail">
