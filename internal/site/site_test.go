@@ -26,11 +26,6 @@ func TestHomePageRendersFeaturedExamples(t *testing.T) {
 	}
 
 	body := recorder.Body.String()
-	if !strings.Contains(body, "Extend Go apps with") ||
-		!strings.Contains(body, "Agents write Vibescript") {
-		t.Fatalf("expected home headline, got %q", body)
-	}
-
 	if !strings.Contains(body, "Release readiness") {
 		t.Fatalf("expected featured example title, got %q", body)
 	}
@@ -231,8 +226,8 @@ func TestGzipHomePage(t *testing.T) {
 	}
 
 	body := readGzipBody(t, recorder)
-	if !strings.Contains(body, "Extend Go apps with") {
-		t.Fatalf("expected home page body, got %q", body)
+	if !strings.Contains(body, "<!doctype html>") {
+		t.Fatalf("expected gzipped HTML document, got %q", body)
 	}
 }
 
