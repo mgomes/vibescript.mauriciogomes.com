@@ -6,8 +6,9 @@
     <p class="eyebrow"><svg class="vee" aria-hidden="true"><use href="#vee"></use></svg> Open source &middot; MIT licensed</p>
     <h1>An embeddable Ruby-like language for Go. <span class="underlined">Safe by default<svg class="underline-swash" viewBox="0 0 200 12" preserveAspectRatio="none" aria-hidden="true"><path d="M2 9C48 4 118 2 197 5C150 7.5 70 9 6 11.5Z"/></svg></span>, easy for AI to write.</h1>
     <p class="hero-lede">
-      Vibescript is Ruby-like and runs inside your Go app. Users and AI agents write the
-      scripts. Your app decides what each script can use.
+      Vibescript is a small Ruby-like language that runs inside your Go app. Users and
+      AI agents write scripts to add features. Your app decides exactly what each
+      script can touch.
     </p>
     <div class="hero-actions">
       <a class="button" href="/examples">Explore examples</a>
@@ -50,7 +51,7 @@
   <header class="section-intro">
     <p class="eyebrow"><svg class="vee" aria-hidden="true"><use href="#vee"></use></svg> Language</p>
     <h2>A familiar language for app logic.</h2>
-    <p class="section-sub">Use Ruby-like syntax, optional types, and built-in money, duration, and enum values.</p>
+    <p class="section-sub">Ruby-like syntax, optional types, and built-in money, duration, and enum values. Everything is designed to be read at a glance, by your team and by the models writing it.</p>
   </header>
 
   <div class="pair">
@@ -86,8 +87,9 @@ end</code></pre>
     <div class="pair-copy">
       <h3>Embed it with three calls.</h3>
       <p>
-        Create an engine, compile a script, and call a function. Pass app data in and get
-        a result back.
+        One <code>go get</code>, then three calls: create an engine, compile the script,
+        call a function. The script exposes functions to your app. Your app exposes only
+        the capabilities it chooses to share back.
       </p>
     </div>
     <div class="pair-panel">
@@ -112,8 +114,9 @@ fee.<span class="tok-type">String</span>() <span class="tok-comment">// "5.00 US
     <div class="pair-copy">
       <h3>Set hard limits for each script.</h3>
       <p>
-        Set limits for steps, memory, and recursion. If a script crosses one, the engine
-        stops it and returns an error to your Go app.
+        A runaway loop, a hostile script, an AI hallucination with a while-true in it.
+        The engine stops each one at the step, memory, or recursion limit and returns a
+        clean error to your Go app. No goroutine leak, no OOM, no incident channel.
       </p>
     </div>
     <div class="pair-panel">
@@ -141,8 +144,8 @@ end</span>
       <h3>Built-in money, duration, and enum types.</h3>
       <p>
         <code>3.days</code> is a duration, not an integer with a comment. Money uses exact
-        decimal values, so float rounding cannot lose a cent. Enums give states a fixed
-        set of names.
+        decimal values, so float rounding cannot lose a cent. Enums are real values, not
+        strings you promise to spell consistently.
       </p>
     </div>
     <div class="pair-panel">
@@ -186,6 +189,12 @@ end</code></pre>
       Each Vibescript extension works through the functions, data, and services your app
       exposes. The rest of the host stays out of reach.
     </p>
+    <p>
+      Extending an app this way feels more like HyperCard than traditional software
+      development. Flexible, but within bounds. Scripts get an opinionated set of
+      primitives that combine into predictable features, not a blank slate that can
+      take your app down.
+    </p>
   </div>
 
   <aside class="guardrails" aria-labelledby="guardrails-title">
@@ -194,27 +203,27 @@ end</code></pre>
     <dl class="guardrail-list">
       <div class="guardrail">
         <dt><svg class="vee"><use href="#vee"></use></svg> Step quota <span class="guardrail-default">{{.Guardrails.StepQuota}}</span></dt>
-        <dd>Stops scripts after too many execution steps.</dd>
+        <dd>Caps execution steps to prevent unbounded loops.</dd>
       </div>
       <div class="guardrail">
         <dt><svg class="vee"><use href="#vee"></use></svg> Recursion limit <span class="guardrail-default">{{.Guardrails.RecursionLimit}}</span></dt>
-        <dd>Stops calls that nest too deeply.</dd>
+        <dd>Bounds call depth to prevent stack blowups.</dd>
       </div>
       <div class="guardrail">
         <dt><svg class="vee"><use href="#vee"></use></svg> Memory quota <span class="guardrail-default">{{.Guardrails.MemoryQuota}}</span></dt>
-        <dd>Stops scripts after they use too much memory.</dd>
+        <dd>Limits allocations so scripts fail cleanly instead of OOMing the host.</dd>
       </div>
       <div class="guardrail">
         <dt><svg class="vee"><use href="#vee"></use></svg> Effects control <span class="guardrail-default">strict</span></dt>
-        <dd>Scripts need permission for operations with side effects.</dd>
+        <dd>Side-effecting operations require explicit capabilities.</dd>
       </div>
       <div class="guardrail">
         <dt><svg class="vee"><use href="#vee"></use></svg> Module paths <span class="guardrail-default">allowlist</span></dt>
-        <dd>Scripts can load modules only from approved directories.</dd>
+        <dd>Module lookups only resolve inside directories you approve.</dd>
       </div>
       <div class="guardrail">
         <dt><svg class="vee"><use href="#vee"></use></svg> Capability gating <span class="guardrail-default">host adapters</span></dt>
-        <dd>Scripts can use only the APIs you provide.</dd>
+        <dd>Scripts only touch the safe adapters you expose.</dd>
       </div>
     </dl>
   </aside>
@@ -252,8 +261,8 @@ end</code></pre>
     <p class="eyebrow"><svg class="vee" aria-hidden="true"><use href="#vee"></use></svg> Try it</p>
     <h2>Run a few examples.</h2>
     <p class="section-sub">
-      {{.RunnableExamples}} programs are compiled when the site starts and ready to run
-      with one click. No install or setup needed.
+      {{.RunnableExamples}} programs are compiled against the real interpreter when the
+      site starts and run with one click. No install or setup needed.
     </p>
     <div class="hero-actions">
       <a class="button" href="/examples">Browse all {{.TotalExamples}} examples</a>
