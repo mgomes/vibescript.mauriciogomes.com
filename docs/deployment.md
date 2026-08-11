@@ -68,7 +68,7 @@ miren rollback -a vibescript
 
 ## Vibescript Version Bumps
 
-The most common deploy is tracking a new upstream `vibescript` release. The version is pinned in two places: `go.mod` and the `UpstreamVersion` constant in `internal/catalog/catalog.go:15`. That constant feeds the header badge, the homepage version chip, and the per-example "view source" links.
+The most common deploy is tracking a new upstream `vibescript` release. The version is pinned in two places: `go.mod` and the `UpstreamVersion` constant in `internal/catalog/catalog.go`. That constant feeds the header badge, the homepage version chip, and the per-example "view source" links.
 
 Replace `vX.Y.Z` with the target tag:
 
@@ -80,7 +80,7 @@ go build ./...
 go test ./...
 ```
 
-`TestAllImportedExamplesCompile` is the real signal that the new release doesn't break any embedded example.
+`TestAllExamplesCompileAndPassStaticChecks` is the real signal that the new release doesn't break any embedded example. `TestEveryExampleIsRunnable` then asserts that all of them still expose a top-level `def run`.
 
 Spot-check locally:
 
