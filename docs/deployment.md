@@ -14,6 +14,10 @@ The app config lives in `.miren/app.toml`.
 
 Miren detects the Go app from `go.mod`, builds the binary on the server, and starts it as `/bin/app`.
 
+## Hosts
+
+`vibescript-lang.org` is the canonical host. `www.vibescript-lang.org` and the older `vibescript.mauriciogomes.com` both redirect to it, so verification commands should target the canonical host or pass `curl -L`; otherwise they return the redirect body rather than the page. The redirect sources are listed in `internal/site/site.go`.
+
 ## First-Time Vultr Migration
 
 Use a fresh Vultr VM for the Miren cutover. The previous deployment stack used Caddy, systemd, and direct SSH binary uploads; Miren should own ingress and TLS on the new server instead of competing with those services in place.
@@ -99,8 +103,8 @@ Deploy and verify:
 
 ```bash
 miren deploy
-curl -s https://vibescript.mauriciogomes.com/healthz
-curl -s https://vibescript.mauriciogomes.com/ | grep brand-version
+curl -s https://vibescript-lang.org/healthz
+curl -s https://vibescript-lang.org/ | grep brand-version
 ```
 
 If the new tag exposes a runtime regression that only shows up in production, `miren rollback -a vibescript` reverts; then bisect upstream from a clean state.
