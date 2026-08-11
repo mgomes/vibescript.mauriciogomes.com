@@ -1,26 +1,24 @@
-Vibescript is a scoped extension language: scripts extend a Go application
-the way Lua extends a game, written by users or agents and running inside
-bounds the host defines. This page covers the language and the runtime that
-bounds it: literals through classes, typing, concurrency, and the sandbox's
-host configuration. For the full embedding API, capability adapters, and
-method-level coverage, see the
+Vibescript lets users and AI agents add scripts to a Go app. Like Lua in a
+game, each script runs inside limits set by the host app. This page covers the
+language, task system, sandbox, and main host settings. For the full Go API,
+capability adapters, and built-in methods, see the
 [upstream docs](https://github.com/mgomes/vibescript/tree/master/docs).
 
 ## Basics {#basics}
 
 ### Source structure {#source-structure}
 
-Files are UTF-8 text, typically with a `.vibe` extension. A `#` starts a
-comment that runs to end-of-line.
+Vibescript files are UTF-8 text and usually use a `.vibe` extension. A `#`
+starts a comment that continues to the end of the line.
 
-Top-level declarations are functions, classes, modules, and enums. Executable
-top-level statements form the default script body when a file is run directly,
-and form a module initializer when a file is loaded with `require`. Hosts that
-embed Vibescript usually call a named function instead, which is how the
-runnable examples on this site work.
+A file can declare functions, classes, modules, and enums. Statements at the
+top level become the default script body when the file runs directly. When
+`require` loads the file, those statements become the module initializer. An
+app that embeds Vibescript will usually call a named function instead. The
+runnable examples on this site work that way.
 
-Statements are separated by newlines or semicolons, and expressions can be
-used as statements.
+Use newlines or semicolons to separate statements. An expression can also be a
+statement.
 
 ### Values & literals {#literals}
 
@@ -41,24 +39,25 @@ The literal categories are `nil`, `true`, `false`; integers and floats;
 strings; symbols (`:name`, or quoted as `:"with-punctuation"`); arrays;
 hashes; ranges; and duration literals such as `5.minutes` or `2.days`.
 
-Ranges with `..` include the final endpoint, ranges with `...` exclude it.
-Ruby's open-ended ranges are supported: `arr[1..]` takes everything from index
-1 on, `s[..2]` the leading characters, and `when 3..` matches three and up.
-Open ranges cannot be iterated: `each`, `map`, `to_a`, `for`, and friends
-reject them up front rather than running into the sandbox quotas. Unlike Ruby,
-descending ranges iterate: `(5..1).to_a` is `[5, 4, 3, 2, 1]` rather than an
-empty array.
+`..` includes the final value, while `...` leaves it out. Open-ended ranges
+work too: `arr[1..]` takes everything from index 1 on, `s[..2]` takes the first
+characters, and `when 3..` matches three and up.
+
+You cannot iterate an open range. `each`, `map`, `to_a`, `for`, and similar
+operations return an error before they run. Unlike Ruby, a descending range
+does iterate: `(5..1).to_a` returns `[5, 4, 3, 2, 1]` instead of an empty
+array.
 
 ### Numbers {#numbers}
 
-Integers are arbitrary precision, as in Ruby: arithmetic that leaves the
-signed 64-bit range promotes transparently, and a result that fits 64 bits
-again returns to the compact fast representation. There is a single `int`
-type; scripts never observe a separate "bignum" kind. A few surfaces
-deliberately stay within 64 bits and raise a clear error for larger values:
-range endpoints, iteration counts (`times`, `upto`, `downto`, `step`),
-`Money`/`Duration`/`Time` arithmetic, and argument positions that denote
-indexes, counts, sizes, or precisions.
+Vibescript has one integer type: `int`. It keeps exact values when arithmetic
+goes past the signed 64-bit range, and uses the smaller representation again
+when the value fits. Scripts never see a separate "bignum" type.
+
+Some APIs still require a value that fits in 64 bits and return an error for a
+larger value. These include range endpoints, iteration counts (`times`,
+`upto`, `downto`, `step`), `Money`/`Duration`/`Time` arithmetic, and arguments
+used as indexes, counts, sizes, or precision values.
 
 ```vibe
 big = 2 ** 100          # => 1267650600228229401496703205376, exact
@@ -68,20 +67,20 @@ sci = 1.5e-2            # floats may use scientific notation
 kilo = 1e3              # any literal with an exponent is a float: 1000.0
 ```
 
-Numeric literals accept underscores between digits in any base. An exponent
-marker (`e`/`E`) takes an optional sign and one or more digits; a literal
-whose exponent overflows the 64-bit float range saturates to `Infinity`. A
-numeric literal may not directly abut an identifier: `123abc` and `1.5x` are
-parse errors rather than two tokens, matching Ruby. A bare leading zero
-(`010`) stays decimal rather than being read as legacy octal.
+Numeric literals can use underscores between digits in any base. An exponent
+(`e` or `E`) can include a sign and must include at least one digit. An
+exponent that is too large for a 64-bit float becomes `Infinity`.
+
+A number cannot touch an identifier. `123abc` and `1.5x` are parse errors, not
+two tokens. A leading zero does not make a number octal, so `010` is decimal.
 
 ### Strings & symbols {#strings}
 
-Double-quoted strings support `#{...}` interpolation. Each interpolation
-holds one expression, converted with the same string form used by `to_s`. The
-expression may contain its own double-quoted strings and even nested
-interpolations; the interpolation extends to its matching `}`. Escape a
-literal marker as `\#{...}`. Single-quoted strings do not interpolate.
+Double-quoted strings support `#{...}` interpolation. Vibescript evaluates the
+expression and converts its value with `to_s`. The expression can contain its
+own double-quoted strings and nested interpolation, and ends at the matching
+`}`. Escape a literal marker as `\#{...}`. Single-quoted strings do not
+interpolate.
 
 ```vibe
 def describe(name)
@@ -94,11 +93,11 @@ hold punctuation, spaces, or be empty: `:"foo-bar"`, `:'foo bar'`, `:""`.
 Quoted symbols use the same escapes as the matching string quote, and
 interpolation is not supported in symbol literals.
 
-In a hash literal, a bare label makes a symbol key and a quoted label makes a
-string key: `{ name: 1 }` is read back with `h[:name]`, while `{ "name": 1 }`
-is read back with `h["name"]`. The quoted form is the only literal syntax for
-a string-keyed hash, which is what `JSON.parse` returns. Ruby's hash rocket
-syntax (`=>`) is not supported.
+In a hash, a bare label creates a symbol key and a quoted label creates a
+string key. Read `{ name: 1 }` with `h[:name]`, and read `{ "name": 1 }` with
+`h["name"]`. A quoted label is the only hash literal syntax for a string key.
+`JSON.parse` returns hashes with string keys. Ruby's hash rocket syntax (`=>`)
+is not supported.
 
 Strings are immutable values. Reading with `[]` mirrors Ruby's `String#[]`
 and `Array#[]`, including negative indexes, `value[start, length]`, and
@@ -106,8 +105,8 @@ and `Array#[]`, including negative indexes, `value[start, length]`, and
 
 ### Variables & assignment {#variables}
 
-Variables are dynamically bound by assignment. Parallel and destructuring
-assignment split array values across targets:
+Assignment creates variables. Parallel and destructuring assignment split an
+array across several targets:
 
 ```vibe
 a, b = [1, 2]
@@ -151,8 +150,8 @@ def add(a, b)
 end
 ```
 
-Parameters and returns take optional type annotations, checked as runtime
-contracts at typed boundaries:
+Type annotations on parameters and return values are optional. When present,
+Vibescript checks them at runtime when the function is called and returns:
 
 ```vibe
 def charge(amount: int, currency: string = "USD") -> hash
@@ -162,8 +161,8 @@ end
 
 ### Parameter forms {#parameters}
 
-A parameter's spelling chooses how it receives a value. The token after the
-colon disambiguates the keyword and typed forms:
+A parameter's syntax controls how it receives a value. The token after `:`
+separates keyword parameters from typed parameters:
 
 | Form | Meaning |
 | --- | --- |
@@ -177,9 +176,9 @@ colon disambiguates the keyword and typed forms:
 | `**rest` | captures extra keyword arguments |
 | `&block` | captures a passed block |
 
-A keyword-only parameter is bound only by a matching keyword label; it never
-accepts a positional argument. The optional form supplies its default when
-the label is omitted, and a later default may reference an earlier parameter:
+A keyword-only parameter only accepts its matching label, not a positional
+argument. An optional keyword uses its default when the label is missing. A
+later default can use an earlier parameter:
 
 ```vibe
 def connect(host:, port: 8080, scheme: "https", timeout: port * 2)
@@ -192,19 +191,18 @@ def demo
 end
 ```
 
-Because `name: Type` declares a typed positional parameter, a bare identifier
-after the colon resolves as a type name, not a keyword default: write
-`a: int` for a typed positional and `a: 0` for an optional keyword. A default
-that is *only* a reference to an earlier parameter must be parenthesized:
-`timeout: port * 2` is a default, but `timeout: port` reads as a type, so
-write `timeout: (port)`.
+`name: Type` declares a typed positional parameter, so a bare name after `:`
+is read as a type. Write `a: int` for a typed positional parameter and `a: 0`
+for an optional keyword. If a default is only a reference to an earlier
+parameter, put it in parentheses. `timeout: port * 2` is a default, but
+`timeout: port` looks like a type. Write `timeout: (port)` instead.
 
 ### Function values {#function-values}
 
-A function referenced by name (without calling it) is a value that can be
-passed around and invoked. Direct `fn(...)` invocation and Ruby-style
-`fn.call(...)` behave identically, forwarding positional arguments, keyword
-arguments, and an optional block:
+Refer to a function by name without calling it to get a function value. You can
+pass that value around and call it later. `fn(...)` and `fn.call(...)` behave
+the same way. Both accept positional arguments, keyword arguments, and an
+optional block:
 
 ```vibe
 def inc(n)
@@ -228,8 +226,8 @@ a function value.
 
 ### Method calls {#method-calls}
 
-Calls support positional and keyword arguments, and may omit parentheses when
-all arguments stay on the same line:
+Calls accept positional and keyword arguments. You can leave out parentheses
+when all arguments are on one line:
 
 ```vibe
 def demo(fees, amount)
@@ -242,9 +240,9 @@ end
 Positional arguments must come before keyword labels: `collect(first: 1,
 "tail")` is a parse error, while `collect("head", first: 1)` is accepted.
 
-Label arguments bind as keyword arguments when the callee accepts them. When
-a function has a positional hash parameter instead, the same source form is
-passed as a final options hash, in both parenless and parenthesized form:
+A label becomes a keyword argument when the function accepts that keyword. If
+the function expects a positional hash instead, the labels become its final
+options hash. This works with or without parentheses:
 
 ```vibe
 def configure(opts)
@@ -257,19 +255,19 @@ def demo
 end
 ```
 
-Constructor calls (`Klass.new(...)`) and method calls (`receiver.method(...)`)
-keep strict parenthesized keyword binding: a parenthesized keyword with no
-matching keyword parameter does not collapse into a positional options hash.
+Constructors (`Klass.new(...)`) and methods (`receiver.method(...)`) use
+stricter rules. Inside parentheses, a keyword without a matching parameter
+does not become a positional options hash.
 
 A local variable already holding the value of a keyword can be passed with
 the shorthand `greet(name:)`, which is `greet(name: name)`.
 
 ### Splats & parenless arguments {#splats}
 
-Ruby-style call splats expand prepared argument lists in place: `f(*args)`
-spreads an array into positional arguments, `f(**opts)` spreads a hash into
-keyword arguments (string or symbol keys; later duplicates win), and both
-combine freely with regular arguments and blocks:
+Ruby-style splats expand saved arguments. `f(*args)` turns an array into
+positional arguments. `f(**opts)` turns a hash into keyword arguments; keys
+can be strings or symbols, and the last duplicate wins. You can combine both
+forms with regular arguments and blocks:
 
 ```vibe
 def sum3(a, b, c)
@@ -282,20 +280,23 @@ def demo
 end
 ```
 
-The expansion happens before binding, so arity, keyword, and type errors
-match the equivalent literal call.
+Vibescript expands splats before it binds parameters. Errors about argument
+count, keywords, and types are therefore the same as they would be for a call
+written out in full.
 
-In parenless calls, spacing disambiguates: `f *args` splats, while `a * b`
-and `a*b` stay multiplication. The same rule lets a regex or an array literal
-be a parenless command argument (`match /ID-[0-9]+/`, `puts [3, 1, 2].sort`).
-A sigil detached from a non-local callee but flush against its operand
-opens an argument, and every other spacing keeps the operator reading.
+Spacing decides how a call without parentheses is read. `f *args` uses a
+splat, while `a * b` and `a*b` multiply. The same rule allows a regex or array
+literal as an argument (`match /ID-[0-9]+/`, `puts [3, 1, 2].sort`).
+
+In a call to a non-local function, an operator-like symbol starts an argument
+when it is separated from the function name but touches its value. With any
+other spacing, Vibescript reads it as an operator.
 
 ### Blocks {#blocks}
 
-Blocks are lightweight lambdas passed with `do ... end` or braces. Block
-parameters default to `nil` when fewer values are provided, and can
-destructure the yielded value exactly like assignment destructuring:
+Blocks are small functions passed with `do ... end` or braces. Missing block
+arguments become `nil`. Block parameters can also unpack a yielded value in
+the same way as destructuring assignment:
 
 ```vibe
 def active_names(players)
@@ -333,16 +334,14 @@ def demo
 end
 ```
 
-As in Ruby, an explicit `return` inside a block returns from the method whose
-body created the block, ending iteration immediately. `ensure` blocks on the
-way out still run. A block without a parameter list infers implicit
-parameters (`it`, `_1`..`_9`).
+As in Ruby, `return` inside a block returns from the method that created the
+block and stops iteration. Any `ensure` block still runs. A block with no
+parameter list can use the implicit parameters `it` and `_1` through `_9`.
 
 ### Procs & lambdas {#lambdas}
 
-Blocks become first-class values through `Proc.new { ... }`, `proc { ... }`,
-`lambda { ... }`, and the stabby lambda `->(args) { ... }`. All four produce
-values invoked with `.call`:
+Use `Proc.new { ... }`, `proc { ... }`, `lambda { ... }`, or
+`->(args) { ... }` to store a block in a value. Call each form with `.call`:
 
 ```vibe
 def demo
@@ -354,16 +353,14 @@ def demo
 end
 ```
 
-Procs and lambdas differ exactly as in Ruby. A **proc** keeps block
-semantics: missing arguments pad to `nil`, extra arguments are dropped, a
-single array argument auto-splats, and `return` in the body returns from the
-method that created it. A **lambda** behaves like an anonymous method: arity
-is strict, and `return`, `break`, and `next` are all local to the lambda.
-`fn.lambda?` reports which semantics a callable carries.
+Procs and lambdas follow Ruby's rules. A **proc** acts like a block: missing
+arguments become `nil`, extra arguments are dropped, one array argument is
+expanded, and `return` exits the method that created the proc. A **lambda**
+acts like an anonymous method: it checks the argument count, and `return`,
+`break`, and `next` only leave the lambda. Use `fn.lambda?` to tell them apart.
 
-The ampersand converts a value into the call's block: `m(&blk)` forwards a
-captured block, proc, function value, or bound method, and `m(&:name)` is
-the symbol-to-proc shorthand:
+`&` turns a value into the block for a call. `m(&blk)` forwards a saved block,
+proc, function value, or bound method. `m(&:name)` is the shorter symbol form:
 
 ```vibe
 def shout(words)
@@ -381,8 +378,8 @@ with a literal block.
 ### Safe navigation {#safe-navigation}
 
 `receiver&.member` reads a member or calls a method only when the receiver is
-not `nil`; otherwise the whole access short-circuits to `nil` without
-evaluating arguments or block:
+not `nil`. If it is `nil`, the access returns `nil` without evaluating its
+arguments or block:
 
 ```vibe
 def demo(user)
@@ -392,10 +389,10 @@ def demo(user)
 end
 ```
 
-The operator guards only its immediate access. In `user&.profile.name` the
-trailing `.name` still dispatches on whatever `user&.profile` returned, so
-guard each link in a chain. Safe navigation cannot be used as an assignment
-target; `user&.name = "Ada"` is a parse error.
+The operator only guards the next access. In `user&.profile.name`, `.name`
+still runs on the value returned by `user&.profile`. Guard each link that may
+be `nil`. Safe navigation cannot be an assignment target, so
+`user&.name = "Ada"` is a parse error.
 
 ## Operators {#operators}
 
@@ -423,15 +420,13 @@ common to both, duplicates removed, left order preserved. Following Ruby,
 
 ### Comparison & case equality {#comparison}
 
-The spaceship `<=>` returns `-1`, `0`, or `1` for ordered operands and `nil`
-when the operands cannot be ordered (different kinds, money in different
-currencies, or a `NaN` on either side). The relational operators `<`, `<=`,
-`>`, `>=` instead raise on incomparable operands, matching Ruby's
-`ArgumentError`.
+The spaceship operator `<=>` returns `-1`, `0`, or `1` when it can order two
+values. It returns `nil` for values it cannot order, such as different kinds,
+money in different currencies, or a comparison with `NaN`. The operators
+`<`, `<=`, `>`, and `>=` raise an `ArgumentError` for the same values.
 
-`===` treats its left operand as a matcher, mirroring `case`/`when`. A range
-matcher checks membership, a regex matcher tests a string, and every other
-matcher falls back to `==`:
+`===` uses its left value as a matcher, just like `case` and `when`. A range
+checks membership, a regex tests a string, and every other value uses `==`:
 
 ```vibe
 def demo
@@ -443,11 +438,10 @@ end
 
 ### Precedence & continuation {#precedence}
 
-Precedence follows conventional arithmetic/boolean ordering. `**` is
-right-associative and binds more tightly than unary `-`, so `-2 ** 2` is
-`-(2 ** 2)`. Integer powers stay `int` for non-negative exponents, promoting
-to arbitrary precision past 64 bits; mixed numeric powers and negative
-integer exponents return `float`.
+Operators follow the usual arithmetic and boolean order. `**` groups from the
+right and binds more tightly than unary `-`, so `-2 ** 2` means `-(2 ** 2)`.
+An integer raised to a non-negative integer power stays an `int`, even past 64
+bits. Mixed number types and negative integer exponents return a `float`.
 
 Division follows Ruby: integer division by zero (`1 / 0`) raises, while
 float division by zero (`1.0 / 0`) follows IEEE 754 and yields `Infinity`,
@@ -456,11 +450,10 @@ and `Float#finite?`. `&&` binds tighter than `||`, and ternary conditionals
 sit below `||`, associate to the right, and evaluate only the selected
 branch.
 
-A leading `+` or `-` on a fresh line follows Vibescript's
-indented-continuation rule, which intentionally differs from Ruby: flush
-against its operand it begins a new statement, while separated by whitespace
-it continues the previous line as a binary operator, so multi-line
-arithmetic can be indented under its first operand:
+Vibescript reads a leading `+` or `-` differently from Ruby. When the operator
+touches its value, it starts a new statement. When a space follows the
+operator, it continues the previous line. This lets you indent multi-line
+arithmetic under its first value:
 
 ```vibe
 def demo(total, amount)
@@ -473,9 +466,8 @@ end
 
 ### Conditionals {#conditionals}
 
-`if` / `elsif` / `else` and `unless` / `else` are statements and
-value-producing expressions. When no branch matches and there is no `else`,
-the expression returns `nil`:
+`if` / `elsif` / `else` and `unless` / `else` can be statements or return
+values. If no branch matches and there is no `else`, they return `nil`:
 
 ```vibe
 def label(score)
@@ -500,10 +492,10 @@ end
 
 ### case / when {#case-when}
 
-`case` evaluates to the matching branch expression (or `nil` when nothing
-matches and no `else` is provided). `when` candidates use `===` semantics:
-ranges test membership, regexes test strings, and other values use equality.
-Use `then` for compact single-line bodies:
+`case` returns the value of the matching branch. It returns `nil` if nothing
+matches and there is no `else`. Each `when` uses `===`: ranges check
+membership, regexes test strings, and other values use equality. Use `then`
+for a one-line branch:
 
 ```vibe
 def label(score)
@@ -530,9 +522,9 @@ end
 
 ### Loops {#loops}
 
-`while` and `until` loop over a condition; `for ... in` iterates arrays,
-ranges, and hashes. `do` may be used as an optional body separator after the
-condition or iterable:
+`while` and `until` repeat while testing a condition. `for ... in` loops over
+arrays, ranges, and hashes. An optional `do` can separate the condition or
+collection from the loop body:
 
 ```vibe
 def countdown(n)
@@ -553,10 +545,10 @@ def sum_first_five
 end
 ```
 
-A `for` loop over a hash binds a two-element `[key, value]` pair per
-iteration, visiting entries in insertion order. `break` and `next` target the
-nearest active loop, raise when used outside any loop, and cannot cross call
-boundaries. Short statements also come in modifier-loop form:
+A `for` loop over a hash gets one `[key, value]` pair at a time in insertion
+order. `break` and `next` affect the closest active loop. They return an error
+outside a loop and cannot cross a function call. Short loops can also use the
+modifier form:
 
 ```vibe
 def demo(i)
@@ -566,15 +558,13 @@ def demo(i)
 end
 ```
 
-Every loop iteration consumes a step against the sandbox's step quota, so an
-accidental infinite loop terminates with a quota error instead of hanging
-the host.
+Every loop iteration uses part of the sandbox's step limit. An infinite loop
+therefore stops with an error instead of hanging the Go app.
 
 ### Error handling {#errors}
 
-Raise explicit failures with `raise`, and handle them with
-`begin` / `rescue` / `ensure`. A rescue clause can bind the error and read
-its message:
+Use `raise` to report an error and `begin` / `rescue` / `ensure` to handle it.
+A `rescue` clause can save the error and read its message:
 
 ```vibe
 def safe_divide(a, b)
@@ -604,8 +594,8 @@ end
 
 ### Classes {#classes}
 
-Class declarations group behavior and state. Instances are created with
-`.new`, and methods take the same signatures as functions:
+Classes hold state and methods. Create an instance with `.new`. Methods use
+the same parameter and return syntax as functions:
 
 ```vibe
 class Counter
@@ -625,9 +615,8 @@ Inheritance is not supported. Instance variables (`@name`), class variables
 
 ### Modules {#modules}
 
-Module declarations group module functions and constants under a namespace.
-Their instance-style methods mix into classes with `include` (instance
-methods) or `extend` (class methods):
+Modules put functions and constants under one name. Use `include` to add a
+module's methods as instance methods, or `extend` to add them as class methods:
 
 ```vibe
 module Billing
@@ -644,13 +633,12 @@ def demo
 end
 ```
 
-`module` is contextual, not reserved: it starts a declaration only when
-followed by a constant name. Declarations may nest (`Outer::Inner`), and
-modules cannot be instantiated.
+`module` is only treated as a keyword when a constant name follows it. Modules
+can be nested (`Outer::Inner`), but they cannot be instantiated.
 
-Load shared code from other files with `require`. File-based modules are
-distinct from in-source `module` declarations, and resolution is governed by
-the host's `Config.ModulePaths` and policy lists:
+Load shared code from another file with `require`. A file module is separate
+from a `module` declared in source. The Go app controls where `require` can
+look with `Config.ModulePaths` and its allow and deny lists:
 
 ```vibe
 def demo(input)
@@ -661,7 +649,7 @@ end
 
 ### Enums {#enums}
 
-Enums declare nominal state sets, with members accessed via `::`:
+Enums define a fixed set of named values. Access a value with `::`:
 
 ```vibe
 enum Status
@@ -674,15 +662,15 @@ def demo
 end
 ```
 
-Coercion, equality, and serialization behavior are covered in the upstream
+Conversion, equality, and serialization behavior are covered in the upstream
 [enums guide](https://github.com/mgomes/vibescript/blob/master/docs/enums.md).
 
 ### Gradual typing {#typing}
 
-Typing is optional and gradual: annotate parameters and returns where
-helpful, and rely on runtime contract checks at typed boundaries. The checker
-also infers local types to catch known contradictions before execution;
-unannotated values simply remain gradual.
+Types are optional. Add them to parameters and return values where they help.
+Vibescript checks them when a typed function receives or returns a value.
+Before a script runs, the checker also tracks local types and reports known
+conflicts. Values without annotations stay dynamic.
 
 Type names are case-insensitive: `int`, `float`, `number`, `string`, `bool`,
 `nil`, `duration`, `time`, `money`, `array`, `hash`/`object`, `range`,
@@ -690,8 +678,8 @@ Type names are case-insensitive: `int`, `float`, `number`, `string`, `bool`,
 (`string?`, `int?`), join alternatives with `|` (`int | string`), and
 parameterize containers with `array<T>` and `hash<K, V>`.
 
-Shape types describe hash payloads field by field. A `?` on a field name
-marks it optional, and a trailing `...` leaves the shape open to extra keys:
+Shape types list the fields in a hash. Add `?` to an optional field name. Add
+`...` at the end to allow other keys:
 
 ```vibe
 def apply_bonus(payload: { id: string, points: int }) -> { id: string, points: int }
@@ -707,9 +695,9 @@ end
 
 ### Built-ins {#builtins}
 
-Notable built-in facilities include assertion and conversion helpers,
-`Time`, `Duration`, and `Money` values with quota-guarded arithmetic, and the
-`JSON` and `Regex` utility families. Durations read naturally off integers:
+Vibescript includes assertions, conversion helpers, `Time`, `Duration`, and
+`Money` values, plus `JSON` and `Regex` helpers. The sandbox counts the work
+done by their operations. Create durations from integers:
 
 ```vibe
 def demo
@@ -718,24 +706,21 @@ def demo
 end
 ```
 
-The full API surface (string, array, hash, and range methods included) is
-documented in the upstream
-[builtins](https://github.com/mgomes/vibescript/blob/master/docs/builtins.md)
-and
-[stdlib](https://github.com/mgomes/vibescript/blob/master/docs/stdlib_core_utilities.md)
-guides.
+The upstream [built-ins guide](https://github.com/mgomes/vibescript/blob/master/docs/builtins.md)
+and [standard library guide](https://github.com/mgomes/vibescript/blob/master/docs/stdlib_core_utilities.md)
+list every method, including methods on strings, arrays, hashes, and ranges.
 
 ### Tasks & concurrency {#tasks}
 
-`Tasks` runs independent named functions concurrently while the runtime keeps
-the work bounded and scoped. Concurrency is **structured**: a task cannot
-outlive the `Tasks.run` or `Tasks.map` scope that created it, leaving a scope
-waits for every spawned task, and failures report through `task.value` or at
-scope exit.
+The `Tasks` API runs independent named functions at the same time. The runtime
+limits how many can run and keeps them inside a scope. This is **structured
+concurrency**: a task cannot outlive the `Tasks.run` or `Tasks.map` call that
+created it. Leaving the scope waits for every task. Errors appear through
+`task.value` or when the scope exits.
 
-`Tasks.map` runs each input through the same named function and returns
-results in input order (not completion order). Limit fanout for one call with
-`max:`:
+`Tasks.map` calls the same named function for each input. It returns results in
+input order, not completion order. Use `max:` to limit how many tasks run at
+once:
 
 ```vibe
 def score_user(user)
@@ -747,10 +732,10 @@ def score_users(users)
 end
 ```
 
-`Tasks.run` is the manual scope: `tasks.spawn(:function_name, arg, key: value)`
-starts a named function and returns a handle, and `task.value` waits for that
-task and returns its result or raises its error. The block's value is the
-scope's value:
+`Tasks.run` gives you direct control over a scope.
+`tasks.spawn(:function_name, arg, key: value)` starts a named function and
+returns a handle. `task.value` waits for that task, then returns its result or
+raises its error. The block's value becomes the value of the scope:
 
 ```vibe
 def prepare_user(user)
@@ -767,51 +752,54 @@ def prepare_pair(first, second)
 end
 ```
 
-Scope exit waits automatically, so `tasks.wait` is only needed as an explicit
-barrier when later code in the same block must wait for spawned work.
+The scope waits automatically before it exits. Use `tasks.wait` only when code
+later in the same block must wait for the tasks started so far.
 
-Tasks run through fresh execution state. They inherit the parent call's
-capabilities, globals, strict-effects policy, and cancellation context, but
-they do not share mutable locals or captured block state. Arguments,
-results, and inherited globals are **cloned** across the task boundary, and
-must be data-only: functions, blocks, capabilities, and cyclic structures
-cannot cross it. Results retained by task handles count against the parent's
-memory quota while the scope is alive.
+Each task gets its own execution state. It inherits the parent call's
+capabilities, globals, `StrictEffects` setting, and cancellation, but it does
+not share mutable local variables or block state.
 
-The host bounds all fanout: `DefaultTaskConcurrency` applies when a script
-omits `max:`, and `MaxTaskConcurrency` caps script-provided values. A
-request above the cap raises (`Tasks.map max 99 exceeds host maximum 64`)
-rather than being silently clamped.
+Arguments, results, and inherited globals are copied between the parent and a
+task. They must contain data only. Functions, blocks, capabilities, and cyclic
+values cannot cross this boundary. A result held by a task handle counts
+against the parent's memory limit until the scope exits.
+
+The Go app controls both task limits. `DefaultTaskConcurrency` applies when a
+script leaves out `max:`. `MaxTaskConcurrency` is the largest value a script
+may request. A larger request returns an error, such as
+`Tasks.map max 99 exceeds host maximum 64`.
 
 ### Sandbox & quotas {#sandbox}
 
-Vibescript is safe by default. Every run is bounded by three quotas:
-**steps**, **memory**, and **recursion depth**. Every loop iteration
-(even with an empty body), call, and allocation is charged against them.
-Splat-expanded arguments cost the same as literal ones, so no call shape
-escapes accounting. When a script exceeds a quota it terminates with a clear
-error (`step quota exceeded`, `memory quota exceeded`, `recursion depth
-exceeded`) instead of degrading the host.
+Every run has three limits: **steps**, **memory**, and **recursion depth**. Loop
+iterations, including empty ones, use steps. Calls and allocations also count
+toward a limit. Arguments expanded from a splat cost the same as arguments
+written out in full.
 
-Recursion is deliberately never unlimited: the interpreter recurses on the
-host's Go stack, so even the most generous profile keeps a finite cap that
-fails cleanly on runaway recursion rather than crashing the process.
+When a script reaches a limit, it stops and returns a clear error:
+`step quota exceeded`, `memory quota exceeded`, or
+`recursion depth exceeded`. The Go app keeps running.
 
-Scripts cannot reach the filesystem, network, or clock on their own. Side
-effects enter only through what the host passes in: data globals, and typed
-**capability adapters** that validate arguments and results at the boundary
-(everything crossing it must be data-only; callables are rejected). With
-`StrictEffects` enabled, even host-seeded globals must be data-only, forcing
-every side effect through an auditable adapter. Host context cancellation
-propagates into running scripts, including spawned tasks.
+Recursion can never be unlimited because the interpreter uses the Go stack.
+Even the largest profile keeps a finite limit, so runaway recursion returns an
+error instead of crashing the process.
 
-The [playground on this site](/) enforces a deliberately tight budget on
-every run; the exact values are shown on the homepage.
+Scripts cannot access the filesystem, network, or clock on their own. The Go
+app can pass in data and typed **capability adapters**. These adapters check
+arguments and results. Values that cross this boundary must contain data only;
+functions and other callable values are rejected.
+
+With `StrictEffects` enabled, globals must also contain data only. Every side
+effect must then go through a capability adapter. Cancelling the Go context
+also cancels the script and any tasks it started.
+
+Every example on this site uses a small set of limits. The homepage shows the
+exact values.
 
 ### Host configuration {#host-config}
 
-Hosts embed the interpreter by constructing an engine from `vibes.Config`;
-the zero value is a working, conservatively-limited sandbox:
+Create an engine with `vibes.Config`. Its zero value gives you a working
+sandbox with safe limits:
 
 ```go
 engine, err := vibes.NewEngine(vibes.Config{
@@ -827,23 +815,23 @@ engine, err := vibes.NewEngine(vibes.Config{
 
 | Field | Default | Controls |
 | --- | --- | --- |
-| `StepQuota` | 1,000,000 | execution steps per call; loops, calls, and allocations all charge it |
+| `StepQuota` | 1,000,000 | steps per call; loops, calls, and allocations use it |
 | `MemoryQuotaBytes` | 16 MiB | live interpreter memory per call |
-| `RecursionLimit` | 256 | call depth; always finite, even in the most generous profile |
-| `StrictEffects` | `false` | require host globals to be data-only; side effects go through capability adapters |
-| `ModulePaths` | none | directories searched by `require` |
-| `ModuleAllowList` / `ModuleDenyList` | none | policy filter on which modules may load |
-| `OutputWriter` / `ErrorWriter` | unset | destinations for `puts`/`print`/`p` and `warn`; unset makes those builtins raise |
-| `RandomReader` / `RandomReadFunc` | `crypto/rand` | the randomness source scripts observe |
-| `MaxSourceBytes` | 1 MiB | largest source a single compile accepts |
-| `MaxCachedModules` | 1,000 | compiled-module cache bound |
-| `DefaultTaskConcurrency` | 4 | task fanout when a script omits `max:` |
-| `MaxTaskConcurrency` | 64 | hard cap on script-requested fanout; above it raises |
-| `DevMode` | `false` | development-only module reloading on file change |
+| `RecursionLimit` | 256 | call depth; this limit is always finite |
+| `StrictEffects` | `false` | whether globals must contain data only; side effects use capability adapters |
+| `ModulePaths` | none | directories where `require` looks for modules |
+| `ModuleAllowList` / `ModuleDenyList` | none | which modules may load |
+| `OutputWriter` / `ErrorWriter` | unset | where `puts`/`print`/`p` and `warn` write; without a writer, they raise an error |
+| `RandomReader` / `RandomReadFunc` | `crypto/rand` | source of random data for scripts |
+| `MaxSourceBytes` | 1 MiB | largest source file one compile accepts |
+| `MaxCachedModules` | 1,000 | largest number of compiled modules kept in the cache |
+| `DefaultTaskConcurrency` | 4 | task limit when a script leaves out `max:` |
+| `MaxTaskConcurrency` | 64 | largest `max:` value a script may request |
+| `DevMode` | `false` | reload modules when their files change during development |
 
-Quota fields read zero as "use the default" and `vibes.Unlimited` as
-"disable this quota". Instead of tuning each knob, a host can apply a named
-profile, a coherent budget bundle. In ascending generosity:
+A zero quota means "use the default." Set a quota to `vibes.Unlimited` to turn
+it off. You can also use a named profile instead of setting each quota. From
+smallest to largest:
 
 | Profile | Steps | Memory | Recursion |
 | --- | --- | --- | --- |
@@ -852,12 +840,12 @@ profile, a coherent budget bundle. In ascending generosity:
 | `high` | 200,000,000 | 512 MiB | 4,000 |
 | `xhigh` | unlimited | unlimited | 10,000 |
 
-`vibes.ProfileHigh.ApplyTo(&cfg)` writes only the three quota fields, and
-`vibes.QuotaProfileByName("medium")` resolves a user-supplied name. The
-`vibes` CLI runs on the same ladder and defaults to `xhigh`, since it runs your
-own scripts and is not a sandbox. Capability adapters, module policy, and
-per-call options (`CallOptions.Globals`, `CallOptions.Capabilities`) are
-covered in the upstream
+`vibes.ProfileHigh.ApplyTo(&cfg)` changes only the three quota fields.
+`vibes.QuotaProfileByName("medium")` finds a profile by name. The `vibes` CLI
+uses the same profiles and defaults to `xhigh` because it runs your own scripts,
+not untrusted code. The upstream guides cover capability adapters, module
+rules, and per-call options (`CallOptions.Globals`,
+`CallOptions.Capabilities`):
 [integration guide](https://github.com/mgomes/vibescript/blob/master/docs/integration.md)
 and
 [host cookbook](https://github.com/mgomes/vibescript/blob/master/docs/host_cookbook.md).

@@ -1,8 +1,8 @@
 # title: Subscription billing
 # category: Vibescript Showcase
 # difficulty: Showcase
-# summary: Price a subscription invoice with typed plan enums and semantic money values.
-# description: This example leans on enum-driven pricing and money arithmetic so billing code stays explicit about units and intent.
+# summary: Price a subscription invoice from the plan and quantity.
+# description: An enum names each plan, and money values keep prices and totals in the same currency.
 # tags: finance, money, enums, invoices
 # featured: true
 # feature_rank: 1

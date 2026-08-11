@@ -1,8 +1,8 @@
 # title: Event timestamps
 # category: Vibescript Showcase
 # difficulty: Showcase
-# summary: Emit RFC3339 timestamps at whole-second and sub-second precision with iso8601 and xmlschema.
-# description: 1.0 gives Time the Ruby RFC3339 aliases and optional fractional precision, and time-minus-seconds math, so event logs and audit trails serialize consistently.
+# summary: Format RFC3339 timestamps with whole or fractional seconds.
+# description: iso8601 and xmlschema format timestamps. Time values can also subtract seconds.
 # tags: time, timestamps, serialization
 # vibe: 0.4
 

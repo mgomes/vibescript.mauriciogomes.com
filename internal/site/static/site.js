@@ -111,7 +111,7 @@
       button.textContent = "Running...";
       output.classList.remove("slide-in-down");
       output.classList.add("is-thinking");
-      output.textContent = "Executing run() through the site runner...";
+      output.textContent = "Running example...";
 
       let cue = "ready";
       try {
@@ -124,14 +124,14 @@
         const payload = await response.json();
         if (!response.ok) {
           cue = "error";
-          output.textContent = payload.error || "Execution failed.";
+          output.textContent = payload.error || "The example could not run.";
           return;
         }
 
         output.textContent = renderResult(payload.result);
       } catch (error) {
         cue = "error";
-        output.textContent = error instanceof Error ? error.message : "Execution failed.";
+        output.textContent = error instanceof Error ? error.message : "The example could not run.";
       } finally {
         button.disabled = false;
         button.textContent = originalLabel;

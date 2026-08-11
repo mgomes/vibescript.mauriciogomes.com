@@ -2,7 +2,7 @@
 # source: https://rosettacode.org/wiki/Ackermann_function
 # category: Rosetta Code Popular
 # difficulty: Intermediate
-# summary: Evaluate the classic Ackermann function for a few small inputs to demonstrate deep recursion.
+# summary: Run the Ackermann function on small inputs to show deep recursion.
 # tags: popular, recursion, math
 # vibe: 0.2
 

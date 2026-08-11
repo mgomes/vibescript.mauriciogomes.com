@@ -1,8 +1,8 @@
 # title: Release readiness
 # category: Vibescript Showcase
 # difficulty: Showcase
-# summary: Model a release workflow with typed enums, time-aware scheduling, and structured status reporting.
-# description: This example shows how Vibescript enums, typed function signatures, template strings, and deterministic time formatting can make workflow code read like product logic instead of puzzle code.
+# summary: Report whether a release is ready from its state, approvals, and schedule.
+# description: Enums name release states. Typed functions check inputs, templates build messages, and time helpers format the schedule.
 # tags: workflows, enums, types, templates
 # featured: true
 # feature_rank: 0

@@ -23,6 +23,44 @@ var featuredExamples = map[string]int{
 	"enums/operations.vibe":       103,
 }
 
+var upstreamSummaries = map[string]string{
+	"arrays/extras.vibe":                 "Use array helpers to search, sort, combine, and inspect values.",
+	"background/jobs_and_events.vibe":    "Queue jobs and publish events through APIs from the Go app.",
+	"basics/functions_and_calls.vibe":    "Define functions, call other functions, and return values.",
+	"basics/literals_and_operators.vibe": "Work with numbers, strings, arrays, hashes, and common operators.",
+	"blocks/advanced.vibe":               "Filter, group, and reduce data with blocks.",
+	"blocks/enumerable_reports.vibe":     "Group donations and total the money in each currency.",
+	"blocks/transformations.vibe":        "Map, filter, and reduce collections with blocks.",
+	"blocks/yield_patterns.vibe":         "Write functions that accept and yield to blocks.",
+	"capabilities/context_access.vibe":   "Read the current user from context provided by the Go app.",
+	"capabilities/database_queries.vibe": "Query and update data through a database API from the Go app.",
+	"capabilities/iteration.vibe":        "Iterate over records returned by an API from the Go app.",
+	"collections/arrays.vibe":            "Read, build, and update arrays.",
+	"collections/hashes.vibe":            "Build, update, and read nested hashes.",
+	"collections/symbols.vibe":           "Use symbols as stable hash keys.",
+	"control_flow/case_when.vibe":        "Match values and ranges with case and when.",
+	"control_flow/conditionals.vibe":     "Choose values with if, elsif, else, and unless.",
+	"control_flow/loop_control.vibe":     "Skip and stop loop iterations with next and break.",
+	"control_flow/recursion.vibe":        "Write factorial and Fibonacci functions with recursion.",
+	"control_flow/until_loop.vibe":       "Repeat work with an until loop.",
+	"control_flow/while_loop.vibe":       "Repeat work with a while loop.",
+	"durations/durations.vibe":           "Create durations and add them together.",
+	"enums/operations.vibe":              "Define enums and inspect their values.",
+	"errors/assertions.vibe":             "Check inputs with assertions.",
+	"hashes/operations.vibe":             "Merge, search, and count values in hashes.",
+	"hashes/transformations.vibe":        "Rename, filter, and transform hash keys and values.",
+	"loops/advanced.vibe":                "Nest loops and stop early with break.",
+	"loops/fizzbuzz.vibe":                "Write FizzBuzz with a loop and conditionals.",
+	"loops/iteration.vibe":               "Iterate over ranges and arrays with common loop helpers.",
+	"money/operations.vibe":              "Add, subtract, and compare money values.",
+	"policies/access_control.vibe":       "Write access rules as small functions.",
+	"ranges/usage.vibe":                  "Create ascending and descending ranges, then filter their values.",
+	"stdlib/core_utilities.vibe":         "Parse JSON and time values, then create IDs.",
+	"strings/operations.vibe":            "Normalize, split, search, and inspect strings.",
+	"tasks/scoring.vibe":                 "Run independent scoring and preparation functions at the same time.",
+	"time/duration.vibe":                 "Add durations to times and use duration arithmetic.",
+}
+
 var runEntryPointPattern = regexp.MustCompile(`(?m)^def run\b`)
 
 type Example struct {
@@ -191,12 +229,15 @@ func loadUpstreamExample(relativePath string, source []byte) Example {
 	runnable := runEntryPointPattern.Match(source)
 
 	stage := "Imported"
-	summary := fmt.Sprintf("Upstream reference example from %s.", relativePath)
-	description := "This example is synced from the upstream Vibescript repository and serves as part of the site's growing examples corpus."
+	summary := upstreamSummaries[relativePath]
+	if summary == "" {
+		summary = "A Vibescript example from the upstream repository."
+	}
+	description := "This example comes from the Vibescript repository."
 	runFunction := ""
 	if runnable {
 		stage = "Runnable"
-		description = "This example defines a top-level run function, so the site can compile and execute it directly through the browser runner."
+		description = "This example has a run function, so you can run it in your browser."
 		runFunction = "run"
 	}
 
@@ -257,15 +298,15 @@ func loadRosettaCodeExample(relativePath string, source []byte) Example {
 	summary := metadata["summary"]
 	if summary == "" {
 		if runnable {
-			summary = fmt.Sprintf("A Vibescript implementation of the Rosetta Code task %q that runs in the browser.", title)
+			summary = fmt.Sprintf("Run the Rosetta Code task %q in Vibescript.", title)
 		} else {
-			summary = fmt.Sprintf("A Vibescript implementation draft for the Rosetta Code task %q.", title)
+			summary = fmt.Sprintf("A Vibescript draft of the Rosetta Code task %q.", title)
 		}
 	}
 
 	description := metadata["description"]
 	if description == "" {
-		description = "This example is part of the Rosetta Code task import for the Vibescript site."
+		description = "This example comes from Rosetta Code."
 	}
 
 	sourceURL := metadata["source"]
@@ -343,12 +384,12 @@ func loadShowcaseExample(relativePath string, source []byte) Example {
 
 	summary := metadata["summary"]
 	if summary == "" {
-		summary = fmt.Sprintf("An idiomatic Vibescript showcase example for %q.", title)
+		summary = fmt.Sprintf("%s written in Vibescript.", title)
 	}
 
 	description := metadata["description"]
 	if description == "" {
-		description = "This example is written to demonstrate idiomatic Vibescript with semantic types, typed signatures, and structured outputs."
+		description = "This example uses Vibescript types and functions to solve a common app problem."
 	}
 
 	tags := []string{"showcase", "idiomatic-vibescript"}

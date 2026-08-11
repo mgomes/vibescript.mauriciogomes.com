@@ -201,7 +201,7 @@ func (a *App) home(req *ohm.Request) error {
 		ContentTemplate: "home",
 		Page: page{
 			Title:       "Vibescript",
-			Description: "An embeddable Ruby-like language for Go. Safe by default, easy for AI to write. Explore examples and run them in the browser.",
+			Description: "A Ruby-like scripting language for Go apps. Users and AI agents can add features within limits you control.",
 			Section:     "home",
 		},
 		ShowcaseExamples: a.store.TaggedCount("showcase"),
@@ -222,7 +222,7 @@ func (a *App) examplesIndex(req *ohm.Request) error {
 		ContentTemplate: "examples",
 		Page: page{
 			Title:       "Examples",
-			Description: "Browse Vibescript examples — from idiomatic showcases to upstream references — all compiled against the real interpreter.",
+			Description: "Browse Vibescript examples and run them in your browser with the real interpreter.",
 			Section:     "examples",
 		},
 		ShowcaseExamples: a.store.TaggedCount("showcase"),
@@ -265,7 +265,7 @@ func (a *App) referencePage(req *ohm.Request) error {
 		ContentTemplate: "reference",
 		Page: page{
 			Title:       "Language Reference",
-			Description: "The consolidated reference for Vibescript syntax and core semantics: literals, functions, blocks, operators, control flow, classes, typing, concurrency, and the sandbox.",
+			Description: "Vibescript syntax and behavior, including functions, types, concurrency, sandbox limits, and host settings.",
 			Section:     "reference",
 		},
 		Reference:        a.reference,
@@ -319,7 +319,7 @@ func (a *App) renderNotFound(w http.ResponseWriter, r *http.Request) error {
 		ContentTemplate: "not-found",
 		Page: page{
 			Title:       "Not Found",
-			Description: "The requested page does not exist.",
+			Description: "That page does not exist.",
 			Section:     "",
 		},
 		ShowcaseExamples: a.store.TaggedCount("showcase"),

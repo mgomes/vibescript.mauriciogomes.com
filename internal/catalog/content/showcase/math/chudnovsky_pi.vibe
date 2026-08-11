@@ -1,8 +1,8 @@
 # title: Chudnovsky π
 # category: Vibescript Showcase
 # difficulty: Showcase
-# summary: Compute π to 100 digits with the Chudnovsky series and binary splitting on native big integers.
-# description: A direct port of the chudnovsky Go project's pipeline. Binary splitting merges the series' P, Q, and T products, an integer Newton square root supplies √10005 at scale, and everything runs in the integer domain on arbitrary-precision integers (new in 1.0-rc2). Each series term contributes about 14 digits, so nine terms carry 100.
+# summary: Calculate 100 digits of π with the Chudnovsky formula and big integers.
+# description: This is a direct port of the chudnovsky Go project. Binary splitting combines each term, and an integer square root calculates √10005. Nine terms produce about 100 digits.
 # tags: math, numerics, bignum, newton
 # source: https://github.com/mgomes/chudnovsky
 # vibe: 0.4

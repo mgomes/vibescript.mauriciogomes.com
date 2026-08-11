@@ -1,8 +1,8 @@
 # title: Big integers
 # category: Vibescript Showcase
 # difficulty: Showcase
-# summary: Work past 64 bits with transparent integer promotion — factorials, Fibonacci, crypto-sized powers, and exact JSON round trips.
-# description: Integers promote to arbitrary precision on overflow (new in 1.0-rc2), so idiomatic Ruby code just works: reduce a factorial, iterate Fibonacci, raise 2 to the 256th. The sandbox charges big values by size, and JSON serialization stays exact instead of degrading to floats.
+# summary: Calculate factorials, Fibonacci numbers, and powers larger than 64 bits.
+# description: Integers grow as needed without losing precision. The sandbox charges memory based on size, and JSON keeps the full value.
 # tags: numbers, bignum, math
 # vibe: 0.4
 

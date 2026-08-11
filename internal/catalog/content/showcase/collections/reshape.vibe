@@ -1,8 +1,8 @@
 # title: Reshape a list
 # category: Vibescript Showcase
 # difficulty: Showcase
-# summary: Paginate, window, and sample a flat list with each_slice, each_cons, take, drop, and values_at.
-# description: The 1.0 array library adds the Ruby slicing vocabulary, so turning a stream of records into pages or rolling windows no longer needs manual index bookkeeping.
+# summary: Split a list into pages and rolling windows, then sample values.
+# description: each_slice builds pages, each_cons builds windows, and take, drop, and values_at select items without manual indexes.
 # tags: collections, arrays, enumerable
 # vibe: 0.4
 

@@ -1,8 +1,8 @@
 # title: On-call handoff
 # category: Vibescript Showcase
 # difficulty: Showcase
-# summary: Package on-call handoffs with typed coverage enums, shift durations, and deterministic reminder times.
-# description: This example treats operational scheduling as a first-class domain, which is where Vibescript's time-aware features start to pay off.
+# summary: Build an on-call handoff from the coverage level and shift length.
+# description: An enum names the coverage level. Durations set the shift and reminder times.
 # tags: operations, durations, enums, on-call
 # vibe: 0.2
 

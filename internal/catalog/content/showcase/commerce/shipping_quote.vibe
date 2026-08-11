@@ -1,8 +1,8 @@
 # title: Shipping quote
 # category: Vibescript Showcase
 # difficulty: Showcase
-# summary: Quote delivery windows with enum-based shipping speeds, money totals, and Duration math.
-# description: This example combines three of the language's strongest semantic features in one realistic flow: enums for intent, money for totals, and durations for delivery windows.
+# summary: Calculate delivery dates and prices for each shipping speed.
+# description: Enums name the shipping speeds, money tracks the price, and durations set the delivery window.
 # tags: commerce, money, durations, enums
 # featured: true
 # feature_rank: 3

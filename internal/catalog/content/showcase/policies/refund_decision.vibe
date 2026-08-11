@@ -1,8 +1,8 @@
 # title: Refund decision
 # category: Vibescript Showcase
 # difficulty: Showcase
-# summary: Make refund decisions with typed enums, money values, and Duration-based policy windows.
-# description: This example keeps policy logic readable by using domain types instead of raw numbers and strings everywhere.
+# summary: Use enums, money, and durations to decide whether to refund an order.
+# description: Enums name the reason and result. Money and durations set the policy limits.
 # tags: policies, money, durations, enums
 # featured: true
 # feature_rank: 4

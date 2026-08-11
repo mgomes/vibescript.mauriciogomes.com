@@ -1,8 +1,8 @@
 # title: Trial offer
 # category: Vibescript Showcase
 # difficulty: Showcase
-# summary: Generate trial offers with account-type enums, Duration terms, and template-based onboarding copy.
-# description: This example keeps product-policy logic compact while still making the trial shape, timing, and output structure explicit.
+# summary: Build a trial offer from the account type and trial length.
+# description: An enum names the account type. Durations set the term, and a template builds the onboarding message.
 # tags: policies, durations, enums, templates
 # vibe: 0.2
 

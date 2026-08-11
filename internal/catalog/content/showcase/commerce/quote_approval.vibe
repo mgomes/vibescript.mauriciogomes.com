@@ -1,8 +1,8 @@
 # title: Quote approval
 # category: Vibescript Showcase
 # difficulty: Showcase
-# summary: Route quotes with money thresholds, approval enums, and structured decision output.
-# description: This example turns a common sales-ops rule set into small typed helpers so approval behavior stays auditable and obvious.
+# summary: Send each quote to the right approval step based on its total.
+# description: Money values set the thresholds, and an enum names each approval step.
 # tags: commerce, money, enums, approvals
 # vibe: 0.2
 

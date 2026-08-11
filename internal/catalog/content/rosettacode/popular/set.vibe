@@ -2,7 +2,7 @@
 # source: https://rosettacode.org/wiki/Set
 # category: Rosetta Code
 # difficulty: Intro
-# summary: Demonstrate union, intersection, and difference with array-backed sets.
+# summary: Find the union, intersection, and difference of array-backed sets.
 # tags: popular, arrays, sets, basics
 
 def set_union(left, right)
@@ -29,4 +29,3 @@ def run
     difference: set_difference(left, right)
   }
 end
-

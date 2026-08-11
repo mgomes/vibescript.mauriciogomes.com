@@ -1,7 +1,7 @@
 # title: Late fee
 # category: Vibescript Showcase
 # difficulty: Showcase
-# summary: Tiered late fees with duration and money primitives — the homepage hero example.
+# summary: Calculate a late fee from an overdue duration.
 # tags: money, durations
 
 def late_fee(overdue: duration) -> money

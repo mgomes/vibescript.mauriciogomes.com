@@ -1,8 +1,8 @@
 # title: Numeric literals and rounding
 # category: Vibescript Showcase
 # difficulty: Showcase
-# summary: Read base-prefix and scientific literals, then round and inspect numbers with Ruby-style helpers.
-# description: 1.0 adds hex, octal, binary, and exponent literals plus rounding and predicate helpers, so bit flags, byte sizes, and money-adjacent math read the way they do in Ruby.
+# summary: Read hex, octal, binary, and scientific numbers, then round them.
+# description: Vibescript uses Ruby-style number literals and helpers for rounding and checking values.
 # tags: numbers, literals, math
 # vibe: 0.4
 

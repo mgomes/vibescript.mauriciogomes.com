@@ -1,8 +1,8 @@
 # title: Statement grid
 # category: Vibescript Showcase
 # difficulty: Showcase
-# summary: Total a period-by-category grid of money values by pivoting rows into columns with transpose.
-# description: Money values keep their currency through the whole rollup, and transpose turns per-category column totals into a single map, so financial summaries stay exact and readable.
+# summary: Turn rows of money values into totals for each category.
+# description: transpose groups each category into a column. Money keeps the currency and total exact.
 # tags: finance, money, collections
 # vibe: 0.4
 

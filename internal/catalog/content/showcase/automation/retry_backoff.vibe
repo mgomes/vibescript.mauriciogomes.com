@@ -1,8 +1,8 @@
 # title: Retry backoff schedule
 # category: Vibescript Showcase
 # difficulty: Showcase
-# summary: Build a retry schedule with typed enum policies and Duration-based exponential backoff.
-# description: This example is the kind of operational logic Vibescript should feel good at: semantic durations, typed policies, and deterministic timestamps.
+# summary: Build an exponential retry schedule with enums, durations, and timestamps.
+# description: The retry policy names each delay and returns the exact time for every attempt.
 # tags: automation, durations, time, enums
 # featured: true
 # feature_rank: 2

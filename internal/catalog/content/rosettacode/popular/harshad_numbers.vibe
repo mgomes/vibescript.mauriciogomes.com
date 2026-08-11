@@ -2,7 +2,7 @@
 # source: https://rosettacode.org/wiki/Harshad_or_Niven_series
 # category: Rosetta Code
 # difficulty: Easy
-# summary: Find Harshad (Niven) numbers — integers divisible by the sum of their own digits.
+# summary: Find Harshad (Niven) numbers, which are divisible by the sum of their digits.
 # tags: popular, math, sequences
 # vibe: 0.2
 

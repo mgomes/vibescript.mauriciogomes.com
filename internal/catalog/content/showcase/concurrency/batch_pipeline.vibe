@@ -1,8 +1,8 @@
 # title: Batch pipeline
 # category: Vibescript Showcase
 # difficulty: Showcase
-# summary: Slice work into batches, enrich each batch concurrently with Tasks.map, then partition the results.
-# description: Structured concurrency and the 1.0 collection helpers compose cleanly: each_slice bounds each fanout, Tasks.map parallelizes the per-record work, and partition sorts the enriched output.
+# summary: Split records into batches, process them at the same time, and sort the results.
+# description: each_slice builds batches, Tasks.map processes each record, and partition separates the results.
 # tags: concurrency, tasks, collections, fanout
 # vibe: 0.4
 

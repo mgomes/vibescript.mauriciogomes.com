@@ -1,8 +1,8 @@
 # title: Batch enrichment
 # category: Vibescript Showcase
 # difficulty: Showcase
-# summary: Derive new fields for each record concurrently with Tasks.map and return the enriched collection.
-# description: Each task receives a cloned copy of its input and returns data-only results, so concurrent enrichment stays isolated. Tasks.map keeps the output aligned with the input order, which makes the enriched batch easy to consume downstream.
+# summary: Add fields to many records at the same time with Tasks.map.
+# description: Each task gets a copy of one record. Results stay in input order.
 # tags: concurrency, tasks, structured-concurrency, enrichment
 # vibe: 0.4
 

@@ -1,8 +1,8 @@
 # title: Reminder schedule
 # category: Vibescript Showcase
 # difficulty: Showcase
-# summary: Generate reminder jobs with enum channels, Duration lead times, and template-based subjects.
-# description: This example shows how Vibescript can express notification scheduling with clean typed helpers and deterministic output.
+# summary: Schedule reminders from a channel and lead time.
+# description: Enums name each channel, durations set the lead time, and templates build the subject.
 # tags: notifications, durations, enums, templates
 # featured: true
 # feature_rank: 5
