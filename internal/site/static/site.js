@@ -405,6 +405,49 @@
     render();
   }
 
+  /* Highlights the reference sidebar link whose heading was scrolled past
+     last, so the nav tracks the reading position. */
+  function initReferenceNav() {
+    const nav = document.querySelector("[data-reference-nav]");
+    if (!nav) return;
+
+    const links = Array.from(nav.querySelectorAll("a[href^='#']"));
+    const targets = links
+      .map((link) => document.getElementById(decodeURIComponent(link.getAttribute("href").slice(1))))
+      .filter(Boolean);
+    if (!targets.length) return;
+
+    let current = null;
+    function update() {
+      const line = 96;
+      let active = targets[0];
+      for (const target of targets) {
+        if (target.getBoundingClientRect().top > line) break;
+        active = target;
+      }
+      if (current === active) return;
+      current = active;
+      links.forEach((link) => {
+        link.classList.toggle("is-active", link.getAttribute("href") === `#${active.id}`);
+      });
+    }
+
+    let scheduled = false;
+    window.addEventListener(
+      "scroll",
+      () => {
+        if (scheduled) return;
+        scheduled = true;
+        requestAnimationFrame(() => {
+          scheduled = false;
+          update();
+        });
+      },
+      { passive: true },
+    );
+    update();
+  }
+
   function initExpandToggle() {
     const toggle = document.querySelector("[data-expand-toggle]");
     if (!toggle) return;
@@ -420,10 +463,11 @@
     attachRunner();
     initExpandToggle();
 
-    document.querySelectorAll("code.language-vibescript").forEach((el) => {
+    document.querySelectorAll("code.language-vibescript, code.language-vibe").forEach((el) => {
       el.innerHTML = highlightVibescript(el.textContent);
     });
 
+    initReferenceNav();
     initThemeToggle();
     initSoundToggle();
     preloadAudio();

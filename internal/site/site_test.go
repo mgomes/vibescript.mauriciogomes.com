@@ -117,6 +117,33 @@ func TestExamplePageRendersDetail(t *testing.T) {
 	}
 }
 
+func TestReferencePageRendersContentAndSidebar(t *testing.T) {
+	app := newTestApp(t)
+
+	request := httptest.NewRequest(http.MethodGet, "/reference", nil)
+	recorder := httptest.NewRecorder()
+
+	app.ServeHTTP(recorder, request)
+
+	if recorder.Code != http.StatusOK {
+		t.Fatalf("expected status 200, got %d", recorder.Code)
+	}
+
+	body := recorder.Body.String()
+	for _, want := range []string{
+		"Language Reference",
+		`data-reference-nav`,
+		`href="#basics"`,
+		`id="parameters"`,
+		`class="language-vibe"`,
+		catalog.UpstreamVersion,
+	} {
+		if !strings.Contains(body, want) {
+			t.Fatalf("expected reference page to contain %q", want)
+		}
+	}
+}
+
 func TestMissingExampleReturnsNotFound(t *testing.T) {
 	app := newTestApp(t)
 

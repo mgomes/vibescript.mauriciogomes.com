@@ -14,12 +14,14 @@ import (
 
 	"github.com/mgomes/ohm"
 	"github.com/mgomes/vibescript-lang.org/internal/catalog"
+	"github.com/mgomes/vibescript-lang.org/internal/reference"
 	"github.com/mgomes/vibescript-lang.org/internal/runner"
 )
 
 type App struct {
 	store     *catalog.Store
 	runner    *runner.Service
+	reference *reference.Reference
 	templates *template.Template
 	static    http.Handler
 }
@@ -34,6 +36,7 @@ type viewData struct {
 	ContentTemplate  string
 	Content          template.HTML
 	Page             page
+	Reference        *reference.Reference
 	ShowcaseExamples int
 	TotalExamples    int
 	RunnableExamples int
@@ -68,9 +71,15 @@ func New(store *catalog.Store, runService *runner.Service) (*ohm.App, error) {
 		return nil, err
 	}
 
+	ref, err := reference.Load()
+	if err != nil {
+		return nil, fmt.Errorf("load reference: %w", err)
+	}
+
 	app := &App{
 		store:     store,
 		runner:    runService,
+		reference: ref,
 		templates: templates,
 		static:    http.FileServer(http.FS(staticFS)),
 	}
@@ -96,6 +105,8 @@ func New(store *catalog.Store, runService *runner.Service) (*ohm.App, error) {
 	application.Get("/examples", app.examplesIndex)
 	application.Get("/examples/", app.examplesIndex)
 	application.Get("/examples/{slug}", app.exampleDetail)
+	application.Get("/reference", app.referencePage)
+	application.Get("/reference/", app.referencePage)
 	application.NotFound(app.notFound)
 
 	return application, nil
@@ -241,6 +252,24 @@ func (a *App) exampleDetail(req *ohm.Request) error {
 		ShowcaseExamples: a.store.TaggedCount("showcase"),
 		Example:          example,
 		HasRunner:        example.Runnable,
+		TotalExamples:    a.store.Count(),
+		RunnableExamples: a.store.RunnableCount(),
+		UpstreamVersion:  catalog.UpstreamVersion,
+		UpstreamRepoURL:  catalog.UpstreamRepoURL,
+		Year:             time.Now().Year(),
+	})
+}
+
+func (a *App) referencePage(req *ohm.Request) error {
+	return a.render(req, http.StatusOK, viewData{
+		ContentTemplate: "reference",
+		Page: page{
+			Title:       "Language Reference",
+			Description: "The consolidated reference for Vibescript syntax and core semantics — literals, functions, blocks, operators, control flow, classes, typing, and the sandbox.",
+			Section:     "reference",
+		},
+		Reference:        a.reference,
+		ShowcaseExamples: a.store.TaggedCount("showcase"),
 		TotalExamples:    a.store.Count(),
 		RunnableExamples: a.store.RunnableCount(),
 		UpstreamVersion:  catalog.UpstreamVersion,
