@@ -1,6 +1,9 @@
-This page covers the language itself — literals through classes, typing, and
-the sandbox. For host integration, the embedding API, and full method-level
-coverage, see the
+Vibescript is a scoped extension language: scripts extend a Go application
+the way Lua extends a game, written by users or agents and running inside
+bounds the host defines. This page covers the language and the runtime that
+bounds it: literals through classes, typing, concurrency, and the sandbox's
+host configuration. For the full embedding API, capability adapters, and
+method-level coverage, see the
 [upstream docs](https://github.com/mgomes/vibescript/tree/master/docs).
 
 ## Basics {#basics}
@@ -41,7 +44,7 @@ hashes; ranges; and duration literals such as `5.minutes` or `2.days`.
 Ranges with `..` include the final endpoint, ranges with `...` exclude it.
 Ruby's open-ended ranges are supported: `arr[1..]` takes everything from index
 1 on, `s[..2]` the leading characters, and `when 3..` matches three and up.
-Open ranges cannot be iterated — `each`, `map`, `to_a`, `for`, and friends
+Open ranges cannot be iterated: `each`, `map`, `to_a`, `for`, and friends
 reject them up front rather than running into the sandbox quotas. Unlike Ruby,
 descending ranges iterate: `(5..1).to_a` is `[5, 4, 3, 2, 1]` rather than an
 empty array.
@@ -68,7 +71,7 @@ kilo = 1e3              # any literal with an exponent is a float: 1000.0
 Numeric literals accept underscores between digits in any base. An exponent
 marker (`e`/`E`) takes an optional sign and one or more digits; a literal
 whose exponent overflows the 64-bit float range saturates to `Infinity`. A
-numeric literal may not directly abut an identifier — `123abc` and `1.5x` are
+numeric literal may not directly abut an identifier: `123abc` and `1.5x` are
 parse errors rather than two tokens, matching Ruby. A bare leading zero
 (`010`) stays decimal rather than being read as legacy octal.
 
@@ -114,7 +117,7 @@ x, (y, z) = [1, [2, 3]]
 
 Missing values bind as `nil`, extra values are ignored unless captured by a
 `*rest` target, and scalar right-hand values are treated as one value. A bare
-`*` is an anonymous rest target that discards what it captures — it can sit
+`*` is an anonymous rest target that discards what it captures. It can sit
 at the front, middle, or end (`*, last = [1, 2, 3]`).
 
 Index assignment works on mutable collections, and array targets accept a
@@ -192,7 +195,7 @@ end
 Because `name: Type` declares a typed positional parameter, a bare identifier
 after the colon resolves as a type name, not a keyword default: write
 `a: int` for a typed positional and `a: 0` for an optional keyword. A default
-that is *only* a reference to an earlier parameter must be parenthesized —
+that is *only* a reference to an earlier parameter must be parenthesized:
 `timeout: port * 2` is a default, but `timeout: port` reads as a type, so
 write `timeout: (port)`.
 
@@ -236,7 +239,7 @@ def demo(fees, amount)
 end
 ```
 
-Positional arguments must come before keyword labels — `collect(first: 1,
+Positional arguments must come before keyword labels: `collect(first: 1,
 "tail")` is a parse error, while `collect("head", first: 1)` is accepted.
 
 Label arguments bind as keyword arguments when the callee accepts them. When
@@ -284,8 +287,8 @@ match the equivalent literal call.
 
 In parenless calls, spacing disambiguates: `f *args` splats, while `a * b`
 and `a*b` stay multiplication. The same rule lets a regex or an array literal
-be a parenless command argument (`match /ID-[0-9]+/`, `puts [3, 1, 2].sort`)
-— a sigil detached from a non-local callee but flush against its operand
+be a parenless command argument (`match /ID-[0-9]+/`, `puts [3, 1, 2].sort`).
+A sigil detached from a non-local callee but flush against its operand
 opens an argument, and every other spacing keeps the operator reading.
 
 ### Blocks {#blocks}
@@ -389,7 +392,7 @@ def demo(user)
 end
 ```
 
-The operator guards only its immediate access — in `user&.profile.name` the
+The operator guards only its immediate access. In `user&.profile.name` the
 trailing `.name` still dispatches on whatever `user&.profile` returned, so
 guard each link in a chain. Safe navigation cannot be used as an assignment
 target; `user&.name = "Ada"` is a parse error.
@@ -448,7 +451,7 @@ integer exponents return `float`.
 
 Division follows Ruby: integer division by zero (`1 / 0`) raises, while
 float division by zero (`1.0 / 0`) follows IEEE 754 and yields `Infinity`,
-`-Infinity`, or `NaN` — inspect those with `Float#nan?`, `Float#infinite?`,
+`-Infinity`, or `NaN`; inspect those with `Float#nan?`, `Float#infinite?`,
 and `Float#finite?`. `&&` binds tighter than `||`, and ternary conditionals
 sit below `||`, associate to the right, and evaluate only the selected
 branch.
@@ -456,7 +459,7 @@ branch.
 A leading `+` or `-` on a fresh line follows Vibescript's
 indented-continuation rule, which intentionally differs from Ruby: flush
 against its operand it begins a new statement, while separated by whitespace
-it continues the previous line as a binary operator — so multi-line
+it continues the previous line as a binary operator, so multi-line
 arithmetic can be indented under its first operand:
 
 ```vibe
@@ -678,7 +681,7 @@ Coercion, equality, and serialization behavior are covered in the upstream
 
 Typing is optional and gradual: annotate parameters and returns where
 helpful, and rely on runtime contract checks at typed boundaries. The checker
-also infers local types to catch known contradictions before execution —
+also infers local types to catch known contradictions before execution;
 unannotated values simply remain gradual.
 
 Type names are case-insensitive: `int`, `float`, `number`, `string`, `bool`,
@@ -715,7 +718,7 @@ def demo
 end
 ```
 
-The full API surface — string, array, hash, and range methods included — is
+The full API surface (string, array, hash, and range methods included) is
 documented in the upstream
 [builtins](https://github.com/mgomes/vibescript/blob/master/docs/builtins.md)
 and
@@ -769,21 +772,21 @@ barrier when later code in the same block must wait for spawned work.
 
 Tasks run through fresh execution state. They inherit the parent call's
 capabilities, globals, strict-effects policy, and cancellation context, but
-they do not share mutable locals or captured block state — arguments,
+they do not share mutable locals or captured block state. Arguments,
 results, and inherited globals are **cloned** across the task boundary, and
 must be data-only: functions, blocks, capabilities, and cyclic structures
 cannot cross it. Results retained by task handles count against the parent's
 memory quota while the scope is alive.
 
 The host bounds all fanout: `DefaultTaskConcurrency` applies when a script
-omits `max:`, and `MaxTaskConcurrency` caps script-provided values — a
+omits `max:`, and `MaxTaskConcurrency` caps script-provided values. A
 request above the cap raises (`Tasks.map max 99 exceeds host maximum 64`)
 rather than being silently clamped.
 
 ### Sandbox & quotas {#sandbox}
 
-Vibescript is safe by default. Every run is bounded by three quotas —
-**steps**, **memory**, and **recursion depth** — and every loop iteration
+Vibescript is safe by default. Every run is bounded by three quotas:
+**steps**, **memory**, and **recursion depth**. Every loop iteration
 (even with an empty body), call, and allocation is charged against them.
 Splat-expanded arguments cost the same as literal ones, so no call shape
 escapes accounting. When a script exceeds a quota it terminates with a clear
@@ -797,13 +800,13 @@ fails cleanly on runaway recursion rather than crashing the process.
 Scripts cannot reach the filesystem, network, or clock on their own. Side
 effects enter only through what the host passes in: data globals, and typed
 **capability adapters** that validate arguments and results at the boundary
-(everything crossing it must be data-only — callables are rejected). With
+(everything crossing it must be data-only; callables are rejected). With
 `StrictEffects` enabled, even host-seeded globals must be data-only, forcing
 every side effect through an auditable adapter. Host context cancellation
 propagates into running scripts, including spawned tasks.
 
 The [playground on this site](/) enforces a deliberately tight budget on
-every run — the exact values are shown on the homepage.
+every run; the exact values are shown on the homepage.
 
 ### Host configuration {#host-config}
 
@@ -840,7 +843,7 @@ engine, err := vibes.NewEngine(vibes.Config{
 
 Quota fields read zero as "use the default" and `vibes.Unlimited` as
 "disable this quota". Instead of tuning each knob, a host can apply a named
-profile — a coherent budget bundle, in ascending generosity:
+profile, a coherent budget bundle. In ascending generosity:
 
 | Profile | Steps | Memory | Recursion |
 | --- | --- | --- | --- |
@@ -851,7 +854,7 @@ profile — a coherent budget bundle, in ascending generosity:
 
 `vibes.ProfileHigh.ApplyTo(&cfg)` writes only the three quota fields, and
 `vibes.QuotaProfileByName("medium")` resolves a user-supplied name. The
-`vibes` CLI runs on the same ladder and defaults to `xhigh` — it runs your
+`vibes` CLI runs on the same ladder and defaults to `xhigh`, since it runs your
 own scripts and is not a sandbox. Capability adapters, module policy, and
 per-call options (`CallOptions.Globals`, `CallOptions.Capabilities`) are
 covered in the upstream

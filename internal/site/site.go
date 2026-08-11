@@ -265,7 +265,7 @@ func (a *App) referencePage(req *ohm.Request) error {
 		ContentTemplate: "reference",
 		Page: page{
 			Title:       "Language Reference",
-			Description: "The consolidated reference for Vibescript syntax and core semantics — literals, functions, blocks, operators, control flow, classes, typing, and the sandbox.",
+			Description: "The consolidated reference for Vibescript syntax and core semantics: literals, functions, blocks, operators, control flow, classes, typing, concurrency, and the sandbox.",
 			Section:     "reference",
 		},
 		Reference:        a.reference,
