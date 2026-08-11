@@ -27,7 +27,7 @@ func TestHomePageRendersFeaturedExamples(t *testing.T) {
 
 	body := recorder.Body.String()
 	if !strings.Contains(body, "Extend Go apps with") ||
-		!strings.Contains(body, "A Ruby-like scripting language for app-specific rules") {
+		!strings.Contains(body, "Agents write Vibescript") {
 		t.Fatalf("expected home headline, got %q", body)
 	}
 
