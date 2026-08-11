@@ -722,11 +722,139 @@ and
 [stdlib](https://github.com/mgomes/vibescript/blob/master/docs/stdlib_core_utilities.md)
 guides.
 
+### Tasks & concurrency {#tasks}
+
+`Tasks` runs independent named functions concurrently while the runtime keeps
+the work bounded and scoped. Concurrency is **structured**: a task cannot
+outlive the `Tasks.run` or `Tasks.map` scope that created it, leaving a scope
+waits for every spawned task, and failures report through `task.value` or at
+scope exit.
+
+`Tasks.map` runs each input through the same named function and returns
+results in input order (not completion order). Limit fanout for one call with
+`max:`:
+
+```vibe
+def score_user(user)
+  user[:score] * user[:weight]
+end
+
+def score_users(users)
+  Tasks.map(users, max: 2, with: :score_user)
+end
+```
+
+`Tasks.run` is the manual scope: `tasks.spawn(:function_name, arg, key: value)`
+starts a named function and returns a handle, and `task.value` waits for that
+task and returns its result or raises its error. The block's value is the
+scope's value:
+
+```vibe
+def prepare_user(user)
+  "prepared:" + user[:id]
+end
+
+def prepare_pair(first, second)
+  Tasks.run(max: 2) do |tasks|
+    left = tasks.spawn(:prepare_user, first)
+    right = tasks.spawn(:prepare_user, second)
+
+    [left.value, right.value]
+  end
+end
+```
+
+Scope exit waits automatically, so `tasks.wait` is only needed as an explicit
+barrier when later code in the same block must wait for spawned work.
+
+Tasks run through fresh execution state. They inherit the parent call's
+capabilities, globals, strict-effects policy, and cancellation context, but
+they do not share mutable locals or captured block state — arguments,
+results, and inherited globals are **cloned** across the task boundary, and
+must be data-only: functions, blocks, capabilities, and cyclic structures
+cannot cross it. Results retained by task handles count against the parent's
+memory quota while the scope is alive.
+
+The host bounds all fanout: `DefaultTaskConcurrency` applies when a script
+omits `max:`, and `MaxTaskConcurrency` caps script-provided values — a
+request above the cap raises (`Tasks.map max 99 exceeds host maximum 64`)
+rather than being silently clamped.
+
 ### Sandbox & quotas {#sandbox}
 
-Vibescript is safe by default: the host configures a step quota, a memory
-quota, and a recursion limit, and every loop iteration, allocation, and call
-is charged against them. Scripts cannot reach the filesystem, network, or
-clock unless the host exposes a capability for it. When a script exceeds a
-quota it terminates with a clear error instead of degrading the host — the
-[playground on this site](/) enforces exactly these limits on every run.
+Vibescript is safe by default. Every run is bounded by three quotas —
+**steps**, **memory**, and **recursion depth** — and every loop iteration
+(even with an empty body), call, and allocation is charged against them.
+Splat-expanded arguments cost the same as literal ones, so no call shape
+escapes accounting. When a script exceeds a quota it terminates with a clear
+error (`step quota exceeded`, `memory quota exceeded`, `recursion depth
+exceeded`) instead of degrading the host.
+
+Recursion is deliberately never unlimited: the interpreter recurses on the
+host's Go stack, so even the most generous profile keeps a finite cap that
+fails cleanly on runaway recursion rather than crashing the process.
+
+Scripts cannot reach the filesystem, network, or clock on their own. Side
+effects enter only through what the host passes in: data globals, and typed
+**capability adapters** that validate arguments and results at the boundary
+(everything crossing it must be data-only — callables are rejected). With
+`StrictEffects` enabled, even host-seeded globals must be data-only, forcing
+every side effect through an auditable adapter. Host context cancellation
+propagates into running scripts, including spawned tasks.
+
+The [playground on this site](/) enforces a deliberately tight budget on
+every run — the exact values are shown on the homepage.
+
+### Host configuration {#host-config}
+
+Hosts embed the interpreter by constructing an engine from `vibes.Config`;
+the zero value is a working, conservatively-limited sandbox:
+
+```go
+engine, err := vibes.NewEngine(vibes.Config{
+    StepQuota:              20_000,
+    MemoryQuotaBytes:       256 << 10, // 256 KiB
+    RecursionLimit:         32,
+    StrictEffects:          true,
+    DefaultTaskConcurrency: 4,
+    MaxTaskConcurrency:     16,
+    ModulePaths:            []string{"/srv/vibes/modules"},
+})
+```
+
+| Field | Default | Controls |
+| --- | --- | --- |
+| `StepQuota` | 1,000,000 | execution steps per call; loops, calls, and allocations all charge it |
+| `MemoryQuotaBytes` | 16 MiB | live interpreter memory per call |
+| `RecursionLimit` | 256 | call depth; always finite, even in the most generous profile |
+| `StrictEffects` | `false` | require host globals to be data-only; side effects go through capability adapters |
+| `ModulePaths` | none | directories searched by `require` |
+| `ModuleAllowList` / `ModuleDenyList` | none | policy filter on which modules may load |
+| `OutputWriter` / `ErrorWriter` | unset | destinations for `puts`/`print`/`p` and `warn`; unset makes those builtins raise |
+| `RandomReader` / `RandomReadFunc` | `crypto/rand` | the randomness source scripts observe |
+| `MaxSourceBytes` | 1 MiB | largest source a single compile accepts |
+| `MaxCachedModules` | 1,000 | compiled-module cache bound |
+| `DefaultTaskConcurrency` | 4 | task fanout when a script omits `max:` |
+| `MaxTaskConcurrency` | 64 | hard cap on script-requested fanout; above it raises |
+| `DevMode` | `false` | development-only module reloading on file change |
+
+Quota fields read zero as "use the default" and `vibes.Unlimited` as
+"disable this quota". Instead of tuning each knob, a host can apply a named
+profile — a coherent budget bundle, in ascending generosity:
+
+| Profile | Steps | Memory | Recursion |
+| --- | --- | --- | --- |
+| `low` | 1,000,000 | 16 MiB | 256 |
+| `medium` | 20,000,000 | 128 MiB | 1,000 |
+| `high` | 200,000,000 | 512 MiB | 4,000 |
+| `xhigh` | unlimited | unlimited | 10,000 |
+
+`vibes.ProfileHigh.ApplyTo(&cfg)` writes only the three quota fields, and
+`vibes.QuotaProfileByName("medium")` resolves a user-supplied name. The
+`vibes` CLI runs on the same ladder and defaults to `xhigh` — it runs your
+own scripts and is not a sandbox. Capability adapters, module policy, and
+per-call options (`CallOptions.Globals`, `CallOptions.Capabilities`) are
+covered in the upstream
+[integration guide](https://github.com/mgomes/vibescript/blob/master/docs/integration.md)
+and
+[host cookbook](https://github.com/mgomes/vibescript/blob/master/docs/host_cookbook.md).
