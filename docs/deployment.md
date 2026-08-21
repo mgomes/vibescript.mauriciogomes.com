@@ -72,7 +72,7 @@ miren rollback -a vibescript
 
 ## Vibescript Version Bumps
 
-The most common deploy is tracking a new upstream `vibescript` release. The version is pinned in two places: `go.mod` and the `UpstreamVersion` constant in `internal/catalog/catalog.go`. That constant feeds the header badge, the homepage version chip, and the per-example "view source" links.
+The most common deploy is tracking a new upstream `vibescript` release. The dependency is pinned in `go.mod`. `UpstreamVersion` in `internal/catalog/catalog.go` is the reader-facing label, while `upstreamRevision` pins imported-example source links to the exact matching tree.
 
 Replace `vX.Y.Z` with the target tag:
 
@@ -80,6 +80,7 @@ Replace `vX.Y.Z` with the target tag:
 go get github.com/mgomes/vibescript@vX.Y.Z
 go mod tidy
 # edit internal/catalog/catalog.go: UpstreamVersion = "vX.Y.Z"
+# edit internal/catalog/catalog.go: upstreamRevision = the tag or commit
 go build ./...
 go test ./...
 ```
@@ -91,7 +92,7 @@ Spot-check locally:
 ```bash
 go run .
 curl -s http://localhost:8080/ | grep brand-version
-curl -s http://localhost:8080/examples/strings-operations | grep -oE 'blob/v[0-9.]+/[^"]+' | head -1
+curl -s http://localhost:8080/examples/strings-operations | grep -oE 'blob/[^/]+/examples/[^"]+' | head -1
 ```
 
 Commit as two atomic changes on `master` (matching prior bumps):

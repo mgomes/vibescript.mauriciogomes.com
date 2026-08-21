@@ -1,6 +1,6 @@
 # vibescript-lang.org
 
-The Vibescript site. It is a Go `chi` app that imports the upstream Vibescript examples corpus, serves the `.vibe` source through the web UI, and executes every example in the browser through a Go-hosted Vibescript runtime.
+The Vibescript site. It is a Go app that imports the upstream Vibescript examples corpus, serves the `.vibe` source through the web UI, and executes every example in the browser through a Go-hosted Vibescript runtime.
 
 ## Run
 
@@ -16,7 +16,7 @@ Deployments are configured for Miren on Vultr. See [docs/deployment.md](docs/dep
 
 ## Current shape
 
-- Serves `206` examples: `35` imported from `github.com/mgomes/vibescript`, plus `135` Rosetta Code tasks and `36` showcase programs.
+- Serves `201` examples: `35` imported from `github.com/mgomes/vibescript`, plus `135` Rosetta Code tasks and `31` showcase programs.
 - Exposes detail pages with real `.vibe` source.
 - Runs every example through `/api/examples/{slug}/run`. `TestEveryExampleIsRunnable` enforces that each one defines a top-level `run` function.
 - Serves a language reference at `/reference`, rendered from Markdown with goldmark.

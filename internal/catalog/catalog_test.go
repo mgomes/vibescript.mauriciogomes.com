@@ -33,6 +33,11 @@ func TestLoad(t *testing.T) {
 		t.Fatalf("expected run entrypoint, got %q", example.RunFunction)
 	}
 
+	wantSourceURL := UpstreamRepoURL + "/blob/" + upstreamRevision + "/examples/strings/operations.vibe"
+	if example.SourceURL != wantSourceURL {
+		t.Errorf("SourceURL = %q, want %q", example.SourceURL, wantSourceURL)
+	}
+
 	rosettaExample, ok := store.BySlug("rosettacode-popular-fizzbuzz")
 	if !ok {
 		t.Fatalf("expected rosettacode-popular-fizzbuzz to be present")
@@ -49,6 +54,50 @@ func TestLoad(t *testing.T) {
 
 	if !showcaseExample.Runnable {
 		t.Fatalf("expected showcase example to be runnable")
+	}
+}
+
+func TestCatalogUsesTheLightLanguageSurface(t *testing.T) {
+	store, err := Load()
+	if err != nil {
+		t.Fatalf("Load() error = %v, want nil", err)
+	}
+
+	if got, want := store.Count(), 201; got != want {
+		t.Errorf("Count() = %d, want %d", got, want)
+	}
+	if got, want := store.TaggedCount("showcase"), 31; got != want {
+		t.Errorf("TaggedCount(%q) = %d, want %d", "showcase", got, want)
+	}
+
+	for _, slug := range []string{
+		"basics-namespaces",
+		"showcase-language-synchronous-blocks",
+		"showcase-language-value-boundaries",
+	} {
+		if _, ok := store.BySlug(slug); !ok {
+			t.Errorf("BySlug(%q) found = false, want true", slug)
+		}
+	}
+
+	for _, slug := range []string{
+		"tasks-scoring",
+		"showcase-concurrency-batch-enrich",
+		"showcase-concurrency-batch-pipeline",
+		"showcase-concurrency-bounded-fanout",
+		"showcase-concurrency-concurrent-scoring",
+		"showcase-concurrency-parallel-prepare",
+		"showcase-concurrency-staged-barrier",
+		"showcase-concurrency-task-error-propagation",
+	} {
+		if _, ok := store.BySlug(slug); ok {
+			t.Errorf("BySlug(%q) found = true, want false", slug)
+		}
+	}
+
+	featured := store.Featured(1)
+	if len(featured) != 1 || featured[0].Slug != "showcase-language-value-boundaries" {
+		t.Errorf("Featured(1) = %#v, want value-boundaries first", featured)
 	}
 }
 
