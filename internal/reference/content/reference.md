@@ -1,8 +1,14 @@
 Vibescript lets users and AI agents add scripts to a Go app. Like Lua in a
 game, each script runs inside limits set by the host app. This page covers the
-language, task system, sandbox, and main host settings. For the full Go API,
-capability adapters, and built-in methods, see the
+language boundary, sandbox, and main host settings. For the full Go API,
+capability adapters, migration notes, and built-in methods, see the
 [upstream docs](https://github.com/mgomes/vibescript/tree/master/docs).
+
+Vibescript is an embedded workflow language, not a general-purpose Ruby
+runtime. Scripts call named functions and methods, transform value collections,
+and invoke capabilities supplied by the host. Blocks run synchronously during
+the call that receives them. Modules are namespaces. The Go app owns
+concurrency, delay, I/O, and external authority.
 
 ## Basics {#basics}
 
@@ -93,11 +99,11 @@ hold punctuation, spaces, or be empty: `:"foo-bar"`, `:'foo bar'`, `:""`.
 Quoted symbols use the same escapes as the matching string quote, and
 interpolation is not supported in symbol literals.
 
-In a hash, a bare label creates a symbol key and a quoted label creates a
-string key. Read `{ name: 1 }` with `h[:name]`, and read `{ "name": 1 }` with
-`h["name"]`. A quoted label is the only hash literal syntax for a string key.
-`JSON.parse` returns hashes with string keys. Ruby's hash rocket syntax (`=>`)
-is not supported.
+Hash keys live in one string keyspace. A bare label and a quoted label both
+make a string key, so `{ name: 1 }` and `{ "name": 1 }` are the same hash.
+Either `h[:name]` or `h["name"]` reads that entry, and `h.keys` returns strings.
+A symbol remains a distinct value everywhere else. Ruby's hash rocket syntax
+(`=>`) is not supported.
 
 Strings are immutable values. Reading with `[]` mirrors Ruby's `String#[]`
 and `Array#[]`, including negative indexes, `value[start, length]`, and
@@ -119,13 +125,19 @@ Missing values bind as `nil`, extra values are ignored unless captured by a
 `*` is an anonymous rest target that discards what it captures. It can sit
 at the front, middle, or end (`*, last = [1, 2, 3]`).
 
-Index assignment works on mutable collections, and array targets accept a
+Index assignment updates the array or hash named by its target. Collections
+have value semantics: binding or passing one creates another logical value, so
+an update through one binding does not change an alias. Array targets accept a
 negative index that counts back from the end:
 
 ```vibe
 items = [1, 2, 3]
+original = items
 items[0] = 10
 items[-1] = 30
+
+items    # => [10, 2, 30]
+original # => [1, 2, 3]
 ```
 
 Compound assignment is supported for variables, member targets, and index
@@ -174,7 +186,6 @@ separates keyword parameters from typed parameters:
 | `name: default` | optional keyword-only parameter |
 | `*rest` | captures extra positional arguments |
 | `**rest` | captures extra keyword arguments |
-| `&block` | captures a passed block |
 
 A keyword-only parameter only accepts its matching label, not a positional
 argument. An optional keyword uses its default when the label is missing. A
@@ -197,30 +208,12 @@ for an optional keyword. If a default is only a reference to an earlier
 parameter, put it in parentheses. `timeout: port * 2` is a default, but
 `timeout: port` looks like a type. Write `timeout: (port)` instead.
 
-### Function values {#function-values}
+### Functions stay named {#named-functions}
 
-Refer to a function by name without calling it to get a function value. You can
-pass that value around and call it later. `fn(...)` and `fn.call(...)` behave
-the same way. Both accept positional arguments, keyword arguments, and an
-optional block:
-
-```vibe
-def inc(n)
-  n + 1
-end
-
-def apply_twice(fn, value)
-  fn.call(fn(value))
-end
-
-def demo
-  apply_twice(inc, 40) # => 42
-end
-```
-
-The only member exposed on a function value is `call`. A zero-arity function
-is auto-invoked when referenced by name, so it cannot currently be passed as
-a function value.
+Call a function or method where it is named. Executable code cannot be stored
+as a value: a bare function reference is an error, there is no callable
+`.call`, and methods cannot be detached. Pass short-lived behavior with a block
+instead; the receiving call runs it synchronously with `yield`.
 
 ## Calls & Blocks {#calls}
 
@@ -294,9 +287,10 @@ other spacing, Vibescript reads it as an operator.
 
 ### Blocks {#blocks}
 
-Blocks are small functions passed with `do ... end` or braces. Missing block
-arguments become `nil`. Block parameters can also unpack a yielded value in
-the same way as destructuring assignment:
+Blocks are synchronous code attached to a call with `do ... end` or braces.
+They run before that receiving call returns and cannot be stored, returned, or
+forwarded. Missing block arguments become `nil`. Block parameters can also
+unpack a yielded value in the same way as destructuring assignment:
 
 ```vibe
 def active_names(players)
@@ -338,43 +332,6 @@ As in Ruby, `return` inside a block returns from the method that created the
 block and stops iteration. Any `ensure` block still runs. A block with no
 parameter list can use the implicit parameters `it` and `_1` through `_9`.
 
-### Procs & lambdas {#lambdas}
-
-Use `Proc.new { ... }`, `proc { ... }`, `lambda { ... }`, or
-`->(args) { ... }` to store a block in a value. Call each form with `.call`:
-
-```vibe
-def demo
-  double = ->(n) { n * 2 }
-  add = lambda do |a, b|
-    a + b
-  end
-  add.call(double.call(20), 2) # => 42
-end
-```
-
-Procs and lambdas follow Ruby's rules. A **proc** acts like a block: missing
-arguments become `nil`, extra arguments are dropped, one array argument is
-expanded, and `return` exits the method that created the proc. A **lambda**
-acts like an anonymous method: it checks the argument count, and `return`,
-`break`, and `next` only leave the lambda. Use `fn.lambda?` to tell them apart.
-
-`&` turns a value into the block for a call. `m(&blk)` forwards a saved block,
-proc, function value, or bound method. `m(&:name)` is the shorter symbol form:
-
-```vibe
-def shout(words)
-  words.map(&:upcase)  # => ["A", "B"] for ["a", "b"]
-end
-
-def total(numbers)
-  numbers.reduce(&:+)  # => 6 for [1, 2, 3]
-end
-```
-
-The `&` argument must be last, appears at most once, and cannot be combined
-with a literal block.
-
 ### Safe navigation {#safe-navigation}
 
 `receiver&.member` reads a member or calls a method only when the receiver is
@@ -413,10 +370,11 @@ The Ruby word forms `and`, `or`, and `not` are **not** boolean operators in
 Vibescript. They are ordinary identifiers, so they can be used as method
 names, function names, and hash labels. Use `&&`, `||`, and `!`.
 
-`array << value` appends in place and returns the receiver, exactly like
-Ruby's shovel. `array & other` returns a new array holding the elements
-common to both, duplicates removed, left order preserved. Following Ruby,
-`+` binds tighter than `<<`, which binds tighter than `&`.
+`array << value` appends and returns the receiver. A bare `values << item`
+statement updates the local it names. Arrays are values, so aliases remain
+unchanged. `array & other` returns a new array holding the elements common to
+both, duplicates removed, left order preserved. Following Ruby, `+` binds
+tighter than `<<`, which binds tighter than `&`.
 
 ### Comparison & case equality {#comparison}
 
@@ -610,13 +568,14 @@ end
 ```
 
 Inheritance is not supported. Instance variables (`@name`), class variables
-(`@@count`), accessors, mixins, and visibility are covered in the upstream
+(`@@count`), accessors, class methods, and visibility are covered in the upstream
 [classes guide](https://github.com/mgomes/vibescript/blob/master/docs/classes.md).
 
 ### Modules {#modules}
 
-Modules put functions and constants under one name. Use `include` to add a
-module's methods as instance methods, or `extend` to add them as class methods:
+Modules put functions and constants under one name. They are explicit
+namespaces, not sources of methods for other types. A module can hold
+`def self.` functions, constants, and nested modules:
 
 ```vibe
 module Billing
@@ -636,13 +595,16 @@ end
 `module` is only treated as a keyword when a constant name follows it. Modules
 can be nested (`Outer::Inner`), but they cannot be instantiated.
 
+There is no `include` or `extend`. Call module functions through their module
+name, as shown above.
+
 Load shared code from another file with `require`. A file module is separate
 from a `module` declared in source. The Go app controls where `require` can
 look with `Config.ModulePaths` and its allow and deny lists:
 
 ```vibe
 def demo(input)
-  helpers = require("public/helpers", as: "helpers")
+  require("public/helpers", as: "helpers")
   helpers.normalize(input)
 end
 ```
@@ -674,7 +636,7 @@ conflicts. Values without annotations stay dynamic.
 
 Type names are case-insensitive: `int`, `float`, `number`, `string`, `bool`,
 `nil`, `duration`, `time`, `money`, `array`, `hash`/`object`, `range`,
-`function`, top-level enum names, and `any`. Append `?` for nullable
+top-level enum names, and `any`. Append `?` for nullable
 (`string?`, `int?`), join alternatives with `|` (`int | string`), and
 parameterize containers with `array<T>` and `hash<K, V>`.
 
@@ -710,64 +672,12 @@ The upstream [built-ins guide](https://github.com/mgomes/vibescript/blob/master/
 and [standard library guide](https://github.com/mgomes/vibescript/blob/master/docs/stdlib_core_utilities.md)
 list every method, including methods on strings, arrays, hashes, and ranges.
 
-### Tasks & concurrency {#tasks}
+### Host-owned scheduling {#host-scheduling}
 
-The `Tasks` API runs independent named functions at the same time. The runtime
-limits how many can run and keeps them inside a scope. This is **structured
-concurrency**: a task cannot outlive the `Tasks.run` or `Tasks.map` call that
-created it. Leaving the scope waits for every task. Errors appear through
-`task.value` or when the scope exits.
-
-`Tasks.map` calls the same named function for each input. It returns results in
-input order, not completion order. Use `max:` to limit how many tasks run at
-once:
-
-```vibe
-def score_user(user)
-  user[:score] * user[:weight]
-end
-
-def score_users(users)
-  Tasks.map(users, max: 2, with: :score_user)
-end
-```
-
-`Tasks.run` gives you direct control over a scope.
-`tasks.spawn(:function_name, arg, key: value)` starts a named function and
-returns a handle. `task.value` waits for that task, then returns its result or
-raises its error. The block's value becomes the value of the scope:
-
-```vibe
-def prepare_user(user)
-  "prepared:" + user[:id]
-end
-
-def prepare_pair(first, second)
-  Tasks.run(max: 2) do |tasks|
-    left = tasks.spawn(:prepare_user, first)
-    right = tasks.spawn(:prepare_user, second)
-
-    [left.value, right.value]
-  end
-end
-```
-
-The scope waits automatically before it exits. Use `tasks.wait` only when code
-later in the same block must wait for the tasks started so far.
-
-Each task gets its own execution state. It inherits the parent call's
-capabilities, globals, `StrictEffects` setting, and cancellation, but it does
-not share mutable local variables or block state.
-
-Arguments, results, and inherited globals are copied between the parent and a
-task. They must contain data only. Functions, blocks, capabilities, and cyclic
-values cannot cross this boundary. A result held by a task handle counts
-against the parent's memory limit until the scope exits.
-
-The Go app controls both task limits. `DefaultTaskConcurrency` applies when a
-script leaves out `max:`. `MaxTaskConcurrency` is the largest value a script
-may request. A larger request returns an error, such as
-`Tasks.map max 99 exceeds host maximum 64`.
+One `Script.Call` is the unit the Go app schedules and budgets. Scripts do not
+create child executions or request idle delays. When work should happen in
+parallel, the host can run independent calls concurrently or expose a bounded
+batch capability. Delayed work belongs in the host's timer or job system.
 
 ### Sandbox & quotas {#sandbox}
 
@@ -787,11 +697,11 @@ error instead of crashing the process.
 Scripts cannot access the filesystem, network, or clock on their own. The Go
 app can pass in data and typed **capability adapters**. These adapters check
 arguments and results. Values that cross this boundary must contain data only;
-functions and other callable values are rejected.
+executable code cannot cross it.
 
 With `StrictEffects` enabled, globals must also contain data only. Every side
 effect must then go through a capability adapter. Cancelling the Go context
-also cancels the script and any tasks it started.
+also cancels the script.
 
 Every example on this site uses a small set of limits. The homepage shows the
 exact values.
@@ -803,13 +713,11 @@ sandbox with safe limits:
 
 ```go
 engine, err := vibes.NewEngine(vibes.Config{
-    StepQuota:              20_000,
-    MemoryQuotaBytes:       256 << 10, // 256 KiB
-    RecursionLimit:         32,
-    StrictEffects:          true,
-    DefaultTaskConcurrency: 4,
-    MaxTaskConcurrency:     16,
-    ModulePaths:            []string{"/srv/vibes/modules"},
+    StepQuota:        20_000,
+    MemoryQuotaBytes: 256 << 10, // 256 KiB
+    RecursionLimit:   32,
+    StrictEffects:    true,
+    ModulePaths:      []string{"/srv/vibes/modules"},
 })
 ```
 
@@ -825,8 +733,6 @@ engine, err := vibes.NewEngine(vibes.Config{
 | `RandomReader` / `RandomReadFunc` | `crypto/rand` | source of random data for scripts |
 | `MaxSourceBytes` | 1 MiB | largest source file one compile accepts |
 | `MaxCachedModules` | 1,000 | largest number of compiled modules kept in the cache |
-| `DefaultTaskConcurrency` | 4 | task limit when a script leaves out `max:` |
-| `MaxTaskConcurrency` | 64 | largest `max:` value a script may request |
 | `DevMode` | `false` | reload modules when their files change during development |
 
 A zero quota means "use the default." Set a quota to `vibes.Unlimited` to turn

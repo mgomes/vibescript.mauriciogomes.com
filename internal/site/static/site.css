@@ -1725,7 +1725,8 @@ a.tag:hover {
   }
 
   /* A bare 1fr track is floored by the widest code line; minmax(0, 1fr)
-     keeps the prose column at the viewport and lets pre blocks scroll. */
+     keeps the content column at the viewport and lets pre blocks scroll. */
+  .hero,
   .reference {
     grid-template-columns: minmax(0, 1fr);
   }

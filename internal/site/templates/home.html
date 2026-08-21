@@ -50,34 +50,39 @@
   <svg class="sparkle sparkle-md sparkle-number sparkle-float sparkle-pairs-3" style="--tilt: 9deg" aria-hidden="true"><use href="#sparkle"></use></svg>
   <header class="section-intro">
     <p class="eyebrow"><svg class="vee" aria-hidden="true"><use href="#vee"></use></svg> Language</p>
-    <h2>A familiar language for app logic.</h2>
-    <p class="section-sub">Ruby-like syntax, optional types, and built-in money, duration, and enum values. Everything is designed to be read at a glance, by your team and by the models writing it.</p>
+    <h2>A familiar language with a small surface.</h2>
+    <p class="section-sub">Vibescript keeps Ruby-like syntax, optional types, money, durations, and enums. It leaves scheduling and open-ended metaprogramming to your Go app.</p>
   </header>
 
   <div class="pair">
     <div class="pair-copy">
-      <h3>Ruby-like syntax with optional types.</h3>
+      <h3>Small on purpose.</h3>
       <p>
-        Blocks, ranges, calls without parentheses, and symbol-keyed hashes will look
-        familiar to Ruby users. Types are optional. When you use them, Vibescript checks
-        arguments and return values. Nullable types stay explicit.
+        Functions are called by name. Blocks run during the call that receives them.
+        Arrays and hashes behave like values, and every hash key lands in one string
+        keyspace. Modules are namespaces. Your Go app owns scheduling and I/O.
       </p>
     </div>
     <div class="pair-panel">
       <div class="code-window">
         <div class="code-window-header">
-          <span class="code-window-title">typing.vibe</span>
+          <span class="code-window-title">small_surface.vibe</span>
         </div>
-        <pre><code class="language-vibescript">def shipping_quote(speed, subtotal: money) -> hash
-  fee = shipping_fee(speed, subtotal)
-  transit = transit_time(speed)
+        <pre><code class="language-vibescript">module Scoring
+  BONUS = 10
 
-  {
-    speed: speed.name,
-    fee: fee,
-    total: subtotal + fee,
-    transit: transit.iso8601
-  }
+  def self.with_bonus(score)
+    score + BONUS
+  end
+end
+
+def approve(order)
+  original = order
+  order[:status] = "approved"
+
+  { original: original, updated: order,
+    same_key: order[:status] == order["status"],
+    score: Scoring.with_bonus(80) }
 end</code></pre>
       </div>
     </div>
