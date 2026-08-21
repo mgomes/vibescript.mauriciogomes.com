@@ -12,8 +12,9 @@ import (
 )
 
 const (
-	UpstreamRepoURL = "https://github.com/mgomes/vibescript"
-	UpstreamVersion = "v1.0.0-rc9"
+	UpstreamRepoURL  = "https://github.com/mgomes/vibescript"
+	UpstreamVersion  = "v1.0-dev"
+	upstreamRevision = "eda57aa64ea2b8b3d7ead9a671c43f271fd939d8"
 )
 
 var featuredExamples = map[string]int{
@@ -28,6 +29,7 @@ var upstreamSummaries = map[string]string{
 	"background/jobs_and_events.vibe":    "Queue jobs and publish events through APIs from the Go app.",
 	"basics/functions_and_calls.vibe":    "Define functions, call other functions, and return values.",
 	"basics/literals_and_operators.vibe": "Work with numbers, strings, arrays, hashes, and common operators.",
+	"basics/namespaces.vibe":             "Group constants and module functions under a namespace.",
 	"blocks/advanced.vibe":               "Filter, group, and reduce data with blocks.",
 	"blocks/enumerable_reports.vibe":     "Group donations and total the money in each currency.",
 	"blocks/transformations.vibe":        "Map, filter, and reduce collections with blocks.",
@@ -37,7 +39,7 @@ var upstreamSummaries = map[string]string{
 	"capabilities/iteration.vibe":        "Iterate over records returned by an API from the Go app.",
 	"collections/arrays.vibe":            "Read, build, and update arrays.",
 	"collections/hashes.vibe":            "Build, update, and read nested hashes.",
-	"collections/symbols.vibe":           "Use symbols as stable hash keys.",
+	"collections/symbols.vibe":           "Use labels, strings, and symbols in one string-key hash space.",
 	"control_flow/case_when.vibe":        "Match values and ranges with case and when.",
 	"control_flow/conditionals.vibe":     "Choose values with if, elsif, else, and unless.",
 	"control_flow/loop_control.vibe":     "Skip and stop loop iterations with next and break.",
@@ -57,7 +59,6 @@ var upstreamSummaries = map[string]string{
 	"ranges/usage.vibe":                  "Create ascending and descending ranges, then filter their values.",
 	"stdlib/core_utilities.vibe":         "Parse JSON and time values, then create IDs.",
 	"strings/operations.vibe":            "Normalize, split, search, and inspect strings.",
-	"tasks/scoring.vibe":                 "Run independent scoring and preparation functions at the same time.",
 	"time/duration.vibe":                 "Add durations to times and use duration arithmetic.",
 }
 
@@ -261,7 +262,7 @@ func loadUpstreamExample(relativePath string, source []byte) Example {
 		Tags:        tags,
 		Source:      string(source),
 		SourcePath:  relativePath,
-		SourceURL:   fmt.Sprintf("%s/blob/%s/examples/%s", UpstreamRepoURL, UpstreamVersion, relativePath),
+		SourceURL:   fmt.Sprintf("%s/blob/%s/examples/%s", UpstreamRepoURL, upstreamRevision, relativePath),
 		RunFunction: runFunction,
 		FeatureRank: featuredExamples[relativePath],
 	}

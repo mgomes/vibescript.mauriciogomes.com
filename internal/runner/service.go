@@ -42,12 +42,10 @@ type Stats struct {
 // The site renders these values on the homepage, so they must stay in sync
 // with what the engine actually enforces.
 var EngineConfig = vibes.Config{
-	StepQuota:              250_000,
-	MemoryQuotaBytes:       256 << 10,
-	RecursionLimit:         32,
-	StrictEffects:          true,
-	DefaultTaskConcurrency: 4,
-	MaxTaskConcurrency:     8,
+	StepQuota:        250_000,
+	MemoryQuotaBytes: 256 << 10,
+	RecursionLimit:   32,
+	StrictEffects:    true,
 }
 
 func New(store *catalog.Store) (*Service, error) {

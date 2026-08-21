@@ -1,4 +1,4 @@
-# vibe: 0.2
+# vibe: 1.0
 
 def run
   parsed = JSON.parse("{\"id\":\"p-1\",\"score\":10}")
@@ -18,6 +18,12 @@ def run
     random_length: token.length,
     to_int: to_int("42"),
     to_float: to_float("1.25"),
-    parsed_time: parsed_time.format("2006-01-02T15:04:05Z07:00")
+    math_sqrt: Math.sqrt(144),
+    math_hypot: Math.hypot(3, 4),
+    math_log_base: Math.log(8, 2),
+    math_pi_rounded: Math::PI.round(3),
+    parsed_time: parsed_time.format("2006-01-02T15:04:05Z07:00"),
+    inspect_string: "a\tb".inspect,
+    inspect_array: [1, "x", nil].inspect
   }
 end

@@ -26,8 +26,10 @@ func TestHomePageRendersFeaturedExamples(t *testing.T) {
 	}
 
 	body := recorder.Body.String()
-	if !strings.Contains(body, "Release readiness") {
-		t.Fatalf("expected featured example title, got %q", body)
+	for _, want := range []string{"Small on purpose", "Value boundaries", "Release readiness"} {
+		if !strings.Contains(body, want) {
+			t.Fatalf("expected homepage to contain %q", want)
+		}
 	}
 
 	if !strings.Contains(body, "/api/examples/showcase-finance-late-fee/run") {

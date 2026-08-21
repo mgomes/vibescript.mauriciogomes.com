@@ -1,3 +1,4 @@
+# vibe: 1.0
 # Enum basics
 
 enum Status
@@ -11,7 +12,7 @@ enum ReviewState
   Approved
 end
 
-def member_name() -> string
+def member_name -> string
   Status::Draft.name
 end
 
@@ -25,7 +26,7 @@ def block_names(values) -> array
   end
 end
 
-def facts() -> hash
+def facts -> hash
   draft = Status::Draft
 
   {

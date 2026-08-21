@@ -36,9 +36,23 @@ func TestLoadRendersAnchorsAndCode(t *testing.T) {
 	}
 
 	html := string(ref.Content)
-	for _, want := range []string{`id="basics"`, `id="parameters"`, `id="sandbox"`, `class="language-vibe"`, "<table>"} {
+	for _, want := range []string{
+		`id="basics"`,
+		`id="parameters"`,
+		`id="named-functions"`,
+		`id="host-scheduling"`,
+		`id="sandbox"`,
+		`class="language-vibe"`,
+		"<table>",
+	} {
 		if !strings.Contains(html, want) {
 			t.Errorf("rendered content missing %q", want)
+		}
+	}
+
+	for _, unwanted := range []string{`id="function-values"`, `id="lambdas"`, `id="tasks"`} {
+		if strings.Contains(html, unwanted) {
+			t.Errorf("rendered content contains retired section %q", unwanted)
 		}
 	}
 }
