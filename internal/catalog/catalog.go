@@ -12,7 +12,7 @@ import (
 )
 
 const (
-	UpstreamRepoURL  = "https://github.com/mgomes/vibescript"
+	UpstreamRepoURL  = "https://github.com/xipkit/vibescript"
 	UpstreamVersion  = "v1.0-dev"
 	upstreamRevision = "eda57aa64ea2b8b3d7ead9a671c43f271fd939d8"
 )

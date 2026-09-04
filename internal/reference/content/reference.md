@@ -2,7 +2,7 @@ Vibescript lets users and AI agents add scripts to a Go app. Like Lua in a
 game, each script runs inside limits set by the host app. This page covers the
 language boundary, sandbox, and main host settings. For the full Go API,
 capability adapters, migration notes, and built-in methods, see the
-[upstream docs](https://github.com/mgomes/vibescript/tree/master/docs).
+[upstream docs](https://github.com/xipkit/vibescript/tree/master/docs).
 
 Vibescript is an embedded workflow language, not a general-purpose Ruby
 runtime. Scripts call named functions and methods, transform value collections,
@@ -569,7 +569,7 @@ end
 
 Inheritance is not supported. Instance variables (`@name`), class variables
 (`@@count`), accessors, class methods, and visibility are covered in the upstream
-[classes guide](https://github.com/mgomes/vibescript/blob/master/docs/classes.md).
+[classes guide](https://github.com/xipkit/vibescript/blob/master/docs/classes.md).
 
 ### Modules {#modules}
 
@@ -625,7 +625,7 @@ end
 ```
 
 Conversion, equality, and serialization behavior are covered in the upstream
-[enums guide](https://github.com/mgomes/vibescript/blob/master/docs/enums.md).
+[enums guide](https://github.com/xipkit/vibescript/blob/master/docs/enums.md).
 
 ### Gradual typing {#typing}
 
@@ -668,8 +668,8 @@ def demo
 end
 ```
 
-The upstream [built-ins guide](https://github.com/mgomes/vibescript/blob/master/docs/builtins.md)
-and [standard library guide](https://github.com/mgomes/vibescript/blob/master/docs/stdlib_core_utilities.md)
+The upstream [built-ins guide](https://github.com/xipkit/vibescript/blob/master/docs/builtins.md)
+and [standard library guide](https://github.com/xipkit/vibescript/blob/master/docs/stdlib_core_utilities.md)
 list every method, including methods on strings, arrays, hashes, and ranges.
 
 ### Host-owned scheduling {#host-scheduling}
@@ -752,6 +752,6 @@ uses the same profiles and defaults to `xhigh` because it runs your own scripts,
 not untrusted code. The upstream guides cover capability adapters, module
 rules, and per-call options (`CallOptions.Globals`,
 `CallOptions.Capabilities`):
-[integration guide](https://github.com/mgomes/vibescript/blob/master/docs/integration.md)
+[integration guide](https://github.com/xipkit/vibescript/blob/master/docs/integration.md)
 and
-[host cookbook](https://github.com/mgomes/vibescript/blob/master/docs/host_cookbook.md).
+[host cookbook](https://github.com/xipkit/vibescript/blob/master/docs/host_cookbook.md).

@@ -16,7 +16,7 @@ Deployments are configured for Miren on Vultr. See [docs/deployment.md](docs/dep
 
 ## Current shape
 
-- Serves `201` examples: `35` imported from `github.com/mgomes/vibescript`, plus `135` Rosetta Code tasks and `31` showcase programs.
+- Serves `201` examples: `35` imported from `github.com/xipkit/vibescript`, plus `135` Rosetta Code tasks and `31` showcase programs.
 - Exposes detail pages with real `.vibe` source.
 - Runs every example through `/api/examples/{slug}/run`. `TestEveryExampleIsRunnable` enforces that each one defines a top-level `run` function.
 - Serves a language reference at `/reference`, rendered from Markdown with goldmark.
