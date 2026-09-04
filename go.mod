@@ -4,7 +4,7 @@ go 1.26.5
 
 require (
 	github.com/mgomes/ohm v0.13.0
-	github.com/mgomes/vibescript v1.0.0-rc9.0.20260821172836-eda57aa64ea2
+	github.com/mgomes/vibescript v0.60.0
 	github.com/yuin/goldmark v1.8.5
 )
 
