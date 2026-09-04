@@ -5,7 +5,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/mgomes/vibescript-lang.org/internal/catalog"
+	"github.com/xipkit/vibescript-lang.org/internal/catalog"
 )
 
 func TestRunRunnableExample(t *testing.T) {

@@ -11,10 +11,10 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/mgomes/vibescript-lang.org/internal/catalog"
-	"github.com/mgomes/vibescript-lang.org/internal/config"
-	"github.com/mgomes/vibescript-lang.org/internal/runner"
-	"github.com/mgomes/vibescript-lang.org/internal/site"
+	"github.com/xipkit/vibescript-lang.org/internal/catalog"
+	"github.com/xipkit/vibescript-lang.org/internal/config"
+	"github.com/xipkit/vibescript-lang.org/internal/runner"
+	"github.com/xipkit/vibescript-lang.org/internal/site"
 )
 
 func main() {

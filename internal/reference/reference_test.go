@@ -5,7 +5,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/mgomes/vibescript-lang.org/internal/runner"
+	"github.com/xipkit/vibescript-lang.org/internal/runner"
 	"github.com/mgomes/vibescript/vibes"
 )
 

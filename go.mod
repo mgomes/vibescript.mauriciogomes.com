@@ -1,4 +1,4 @@
-module github.com/mgomes/vibescript-lang.org
+module github.com/xipkit/vibescript-lang.org
 
 go 1.26.5
 

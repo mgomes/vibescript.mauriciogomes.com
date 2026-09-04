@@ -9,8 +9,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/mgomes/vibescript-lang.org/internal/catalog"
-	"github.com/mgomes/vibescript-lang.org/internal/runner"
+	"github.com/xipkit/vibescript-lang.org/internal/catalog"
+	"github.com/xipkit/vibescript-lang.org/internal/runner"
 )
 
 func TestHomePageRendersFeaturedExamples(t *testing.T) {

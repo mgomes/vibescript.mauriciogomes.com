@@ -13,9 +13,9 @@ import (
 	"time"
 
 	"github.com/mgomes/ohm"
-	"github.com/mgomes/vibescript-lang.org/internal/catalog"
-	"github.com/mgomes/vibescript-lang.org/internal/reference"
-	"github.com/mgomes/vibescript-lang.org/internal/runner"
+	"github.com/xipkit/vibescript-lang.org/internal/catalog"
+	"github.com/xipkit/vibescript-lang.org/internal/reference"
+	"github.com/xipkit/vibescript-lang.org/internal/runner"
 )
 
 type App struct {
